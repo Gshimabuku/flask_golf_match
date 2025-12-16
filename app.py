@@ -2,6 +2,7 @@ from flask import Flask, render_template, jsonify, redirect, url_for, Response, 
 import os
 from Services.course_service import get_courses,get_layouts
 from Services.round_service import add_round
+from Services.user_service import get_users
 
 app = Flask(__name__)
 
@@ -32,7 +33,8 @@ def course_list():
 def round_new():
     courses = get_courses()
     layouts = get_layouts()
-    return render_template('round/new.html', courses=courses, layouts=layouts)
+    users = get_users()
+    return render_template('round/new.html', courses=courses, layouts=layouts, users=users)
 
 @app.route("/round/create", methods=["POST"])
 def round_create():

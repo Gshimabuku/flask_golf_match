@@ -7,46 +7,169 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 
-<body>
-    <h1>新規ラウンド作成</h1>
-
-    <form action="/round/create" method="POST">
-        <!-- ラウンド日 -->
-        <label for="play_date">ラウンド日:</label>
-        <input type="date" id="play_date" name="play_date" required>
-
-        <!-- コース選択 -->
-        <label for="course">コース:</label>
-        <select id="course" name="course" required>
-            <option value="">選択してください</option>
-            {% for course in courses %}
-            <option value="{{ course.page_id }}">{{ course.name }}</option>
-            {% endfor %}
-        </select>
-
-        <!-- IN/OUT レイアウト -->
-        <label for="layout_in">IN:</label>
-        <select id="layout_in" name="layout_in" required>
-            <option value="">コースを選択してください</option>
-        </select>
-
-        <label for="layout_out">OUT:</label>
-        <select id="layout_out" name="layout_out" required>
-            <option value="">コースを選択してください</option>
-        </select>
-
-        <!-- レート -->
-        <label for="rate">レート:</label>
-        <div class="rate-control">
-            <button type="button" id="rate_minus">−</button>
-            <input type="number" id="rate" name="rate" value="0" readonly>
-            <button type="button" id="rate_plus">＋</button>
+<body class="round-new-page">
+    <div class="container">
+        <div class="page-header">
+            <h1>新規ラウンド作成</h1>
+            <button type="button" class="back-btn" onclick="location.href='../home.html'">戻る</button>
         </div>
 
-        <button type="submit">作成</button>
-    </form>
+        <form action="/round/create" method="POST">
+            <!-- ラウンド日 -->
+             <div class="form-section">
+                <div class="form-row">
+                    <label for="play_date">ラウンド日:</label>
+                    <input type="date" id="play_date" name="play_date" required>
+                </div>
+            </div>
 
-    <!-- layouts 一括渡し -->
+            <!-- コース情報 -->
+            <div class="form-section">
+                <h2 class="section-title">コース情報</h2>
+                <div class="form-row">
+                    <label for="course">コース:</label>
+                    <select id="course" name="course" required>
+                        <option value="">選択してください</option>
+                        {% for course in courses %}
+                            <option value="{{ course.page_id }}">{{ course.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-row" id="layout_in_row" style="display: none;">
+                    <label for="layout_in">IN:</label>
+                    <select id="layout_in" name="layout_in" required disabled>
+                        <option value="">コースを選択してください</option>
+                    </select>
+                </div>
+                <div class="form-row" id="layout_out_row" style="display: none;">
+                    <label for="layout_out">OUT:</label>
+                    <select id="layout_out" name="layout_out" required disabled>
+                        <option value="">コースを選択してください</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- メンバー -->
+            <div class="form-section">
+                <h2 class="section-title">メンバー</h2>
+                <div class="form-row">
+                    <label for="member_count">人数:</label>
+                    <select id="member_count" name="member_count" required>
+                        <option value="">選択してください</option>
+                        {% for user in users %}
+                            <option value="{{ user.page_id }}">{{ user.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-row" id="member1_row" style="display: none;">
+                    <label for="member1">メンバー1:</label>
+                    <select id="member1" name="member1" disabled>
+                        <option value="">選択してください</option>
+                        {% for user in users %}
+                            <option value="{{ user.page_id }}">{{ user.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-row" id="member2_row" style="display: none;">
+                    <label for="member2">メンバー2:</label>
+                    <select id="member2" name="member2" disabled>
+                        <option value="">選択してください</option>
+                        {% for user in users %}
+                            <option value="{{ user.page_id }}">{{ user.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-row" id="member3_row" style="display: none;">
+                    <label for="member3">メンバー3:</label>
+                    <select id="member3" name="member3" disabled>
+                        <option value="">選択してください</option>
+                        {% for user in users %}
+                            <option value="{{ user.page_id }}">{{ user.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-row" id="member4_row" style="display: none;">
+                    <label for="member4">メンバー4:</label>
+                    <select id="member4" name="member4" disabled>
+                        <option value="">選択してください</option>
+                        {% for user in users %}
+                            <option value="{{ user.page_id }}">{{ user.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <!-- オリンピック -->
+            <div class="form-section">
+                <h2 class="section-title">オリンピック</h2>
+                <div class="form-row">
+                    <label for="gold">金:</label>
+                    <div class="rate-control">
+                        <button type="button" id="gold_minus">−</button>
+                        <input type="number" id="gold" name="gold" value="0" readonly>
+                        <button type="button" id="gold_plus">＋</button>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <label for="silver">銀:</label>
+                    <div class="rate-control">
+                        <button type="button" id="silver_minus">−</button>
+                        <input type="number" id="silver" name="silver" value="0" readonly>
+                        <button type="button" id="silver_plus">＋</button>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <label for="bronze">銅:</label>
+                    <div class="rate-control">
+                        <button type="button" id="bronze_minus">−</button>
+                        <input type="number" id="bronze" name="bronze" value="0" readonly>
+                        <button type="button" id="bronze_plus">＋</button>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <label for="iron">鉄:</label>
+                    <div class="rate-control">
+                        <button type="button" id="iron_minus">−</button>
+                        <input type="number" id="iron" name="iron" value="0" readonly>
+                        <button type="button" id="iron_plus">＋</button>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <label for="diamond">ダイヤモンド:</label>
+                    <div class="rate-control">
+                        <button type="button" id="diamond_minus">−</button>
+                        <input type="number" id="diamond" name="diamond" value="0" readonly>
+                        <button type="button" id="diamond_plus">＋</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ヘビ -->
+            <div class="form-section">
+                <div class="form-row">
+                    <label for="snake">ヘビ:</label>
+                    <div class="rate-control">
+                        <button type="button" id="snake_minus">−</button>
+                        <input type="number" id="snake" name="snake" value="0" readonly>
+                        <button type="button" id="snake_plus">＋</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <button type="submit" class="submit-btn">作成</button>
+            </div>
+        </form>
+    </div>
+
     <script>
         const layoutList = {{ layouts | tojson }};
 
@@ -56,39 +179,94 @@
 
         courseSelect.addEventListener("change", function () {
             const courseId = this.value;
+            const layoutInSelect = document.getElementById("layout_in");
+            const layoutOutSelect = document.getElementById("layout_out");
+            const layoutInRow = document.getElementById("layout_in_row");
+            const layoutOutRow = document.getElementById("layout_out_row");
 
-            layoutInSelect.innerHTML = '<option value="">選択してください</option>';
-            layoutOutSelect.innerHTML = '<option value="">選択してください</option>';
+            if (courseId && courseData[courseId]) {
+                // レイアウト情報フィルター
+                const filteredLayouts = layoutList.filter(
+                    l => Array.isArray(l.course) && l.course.includes(courseId)
+                );
 
-            if (!courseId) return;
+                filteredLayouts.forEach(layout => {
+                    // IN 用
+                    const optIn = document.createElement("option");
+                    optIn.value = layout.page_id;
+                    optIn.textContent = layout.layout_name;
+                    layoutInSelect.appendChild(optIn);
 
-            const filteredLayouts = layoutList.filter(
-                l => Array.isArray(l.course) && l.course.includes(courseId)
-            );
+                    // OUT 用（別インスタンス）
+                    const optOut = document.createElement("option");
+                    optOut.value = layout.page_id;
+                    optOut.textContent = layout.layout_name;
+                    layoutOutSelect.appendChild(optOut);
+                });
 
-            filteredLayouts.forEach(layout => {
-                // IN 用
-                const optIn = document.createElement("option");
-                optIn.value = layout.page_id;
-                optIn.textContent = layout.layout_name;
-                layoutInSelect.appendChild(optIn);
+                // 表示して有効化
+                layoutInRow.style.display = "flex";
+                layoutOutRow.style.display = "flex";
+                layoutInSelect.disabled = false;
+                layoutOutSelect.disabled = false;
+            } else {
+                // 非表示にして無効化
+                layoutInRow.style.display = "none";
+                layoutOutRow.style.display = "none";
+                layoutInSelect.disabled = true;
+                layoutOutSelect.disabled = true;
+                layoutInSelect.innerHTML = '<option value="">コースを選択してください</option>';
+                layoutOutSelect.innerHTML = '<option value="">コースを選択してください</option>';
+            }
+        });
 
-                // OUT 用（別インスタンス）
-                const optOut = document.createElement("option");
-                optOut.value = layout.page_id;
-                optOut.textContent = layout.layout_name;
-                layoutOutSelect.appendChild(optOut);
+        // メンバー人数選択時の処理
+        document.getElementById("member_count").addEventListener("change", function () {
+            const count = parseInt(this.value);
+
+            // 全メンバー行を取得
+            const memberRows = [
+                { row: document.getElementById("member1_row"), select: document.getElementById("member1") },
+                { row: document.getElementById("member2_row"), select: document.getElementById("member2") },
+                { row: document.getElementById("member3_row"), select: document.getElementById("member3") },
+                { row: document.getElementById("member4_row"), select: document.getElementById("member4") }
+            ];
+
+            // 選択された人数分だけ表示
+            memberRows.forEach((member, index) => {
+                if (index < count) {
+                    member.row.style.display = "flex";
+                    member.select.disabled = false;
+                    if (index === 0) {
+                        member.select.required = true;
+                    }
+                } else {
+                    member.row.style.display = "none";
+                    member.select.disabled = true;
+                    member.select.required = false;
+                    member.select.value = "";
+                }
             });
         });
 
-        // レートの＋／−ボタン
-        const rateInput = document.getElementById("rate");
-        document.getElementById("rate_plus").addEventListener("click", () => {
-            rateInput.value = parseInt(rateInput.value) + 1;
-        });
-        document.getElementById("rate_minus").addEventListener("click", () => {
-            rateInput.value = parseInt(rateInput.value) - 1;
-        });
+        // 数値入力の＋／−ボタン制御
+        function setupNumberControl(id) {
+            const input = document.getElementById(id);
+            document.getElementById(id + "_plus").addEventListener("click", () => {
+                input.value = parseInt(input.value) + 1;
+            });
+            document.getElementById(id + "_minus").addEventListener("click", () => {
+                input.value = parseInt(input.value) - 1;
+            });
+        }
+
+        // 各項目に＋／−ボタンを設定
+        setupNumberControl("gold");
+        setupNumberControl("silver");
+        setupNumberControl("bronze");
+        setupNumberControl("iron");
+        setupNumberControl("diamond");
+        setupNumberControl("snake");
     </script>
 </body>
 

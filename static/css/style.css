@@ -1,55 +1,296 @@
 /**
  * #######################################################
- *  ラウンド関連
+ *  共通スタイル
  * #######################################################
  */
 
- /* round_new */
+/* リセット */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body {
-    font-family: sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f5f5f5;
+}
+
+/* コンテナ */
+.container {
+    max-width: 600px;
+    margin: 0 auto;
     padding: 16px;
+    background-color: #fff;
+    min-height: 100vh;
+}
+
+/* ページヘッダー */
+.page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    gap: 12px;
 }
 
 h1 {
-    font-size: 20px;
-    margin-bottom: 16px;
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 0;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #4CAF50;
+    color: #2c3e50;
+    flex: 1;
 }
 
-.form-group {
+/* 戻るボタン */
+.back-btn {
+    min-width: 80px;
+    height: 44px;
+    padding: 8px 16px;
+    font-size: 15px;
+    font-weight: 500;
+    background-color: #fff;
+    color: #666;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s;
+    flex-shrink: 0;
+}
+
+.back-btn:hover {
+    background-color: #f5f5f5;
+    border-color: #999;
+}
+
+.back-btn:active {
+    transform: scale(0.95);
+    background-color: #e0e0e0;
+}
+
+/**
+ * #######################################################
+ *  フォーム関連（共通）
+ * #######################################################
+ */
+
+.form-section {
     margin-bottom: 16px;
+    padding: 12px;
+    background-color: #fafafa;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+}
+
+.form-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.form-row:last-child {
+    margin-bottom: 0;
+}
+
+.section-title {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 12px;
+    color: #4CAF50;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #4CAF50;
 }
 
 label {
-    display: block;
-    margin-bottom: 4px;
+    flex-shrink: 0;
+    min-width: 100px;
+    margin-bottom: 0;
+    font-weight: 500;
+    color: #555;
+    font-size: 14px;
 }
 
 input,
 select {
-    width: 100%;
+    flex: 1;
     height: 40px;
+    padding: 6px 10px;
     font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background-color: #fff;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    margin-bottom: 0;
 }
 
-.rate-control {
+input:focus,
+select:focus {
+    outline: none;
+    border-color: #4CAF50;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+}
+
+/**
+ * #######################################################
+ *  ラウンド新規作成ページ（round-new-page）
+ * #######################################################
+ */
+
+.round-new-page .round-form {
+    width: 100%;
+}
+
+/* 数値入力コントロール */
+.round-new-page .rate-control {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 8px;
+    flex: 1;
 }
 
-.rate-control button {
-    width: 48px;
-    height: 48px;
+.round-new-page .rate-control button {
+    min-width: 40px;
+    height: 40px;
     font-size: 20px;
+    font-weight: bold;
+    border: 2px solid #4CAF50;
+    background-color: #fff;
+    color: #4CAF50;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s;
+    flex-shrink: 0;
 }
 
-.rate-control input {
-    width: 80px;
+.round-new-page .rate-control button:active {
+    background-color: #4CAF50;
+    color: #fff;
+    transform: scale(0.95);
+}
+
+.round-new-page .rate-control input {
+    flex: 1;
+    max-width: 70px;
     text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 0;
+    height: 40px;
 }
 
-.submit-btn {
+/* 送信ボタン */
+.round-new-page .submit-btn {
     width: 100%;
     height: 48px;
-    font-size: 16px;
+    font-size: 18px;
+    font-weight: bold;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.1s;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.round-new-page .submit-btn:hover {
+    background-color: #45a049;
+}
+
+.round-new-page .submit-btn:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* ボタン用のフォームセクション */
+.round-new-page .form-section:has(.submit-btn) {
+    background-color: transparent;
+    border: none;
+    padding: 8px 12px;
+}
+
+/**
+ * #######################################################
+ *  レスポンシブ対応
+ * #######################################################
+ */
+
+/* タブレット以上 */
+@media (min-width: 768px) {
+    .container {
+        padding: 24px;
+        margin-top: 20px;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+        font-size: 28px;
+    }
+
+    .section-title {
+        font-size: 20px;
+    }
+}
+
+/* 小さいスマホ */
+@media (max-width: 375px) {
+    .container {
+        padding: 12px;
+    }
+
+    h1 {
+        font-size: 20px;
+    }
+
+    .back-btn {
+        min-width: 60px;
+        height: 38px;
+        font-size: 14px;
+        padding: 6px 12px;
+    }
+
+    .form-section {
+        padding: 10px;
+        margin-bottom: 12px;
+    }
+
+    label {
+        min-width: 80px;
+        font-size: 13px;
+    }
+
+    .section-title {
+        font-size: 15px;
+    }
+
+    .round-new-page .rate-control button {
+        min-width: 36px;
+        height: 36px;
+        font-size: 18px;
+    }
+
+    .round-new-page .rate-control input {
+        max-width: 60px;
+        font-size: 15px;
+        height: 36px;
+    }
+
+    input,
+    select {
+        font-size: 15px;
+        height: 36px;
+    }
+}
+
+/* タッチデバイス用のホバー無効化 */
+@media (hover: none) {
+    .round-new-page .submit-btn:hover {
+        background-color: #4CAF50;
+    }
 }
