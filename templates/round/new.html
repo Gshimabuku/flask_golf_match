@@ -56,9 +56,10 @@
                     <label for="member_count">人数:</label>
                     <select id="member_count" name="member_count" required>
                         <option value="">選択してください</option>
-                        {% for user in users %}
-                            <option value="{{ user.page_id }}">{{ user.name }}</option>
-                        {% endfor %}
+                        <option value="1">1人</option>
+                        <option value="2">2人</option>
+                        <option value="3">3人</option>
+                        <option value="4">4人</option>
                     </select>
                 </div>
 
@@ -154,13 +155,16 @@
 
             <!-- ヘビ -->
             <div class="form-section">
+                <h2 class="section-title">ヘビ</h2>
                 <div class="form-row">
-                    <label for="snake">ヘビ:</label>
-                    <div class="rate-control">
-                        <button type="button" id="snake_minus">−</button>
-                        <input type="number" id="snake" name="snake" value="0" readonly>
-                        <button type="button" id="snake_plus">＋</button>
-                    </div>
+                    <label class="checkbox-label">
+                        <input type="radio" name="snake" value="All" id="snake_all">
+                        <span>All</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="radio" name="snake" value="Half" id="snake_half">
+                        <span>Half</span>
+                    </label>
                 </div>
             </div>
 
@@ -184,7 +188,7 @@
             const layoutInRow = document.getElementById("layout_in_row");
             const layoutOutRow = document.getElementById("layout_out_row");
 
-            if (courseId && courseData[courseId]) {
+            if (courseId) {
                 // レイアウト情報フィルター
                 const filteredLayouts = layoutList.filter(
                     l => Array.isArray(l.course) && l.course.includes(courseId)
