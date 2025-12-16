@@ -48,7 +48,7 @@
 
     <!-- layouts 一括渡し -->
     <script>
-        const layouts = {{ layouts | tojson }};
+        const layoutList = {{ layouts | tojson }};
 
         const courseSelect = document.getElementById("course");
         const layoutInSelect = document.getElementById("layout_in");
@@ -62,7 +62,7 @@
 
             if (!courseId) return;
 
-            const filteredLayouts = layouts.filter(
+            const filteredLayouts = layoutList.filter(
                 l => Array.isArray(l.course) && l.course.includes(courseId)
             );
 

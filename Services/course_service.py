@@ -3,7 +3,7 @@ from config import NOTION_DB_COURSES_ID,NOTION_DB_LAYOUTS_ID,NOTION_DB_HOLES_ID
 from Const.course_type import DISPLAY
 
 # ---------------------------------
-# コース一覧取得（coursesテーブルのみ）
+# コース一覧取得
 # ---------------------------------
 def get_courses():
     results = []
@@ -21,6 +21,9 @@ def get_courses():
 
     return results
 
+# ---------------------------------
+# レイアウト一覧取得
+# ---------------------------------
 def get_layouts():
     results = []
 
