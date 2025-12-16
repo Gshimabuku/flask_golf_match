@@ -1,0 +1,55 @@
+/**
+ * #######################################################
+ *  ラウンド関連
+ * #######################################################
+ */
+
+ /* round_new */
+body {
+    font-family: sans-serif;
+    padding: 16px;
+}
+
+h1 {
+    font-size: 20px;
+    margin-bottom: 16px;
+}
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+label {
+    display: block;
+    margin-bottom: 4px;
+}
+
+input,
+select {
+    width: 100%;
+    height: 40px;
+    font-size: 16px;
+}
+
+.rate-control {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.rate-control button {
+    width: 48px;
+    height: 48px;
+    font-size: 20px;
+}
+
+.rate-control input {
+    width: 80px;
+    text-align: center;
+}
+
+.submit-btn {
+    width: 100%;
+    height: 48px;
+    font-size: 16px;
+}

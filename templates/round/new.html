@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title>新規ラウンド作成</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+    <h1>新規ラウンド作成</h1>
+
+    <form action="/round/create" method="POST">
+        <!-- ラウンド日 -->
+        <label for="play_date">ラウンド日:</label>
+        <input type="date" id="play_date" name="play_date" required>
+
+        <!-- コース選択 -->
+        <label for="course">コース:</label>
+        <select id="course" name="course" required>
+            <option value="">選択してください</option>
+            {% for course in courses %}
+            <option value="{{ course.page_id }}">{{ course.name }}</option>
+            {% endfor %}
+        </select>
+
+        <!-- IN/OUT レイアウト -->
+        <label for="layout_in">IN:</label>
+        <select id="layout_in" name="layout_in" required>
+            <option value="">コースを選択してください</option>
+        </select>
+
+        <label for="layout_out">OUT:</label>
+        <select id="layout_out" name="layout_out" required>
+            <option value="">コースを選択してください</option>
+        </select>
+
+        <!-- レート -->
+        <label for="rate">レート:</label>
+        <div class="rate-control">
+            <button type="button" id="rate_minus">−</button>
+            <input type="number" id="rate" name="rate" value="0" readonly>
+            <button type="button" id="rate_plus">＋</button>
+        </div>
+
+        <button type="submit">作成</button>
+    </form>
+
+    <!-- layouts 一括渡し -->
+    <script>
+        const layouts = {{ layouts | tojson }};
+
+        const courseSelect = document.getElementById("course");
+        const layoutInSelect = document.getElementById("layout_in");
+        const layoutOutSelect = document.getElementById("layout_out");
+
+        courseSelect.addEventListener("change", function () {
+            const courseId = this.value;
+
+            layoutInSelect.innerHTML = '<option value="">選択してください</option>';
+            layoutOutSelect.innerHTML = '<option value="">選択してください</option>';
+
+            if (!courseId) return;
+
+            const filteredLayouts = layouts.filter(
+                l => Array.isArray(l.course) && l.course.includes(courseId)
+            );
+
+            filteredLayouts.forEach(layout => {
+                // IN 用
+                const optIn = document.createElement("option");
+                optIn.value = layout.page_id;
+                optIn.textContent = layout.layout_name;
+                layoutInSelect.appendChild(optIn);
+
+                // OUT 用（別インスタンス）
+                const optOut = document.createElement("option");
+                optOut.value = layout.page_id;
+                optOut.textContent = layout.layout_name;
+                layoutOutSelect.appendChild(optOut);
+            });
+        });
+
+        // レートの＋／−ボタン
+        const rateInput = document.getElementById("rate");
+        document.getElementById("rate_plus").addEventListener("click", () => {
+            rateInput.value = parseInt(rateInput.value) + 1;
+        });
+        document.getElementById("rate_minus").addEventListener("click", () => {
+            rateInput.value = parseInt(rateInput.value) - 1;
+        });
+    </script>
+</body>
+
+</html>

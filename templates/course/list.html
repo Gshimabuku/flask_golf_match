@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head><title>コース一覧</title></head>
+<body>
+    <h1>コース一覧</h1>
+
+    {% if courses %}
+        <ul>
+        {% for c in courses %}
+            <li>
+                <strong>{{ c.name }}</strong><br>
+                種類：{{ c.type_display }}<br>
+                PAR：{{ c.par }}<br>
+                住所：{{ c.address }}
+            </li>
+            <hr>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>コースがありません。</p>
+    {% endif %}
+
+    <a href="/home">ホームに戻る</a>
+</body>
+</html>
