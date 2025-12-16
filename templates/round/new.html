@@ -188,8 +188,9 @@
         </form>
     </div>
 
+    <script type="application/json" id="layout-data">{{ layouts | tojson }}</script>
     <script>
-        const layoutList = {{ layouts | tojson }};
+        const layoutList = JSON.parse(document.getElementById('layout-data').textContent);
 
         const courseSelect = document.getElementById("course");
         const layoutInSelect = document.getElementById("layout_in");
