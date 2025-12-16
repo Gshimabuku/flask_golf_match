@@ -16,7 +16,7 @@
 
         <form action="/round/create" method="POST">
             <!-- ラウンド日 -->
-             <div class="form-section">
+            <div class="form-section">
                 <div class="form-row">
                     <label for="play_date">ラウンド日:</label>
                     <input type="date" id="play_date" name="play_date" required>
@@ -31,7 +31,7 @@
                     <select id="course" name="course" required>
                         <option value="">選択してください</option>
                         {% for course in courses %}
-                            <option value="{{ course.page_id }}">{{ course.name }}</option>
+                        <option value="{{ course.page_id }}">{{ course.name }}</option>
                         {% endfor %}
                     </select>
                 </div>
@@ -68,7 +68,7 @@
                     <select id="member1" name="member1" disabled>
                         <option value="">選択してください</option>
                         {% for user in users %}
-                            <option value="{{ user.page_id }}">{{ user.name }}</option>
+                        <option value="{{ user.page_id }}">{{ user.name }}</option>
                         {% endfor %}
                     </select>
                 </div>
@@ -78,7 +78,7 @@
                     <select id="member2" name="member2" disabled>
                         <option value="">選択してください</option>
                         {% for user in users %}
-                            <option value="{{ user.page_id }}">{{ user.name }}</option>
+                        <option value="{{ user.page_id }}">{{ user.name }}</option>
                         {% endfor %}
                     </select>
                 </div>
@@ -88,7 +88,7 @@
                     <select id="member3" name="member3" disabled>
                         <option value="">選択してください</option>
                         {% for user in users %}
-                            <option value="{{ user.page_id }}">{{ user.name }}</option>
+                        <option value="{{ user.page_id }}">{{ user.name }}</option>
                         {% endfor %}
                     </select>
                 </div>
@@ -98,7 +98,7 @@
                     <select id="member4" name="member4" disabled>
                         <option value="">選択してください</option>
                         {% for user in users %}
-                            <option value="{{ user.page_id }}">{{ user.name }}</option>
+                        <option value="{{ user.page_id }}">{{ user.name }}</option>
                         {% endfor %}
                     </select>
                 </div>
@@ -106,65 +106,79 @@
 
             <!-- オリンピック -->
             <div class="form-section">
-                <h2 class="section-title">オリンピック</h2>
-                <div class="form-row">
-                    <label for="gold">金:</label>
-                    <div class="rate-control">
-                        <button type="button" id="gold_minus">−</button>
-                        <input type="number" id="gold" name="gold" value="4" readonly>
-                        <button type="button" id="gold_plus">＋</button>
+                <h2 class="section-title">
+                    <label class="title-checkbox-label">
+                        <input type="checkbox" id="olympic_toggle">
+                        <span>オリンピック</span>
+                    </label>
+                </h2>
+                <div id="olympic_content" style="display: none;">
+                    <div class="form-row">
+                        <label for="gold">金:</label>
+                        <div class="rate-control">
+                            <button type="button" id="gold_minus">−</button>
+                            <input type="number" id="gold" name="gold" value="4" readonly>
+                            <button type="button" id="gold_plus">＋</button>
+                        </div>
                     </div>
-                </div>
 
-                <div class="form-row">
-                    <label for="silver">銀:</label>
-                    <div class="rate-control">
-                        <button type="button" id="silver_minus">−</button>
-                        <input type="number" id="silver" name="silver" value="3" readonly>
-                        <button type="button" id="silver_plus">＋</button>
+                    <div class="form-row">
+                        <label for="silver">銀:</label>
+                        <div class="rate-control">
+                            <button type="button" id="silver_minus">−</button>
+                            <input type="number" id="silver" name="silver" value="3" readonly>
+                            <button type="button" id="silver_plus">＋</button>
+                        </div>
                     </div>
-                </div>
 
-                <div class="form-row">
-                    <label for="bronze">銅:</label>
-                    <div class="rate-control">
-                        <button type="button" id="bronze_minus">−</button>
-                        <input type="number" id="bronze" name="bronze" value="2" readonly>
-                        <button type="button" id="bronze_plus">＋</button>
+                    <div class="form-row">
+                        <label for="bronze">銅:</label>
+                        <div class="rate-control">
+                            <button type="button" id="bronze_minus">−</button>
+                            <input type="number" id="bronze" name="bronze" value="2" readonly>
+                            <button type="button" id="bronze_plus">＋</button>
+                        </div>
                     </div>
-                </div>
 
-                <div class="form-row">
-                    <label for="iron">鉄:</label>
-                    <div class="rate-control">
-                        <button type="button" id="iron_minus">−</button>
-                        <input type="number" id="iron" name="iron" value="1" readonly>
-                        <button type="button" id="iron_plus">＋</button>
+                    <div class="form-row">
+                        <label for="iron">鉄:</label>
+                        <div class="rate-control">
+                            <button type="button" id="iron_minus">−</button>
+                            <input type="number" id="iron" name="iron" value="1" readonly>
+                            <button type="button" id="iron_plus">＋</button>
+                        </div>
                     </div>
-                </div>
 
-                <div class="form-row">
-                    <label for="diamond">ダイヤモンド:</label>
-                    <div class="rate-control">
-                        <button type="button" id="diamond_minus">−</button>
-                        <input type="number" id="diamond" name="diamond" value="5" readonly>
-                        <button type="button" id="diamond_plus">＋</button>
+                    <div class="form-row">
+                        <label for="diamond">ダイヤモンド:</label>
+                        <div class="rate-control">
+                            <button type="button" id="diamond_minus">−</button>
+                            <input type="number" id="diamond" name="diamond" value="5" readonly>
+                            <button type="button" id="diamond_plus">＋</button>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <!-- ヘビ -->
             <div class="form-section">
-                <h2 class="section-title">ヘビ</h2>
-                <div class="form-row">
-                    <label class="checkbox-label">
-                        <input type="radio" name="snake" value="All" id="snake_all">
-                        <span>All</span>
+                <h2 class="section-title">
+                    <label class="title-checkbox-label">
+                        <input type="checkbox" id="snake_toggle">
+                        <span>ヘビ</span>
                     </label>
-                    <label class="checkbox-label">
-                        <input type="radio" name="snake" value="Half" id="snake_half">
-                        <span>Half</span>
-                    </label>
+                </h2>
+                <div id="snake_content" style="display: none;">
+                    <div class="form-row">
+                        <label class="checkbox-label">
+                            <input type="radio" name="snake" value="All" id="snake_all">
+                            <span>All</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="radio" name="snake" value="Half" id="snake_half">
+                            <span>Half</span>
+                        </label>
+                    </div>
                 </div>
             </div>
 
@@ -251,6 +265,18 @@
                     member.select.value = "";
                 }
             });
+        });
+
+        // オリンピック表示切替
+        document.getElementById("olympic_toggle").addEventListener("change", function () {
+            const content = document.getElementById("olympic_content");
+            content.style.display = this.checked ? "block" : "none";
+        });
+
+        // ヘビ表示切替
+        document.getElementById("snake_toggle").addEventListener("change", function () {
+            const content = document.getElementById("snake_content");
+            content.style.display = this.checked ? "block" : "none";
         });
 
         // 数値入力の＋／−ボタン制御

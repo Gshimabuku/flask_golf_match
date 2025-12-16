@@ -106,7 +106,36 @@ h1 {
     margin-bottom: 12px;
     color: #4CAF50;
     padding-bottom: 6px;
+    padding-left: 0;
+    padding-right: 0;
     border-bottom: 1px solid #4CAF50;
+}
+
+.title-checkbox-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    margin: 0;
+    padding: 0;
+    min-width: auto;
+}
+
+.title-checkbox-label input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.title-checkbox-label span {
+    font-size: 16px;
+    font-weight: bold;
+    color: #4CAF50;
+    margin: 0;
+    padding: 0;
 }
 
 label {
