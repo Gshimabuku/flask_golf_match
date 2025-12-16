@@ -1,6 +1,6 @@
+from datetime import datetime
 from Services.notion_service import fetch_db_properties,create_page
 from config import NOTION_DB_ROUNDS_ID
-from Const.course_type import DISPLAY
 
 # ---------------------------------
 # ラウンド新規登録
