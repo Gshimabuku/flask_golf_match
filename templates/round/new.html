@@ -11,7 +11,7 @@
     <div class="container">
         <div class="page-header">
             <h1>新規ラウンド作成</h1>
-            <button type="button" class="back-btn" onclick="location.href='{{ url_for('home') }}'">戻る</button>
+            <button type="button" class="back-btn" id="back-button">戻る</button>
         </div>
 
         <form action="/round/create" method="POST">
@@ -31,12 +31,12 @@
                     <select id="course" name="course" required>
                         <option value="">選択してください</option>
                         {% for course in courses %}
-                        <option value="{{ course.page_id }}">{{ course.name }}</option>
-                        {% endfor %}
+                       
                     </select>
                 </div>
                 <div class="form-row" id="layout_in_row" style="display: none;">
-                    <label for="layout_in">IN:</label>
+                    <label for="layout_in">IN:</label> <option value="{{ course.page_id }}">{{ course.name }}</option>
+                        {% endfor %}
                     <select id="layout_in" name="layout_in" required disabled>
                         <option value="">コースを選択してください</option>
                     </select>
@@ -191,6 +191,11 @@
     <script type="application/json" id="layout-data">{{ layouts | tojson }}</script>
     <script>
         const layoutList = JSON.parse(document.getElementById('layout-data').textContent);
+        
+        // 戻るボタンの処理
+        document.getElementById('back-button').addEventListener('click', function() {
+            location.href = '{{ url_for("home") }}';
+        });
 
         const courseSelect = document.getElementById("course");
         const layoutInSelect = document.getElementById("layout_in");
