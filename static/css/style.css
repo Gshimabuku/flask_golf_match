@@ -373,3 +373,47 @@ select:focus {
         background-color: #4CAF50;
     }
 }
+
+/**
+ * #######################################################
+ *  参加メンバーセクション
+ * #######################################################
+ */
+
+.game-members-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.game-member-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+    gap: 12px;
+}
+
+.game-member-item .game-label {
+    min-width: 100px;
+    font-weight: 500;
+    flex-shrink: 0;
+}
+
+.members-inline {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    flex: 1;
+}
+
+.members-inline .checkbox-label {
+    margin: 0;
+    padding: 4px 8px;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    font-size: 0.9em;
+}

@@ -14,170 +14,211 @@
             <button type="button" class="back-btn" id="back-button">戻る</button>
         </div>
 
-        <form action="/round/create" method="POST">
-            <!-- ラウンド日 -->
-            <div class="form-section">
-                <div class="form-row">
-                    <label for="play_date">ラウンド日:</label>
-                    <input type="date" id="play_date" name="play_date" required>
-                </div>
-            </div>
+        <form action="/round/create" method="POST" class="round-form">
+            <!-- ラウンド設定 -->
+            <div class="game-section">
+                <h2 class="mid-title">ラウンド設定</h2>
 
-            <!-- コース情報 -->
-            <div class="form-section">
-                <h2 class="section-title">コース情報</h2>
-                <div class="form-row">
-                    <label for="course">コース:</label>
-                    <select id="course" name="course" required>
-                        <option value="">選択してください</option>
-                        {% for course in courses %}
-                       
-                    </select>
-                </div>
-                <div class="form-row" id="layout_in_row" style="display: none;">
-                    <label for="layout_in">IN:</label> <option value="{{ course.page_id }}">{{ course.name }}</option>
-                        {% endfor %}
-                    <select id="layout_in" name="layout_in" required disabled>
-                        <option value="">コースを選択してください</option>
-                    </select>
-                </div>
-                <div class="form-row" id="layout_out_row" style="display: none;">
-                    <label for="layout_out">OUT:</label>
-                    <select id="layout_out" name="layout_out" required disabled>
-                        <option value="">コースを選択してください</option>
-                    </select>
-                </div>
-            </div>
-
-            <!-- メンバー -->
-            <div class="form-section">
-                <h2 class="section-title">メンバー</h2>
-                <div class="form-row">
-                    <label for="member_count">人数:</label>
-                    <select id="member_count" name="member_count" required>
-                        <option value="">選択してください</option>
-                        <option value="1">1人</option>
-                        <option value="2">2人</option>
-                        <option value="3">3人</option>
-                        <option value="4">4人</option>
-                    </select>
-                </div>
-
-                <div class="form-row" id="member1_row" style="display: none;">
-                    <label for="member1">メンバー1:</label>
-                    <select id="member1" name="member1" disabled>
-                        <option value="">選択してください</option>
-                        {% for user in users %}
-                        <option value="{{ user.page_id }}">{{ user.name }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-                <div class="form-row" id="member2_row" style="display: none;">
-                    <label for="member2">メンバー2:</label>
-                    <select id="member2" name="member2" disabled>
-                        <option value="">選択してください</option>
-                        {% for user in users %}
-                        <option value="{{ user.page_id }}">{{ user.name }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-                <div class="form-row" id="member3_row" style="display: none;">
-                    <label for="member3">メンバー3:</label>
-                    <select id="member3" name="member3" disabled>
-                        <option value="">選択してください</option>
-                        {% for user in users %}
-                        <option value="{{ user.page_id }}">{{ user.name }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-                <div class="form-row" id="member4_row" style="display: none;">
-                    <label for="member4">メンバー4:</label>
-                    <select id="member4" name="member4" disabled>
-                        <option value="">選択してください</option>
-                        {% for user in users %}
-                        <option value="{{ user.page_id }}">{{ user.name }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-            </div>
-
-            <!-- オリンピック -->
-            <div class="form-section">
-                <h2 class="section-title">
-                    <label class="title-checkbox-label">
-                        <input type="checkbox" id="olympic_toggle">
-                        <span>オリンピック</span>
-                    </label>
-                </h2>
-                <div id="olympic_content" style="display: none;">
+                <!-- ラウンド日 -->
+                <div class="form-section">
                     <div class="form-row">
-                        <label for="gold">金:</label>
-                        <div class="rate-control">
-                            <button type="button" id="gold_minus">−</button>
-                            <input type="number" id="gold" name="gold" value="4" readonly>
-                            <button type="button" id="gold_plus">＋</button>
-                        </div>
+                        <label for="play_date">ラウンド日:</label>
+                        <input type="date" id="play_date" name="play_date" required>
+                    </div>
+                </div>
+
+                <!-- コース情報 -->
+                <div class="form-section">
+                    <h2 class="section-title">コース情報</h2>
+                    <div class="form-row">
+                        <label for="course">コース:</label>
+                        <select id="course" name="course" required>
+                            <option value="">選択してください</option>
+                            {% for course in courses %}
+                            <option value="{{ course.page_id }}">{{ course.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-row" id="layout_in_row" style="display: none;">
+                        <label for="layout_in">IN:</label>
+                        <select id="layout_in" name="layout_in" required disabled>
+                            <option value="">コースを選択してください</option>
+                        </select>
+                    </div>
+                    <div class="form-row" id="layout_out_row" style="display: none;">
+                        <label for="layout_out">OUT:</label>
+                        <select id="layout_out" name="layout_out" required disabled>
+                            <option value="">コースを選択してください</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- メンバー -->
+                <div class="form-section">
+                    <h2 class="section-title">メンバー</h2>
+                    <div class="form-row">
+                        <label for="member_count">人数:</label>
+                        <select id="member_count" name="member_count" required>
+                            <option value="">選択してください</option>
+                            <option value="1">1人</option>
+                            <option value="2">2人</option>
+                            <option value="3">3人</option>
+                            <option value="4">4人</option>
+                        </select>
                     </div>
 
-                    <div class="form-row">
-                        <label for="silver">銀:</label>
-                        <div class="rate-control">
-                            <button type="button" id="silver_minus">−</button>
-                            <input type="number" id="silver" name="silver" value="3" readonly>
-                            <button type="button" id="silver_plus">＋</button>
-                        </div>
+                    <div class="form-row" id="member1_row" style="display: none;">
+                        <label for="member1">メンバー1:</label>
+                        <select id="member1" name="member1" disabled>
+                            <option value="">選択してください</option>
+                            {% for user in users %}
+                            <option value="{{ user.page_id }}">{{ user.name }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
 
-                    <div class="form-row">
-                        <label for="bronze">銅:</label>
-                        <div class="rate-control">
-                            <button type="button" id="bronze_minus">−</button>
-                            <input type="number" id="bronze" name="bronze" value="2" readonly>
-                            <button type="button" id="bronze_plus">＋</button>
-                        </div>
+                    <div class="form-row" id="member2_row" style="display: none;">
+                        <label for="member2">メンバー2:</label>
+                        <select id="member2" name="member2" disabled>
+                            <option value="">選択してください</option>
+                            {% for user in users %}
+                            <option value="{{ user.page_id }}">{{ user.name }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
 
-                    <div class="form-row">
-                        <label for="iron">鉄:</label>
-                        <div class="rate-control">
-                            <button type="button" id="iron_minus">−</button>
-                            <input type="number" id="iron" name="iron" value="1" readonly>
-                            <button type="button" id="iron_plus">＋</button>
-                        </div>
+                    <div class="form-row" id="member3_row" style="display: none;">
+                        <label for="member3">メンバー3:</label>
+                        <select id="member3" name="member3" disabled>
+                            <option value="">選択してください</option>
+                            {% for user in users %}
+                            <option value="{{ user.page_id }}">{{ user.name }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
 
-                    <div class="form-row">
-                        <label for="diamond">ダイヤモンド:</label>
-                        <div class="rate-control">
-                            <button type="button" id="diamond_minus">−</button>
-                            <input type="number" id="diamond" name="diamond" value="5" readonly>
-                            <button type="button" id="diamond_plus">＋</button>
-                        </div>
+                    <div class="form-row" id="member4_row" style="display: none;">
+                        <label for="member4">メンバー4:</label>
+                        <select id="member4" name="member4" disabled>
+                            <option value="">選択してください</option>
+                            {% for user in users %}
+                            <option value="{{ user.page_id }}">{{ user.name }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
                 </div>
             </div>
 
-            <!-- ヘビ -->
-            <div class="form-section">
-                <h2 class="section-title">
-                    <label class="title-checkbox-label">
-                        <input type="checkbox" id="snake_toggle">
-                        <span>ヘビ</span>
-                    </label>
-                </h2>
-                <div id="snake_content" style="display: none;">
-                    <div class="form-row">
-                        <label class="checkbox-label">
-                            <input type="radio" name="snake" value="All" id="snake_all">
-                            <span>All</span>
+            <!-- ゲーム -->
+            <div class="game-section">
+                <h2 class="mid-title">ゲーム設定</h2>
+
+                <!-- オリンピック -->
+                <div class="form-section">
+                    <h2 class="section-title">
+                        <label class="title-checkbox-label">
+                            <input type="checkbox" id="olympic_toggle">
+                            <span>オリンピック</span>
                         </label>
-                        <label class="checkbox-label">
-                            <input type="radio" name="snake" value="Half" id="snake_half">
-                            <span>Half</span>
+                    </h2>
+                    <div id="olympic_content" style="display: none;">
+                        <div class="form-row">
+                            <label for="gold">金:</label>
+                            <div class="rate-control">
+                                <button type="button" id="gold_minus">−</button>
+                                <input type="number" id="gold" name="gold" value="4" readonly>
+                                <button type="button" id="gold_plus">＋</button>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <label for="silver">銀:</label>
+                            <div class="rate-control">
+                                <button type="button" id="silver_minus">−</button>
+                                <input type="number" id="silver" name="silver" value="3" readonly>
+                                <button type="button" id="silver_plus">＋</button>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <label for="bronze">銅:</label>
+                            <div class="rate-control">
+                                <button type="button" id="bronze_minus">−</button>
+                                <input type="number" id="bronze" name="bronze" value="2" readonly>
+                                <button type="button" id="bronze_plus">＋</button>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <label for="iron">鉄:</label>
+                            <div class="rate-control">
+                                <button type="button" id="iron_minus">−</button>
+                                <input type="number" id="iron" name="iron" value="1" readonly>
+                                <button type="button" id="iron_plus">＋</button>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <label for="diamond">ダイヤモンド:</label>
+                            <div class="rate-control">
+                                <button type="button" id="diamond_minus">−</button>
+                                <input type="number" id="diamond" name="diamond" value="5" readonly>
+                                <button type="button" id="diamond_plus">＋</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ヘビ -->
+                <div class="form-section">
+                    <h2 class="section-title">
+                        <label class="title-checkbox-label">
+                            <input type="checkbox" id="snake_toggle">
+                            <span>ヘビ</span>
                         </label>
+                    </h2>
+                    <div id="snake_content" style="display: none;">
+                        <div class="form-row">
+                            <label class="checkbox-label">
+                                <input type="radio" name="snake" value="All" id="snake_all">
+                                <span>All</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="radio" name="snake" value="Separate" id="snake_separate">
+                                <span>Separate</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ニアピン -->
+                <div class="form-section">
+                    <h2 class="section-title">
+                        <label class="title-checkbox-label">
+                            <input type="checkbox" id="nearpin_toggle">
+                            <span>ニアピン</span>
+                        </label>
+                    </h2>
+                </div>
+
+                <!-- 参加メンバー -->
+                <div class="form-section">
+                    <h2 class="section-title">参加メンバー</h2>
+                    <div id="game_members_section" style="display: none;">
+                        <div class="game-members-container">
+                            <div class="game-member-item" id="olympic_members_row" style="display: none;">
+                                <label class="game-label">オリンピック:</label>
+                                <div id="olympic_members" class="members-inline"></div>
+                            </div>
+                            <div class="game-member-item" id="snake_members_row" style="display: none;">
+                                <label class="game-label">ヘビ:</label>
+                                <div id="snake_members" class="members-inline"></div>
+                            </div>
+                            <div class="game-member-item" id="nearpin_members_row" style="display: none;">
+                                <label class="game-label">ニアピン:</label>
+                                <div id="nearpin_members" class="members-inline"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -190,13 +231,35 @@
 
     <script type="application/json" id="layout-data">{{ layouts | tojson }}</script>
     <script>
-        const layoutList = JSON.parse(document.getElementById('layout-data').textContent);
-        
         // 戻るボタンの処理
-        document.getElementById('back-button').addEventListener('click', function() {
+        document.getElementById('back-button').addEventListener('click', function () {
             location.href = '{{ url_for("home") }}';
         });
 
+        // 参加メンバーセクションの表示/非表示を更新
+        function updateGameMembersSection() {
+            const olympicChecked = document.getElementById("olympic_toggle").checked;
+            const snakeChecked = document.getElementById("snake_toggle").checked;
+            const nearpinChecked = document.getElementById("nearpin_toggle").checked;
+
+            const gameMembersSection = document.getElementById("game_members_section");
+            const olympicRow = document.getElementById("olympic_members_row");
+            const snakeRow = document.getElementById("snake_members_row");
+            const nearpinRow = document.getElementById("nearpin_members_row");
+
+            // いずれかのゲームがチェックされている場合のみセクションを表示
+            const anyGameChecked = olympicChecked || snakeChecked || nearpinChecked;
+            gameMembersSection.style.display = anyGameChecked ? "block" : "none";
+
+            // 各ゲームの行を表示/非表示
+            olympicRow.style.display = olympicChecked ? "flex" : "none";
+            snakeRow.style.display = snakeChecked ? "flex" : "none";
+            nearpinRow.style.display = nearpinChecked ? "flex" : "none";
+
+            updateGameMembers();
+        }
+
+        const layoutList = JSON.parse(document.getElementById('layout-data').textContent);
         const courseSelect = document.getElementById("course");
         const layoutInSelect = document.getElementById("layout_in");
         const layoutOutSelect = document.getElementById("layout_out");
@@ -207,6 +270,10 @@
             const layoutOutSelect = document.getElementById("layout_out");
             const layoutInRow = document.getElementById("layout_in_row");
             const layoutOutRow = document.getElementById("layout_out_row");
+
+            // プルダウンの初期化
+            layoutInSelect.innerHTML = '<option value="">選択してください</option>';
+            layoutOutSelect.innerHTML = '<option value="">選択してください</option>';
 
             if (courseId) {
                 // レイアウト情報フィルター
@@ -221,7 +288,7 @@
                     optIn.textContent = layout.layout_name;
                     layoutInSelect.appendChild(optIn);
 
-                    // OUT 用（別インスタンス）
+                    // OUT 用
                     const optOut = document.createElement("option");
                     optOut.value = layout.page_id;
                     optOut.textContent = layout.layout_name;
@@ -283,6 +350,93 @@
         document.getElementById("snake_toggle").addEventListener("change", function () {
             const content = document.getElementById("snake_content");
             content.style.display = this.checked ? "block" : "none";
+        });
+
+        // ニアピン表示切替
+        document.getElementById("nearpin_toggle").addEventListener("change", function () {
+            updateGameMembersSection();
+        });
+
+        // ゲーム参加メンバーの更新
+        function updateGameMembers() {
+            const memberSelects = [
+                document.getElementById("member1"),
+                document.getElementById("member2"),
+                document.getElementById("member3"),
+                document.getElementById("member4")
+            ];
+
+            const selectedMembers = [];
+            memberSelects.forEach((select) => {
+                if (!select.disabled && select.value) {
+                    const selectedOption = select.options[select.selectedIndex];
+                    selectedMembers.push({
+                        value: select.value,
+                        text: selectedOption.text
+                    });
+                }
+            });
+
+            // 各ゲームのメンバーチェックボックスを更新
+            const games = ["olympic", "snake", "nearpin"];
+            games.forEach((game) => {
+                const container = document.getElementById(game + "_members");
+                container.innerHTML = "";
+
+                selectedMembers.forEach((member) => {
+                    const label = document.createElement("label");
+                    label.className = "checkbox-label";
+
+                    const checkbox = document.createElement("input");
+                    checkbox.type = "checkbox";
+                    checkbox.name = game + "_member[]";
+                    checkbox.value = member.value;
+                    checkbox.checked = true;
+
+                    const span = document.createElement("span");
+                    span.textContent = member.text;
+
+                    label.appendChild(checkbox);
+                    label.appendChild(span);
+                    container.appendChild(label);
+                });
+            });
+        }
+
+        // メンバー人数選択時の処理
+        document.getElementById("member_count").addEventListener("change", function () {
+            const count = parseInt(this.value);
+
+            // 全メンバー行を取得
+            const memberRows = [
+                { row: document.getElementById("member1_row"), select: document.getElementById("member1") },
+                { row: document.getElementById("member2_row"), select: document.getElementById("member2") },
+                { row: document.getElementById("member3_row"), select: document.getElementById("member3") },
+                { row: document.getElementById("member4_row"), select: document.getElementById("member4") }
+            ];
+
+            // 選択された人数分だけ表示
+            memberRows.forEach((member, index) => {
+                if (index < count) {
+                    member.row.style.display = "flex";
+                    member.select.disabled = false;
+                    if (index === 0) {
+                        member.select.required = true;
+                    }
+                } else {
+                    member.row.style.display = "none";
+                    member.select.disabled = true;
+                    member.select.required = false;
+                    member.select.value = "";
+                }
+            });
+
+            updateGameMembers();
+        });
+
+        // メンバー選択変更時の処理
+        ["member1", "member2", "member3", "member4"].forEach((memberId) => {
+            document.getElementById(memberId).addEventListener("change", updateGameMembers);
         });
 
         // 数値入力の＋／−ボタン制御
