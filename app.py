@@ -38,14 +38,18 @@ def round_new():
 
 @app.route("/round/create", methods=["POST"])
 def round_create():
-    
     data = {
         "play_date": request.form.get("play_date"),
         "course": request.form.get("course"),
         "layout_in": request.form.get("layout_in"),
         "layout_out": request.form.get("layout_out"),
-        "rate": int(request.form.get("rate", 0)),
+        "member_count": request.form.get("member_count"),
     }
+
+    member_count = request.form.get("member_count")
+    member = []
+    for i in range(1, member_count + 1):
+        data[f"member{i}"] = request.form.get(f"member{i}")
 
     round_page_id = add_round(data)
 

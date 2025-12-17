@@ -11,7 +11,7 @@ def add_round(data: dict) -> str:
     course = data["course"]
     layout_in = data["layout_in"]
     layout_out = data["layout_out"]
-    rate = data["rate"]
+    member_count = data["member_count"]
 
     # title 用 name（yymmdd-hhmm）
     now = datetime.now()
@@ -23,8 +23,10 @@ def add_round(data: dict) -> str:
         "course": [course],
         "layout_in": [layout_in],
         "layout_out": [layout_out],
-        "rate": rate,
     }
+
+    for i in range(1, member_count + 1):
+        notion_data[f"member{i}"] = [data[f"member{i}"]]
 
     column_types = {
         "name": "title",
@@ -32,8 +34,10 @@ def add_round(data: dict) -> str:
         "course": "relation",
         "layout_in": "relation",
         "layout_out": "relation",
-        "rate": "number",
     }
+
+    for i in range(1, member_count + 1):
+        column_types[f"member{i}"] = "relation"
 
     # Notion 保存（ここでのみ API を呼ぶ）
     page = create_page(NOTION_DB_ROUNDS_ID, notion_data, column_types)
