@@ -1,6 +1,6 @@
 from datetime import datetime
-from Services.notion_service import fetch_db_properties,create_page
-from config import NOTION_DB_ROUNDS_ID
+from Services.notion_service import fetch_db_properties,create_page,fetch_page
+from config import NOTION_DB_ROUNDS_ID,NOTION_DB_GAME_SETTINGS_ID
 
 # ---------------------------------
 # ラウンド新規登録
@@ -41,6 +41,60 @@ def add_round(data: dict) -> str:
 
     # Notion 保存
     page = create_page(NOTION_DB_ROUNDS_ID, notion_data, column_types)
+
+    # 作成された page_id を返す
+    return page["id"]
+
+# ---------------------------------
+# ラウンド新規登録
+# ---------------------------------
+def add_game_setting(data: dict) -> str:
+
+    round_page_id = data["round_page_id"]
+    olympic_toggle = data["olympic_toggle"]
+    snake_toggle = data["snake_toggle"]
+    nearpin_toggle = data["nearpin_toggle"]
+
+    name = "aaa"
+
+    notion_data = {
+        "name": name,
+        "round": [round_page_id],
+    }
+
+    if olympic_toggle:
+        notion_data["gold"] = int(data["gold"])
+        notion_data["silver"] = int(data["silver"])
+        notion_data["bronze"] = int(data["bronze"])
+        notion_data["iron"] = int(data["iron"])
+        notion_data["diamond"] = int(data["diamond"])
+    
+    if snake_toggle:
+        notion_data["snake"] = data["snake"]
+
+    if nearpin_toggle:
+        notion_data["nearpin"] = bool(1)
+
+    column_types = {
+        "name": "title",
+        "round": "relation",
+    }
+
+    if olympic_toggle:
+        notion_data["gold"] = "number"
+        notion_data["silver"] = "number"
+        notion_data["bronze"] = "number"
+        notion_data["iron"] = "number"
+        notion_data["diamond"] = "number"
+
+    if snake_toggle:
+        notion_data["snake"] = "rich_text"
+
+    if nearpin_toggle:
+        notion_data["nearpin"] = "checkbox"
+
+    # Notion 保存
+    page = create_page(NOTION_DB_GAME_SETTINGS_ID, notion_data, column_types)
 
     # 作成された page_id を返す
     return page["id"]

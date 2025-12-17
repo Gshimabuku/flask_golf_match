@@ -159,3 +159,24 @@ def fetch_db_properties(database_id: str, column_names: list = None):
         data_list.append(item)
 
     return data_list
+
+def fetch_page(database_id: str, page_id: str, column_names: list = None):
+    page = notion.pages.retrieve(page_id=page_id)
+    props = page["properties"]
+
+    item = {
+        "page_id": page_id
+    }
+
+    if column_names is None:
+        cols_to_fetch = list(props.keys())
+    else:
+        cols_to_fetch = column_names
+
+    for col in cols_to_fetch:
+        if col in props:
+            item[col] = get_property_value(props[col])
+        else:
+            item[col] = None
+
+    return item

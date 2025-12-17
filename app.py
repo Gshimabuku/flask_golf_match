@@ -1,7 +1,7 @@
 from flask import Flask, render_template, jsonify, redirect, url_for, Response, request
 import os
 from Services.course_service import get_courses,get_layouts
-from Services.round_service import add_round
+from Services.round_service import add_round,add_game_setting
 from Services.user_service import get_users
 
 app = Flask(__name__)
@@ -38,20 +38,47 @@ def round_new():
 
 @app.route("/round/create", methods=["POST"])
 def round_create():
-    data = {
-        "play_date": request.form.get("play_date"),
-        "course": request.form.get("course"),
-        "layout_in": request.form.get("layout_in"),
-        "layout_out": request.form.get("layout_out"),
-        "member_count": request.form.get("member_count"),
+    play_date = request.form.get("play_date")
+    course = request.form.get("course")
+    layout_in = request.form.get("layout_in")
+    layout_out = request.form.get("layout_out")
+    member_count = int(request.form.get("member_count"))
+    olympic_toggle = bool(request.form.get("olympic_toggle"))
+    snake_toggle = bool(request.form.get("snake_toggle"))
+    nearpin_toggle = bool(request.form.get("nearpin_toggle"))
+
+    round_data = {
+        "play_date": play_date,
+        "course": course,
+        "layout_in": layout_in,
+        "layout_out": layout_out,
+        "member_count": member_count,
     }
 
-    member_count = int(request.form.get("member_count"))
     member = []
     for i in range(1, member_count + 1):
-        data[f"member{i}"] = request.form.get(f"member{i}")
+        round_data[f"member{i}"] = request.form.get(f"member{i}")
+    
+    round_page_id = add_round(round_data)
 
-    round_page_id = add_round(data)
+    game_setting_data = {
+        "round_page_id": round_page_id,
+        "olympic_toggle": olympic_toggle,
+        "snake_toggle": snake_toggle,
+        "nearpin_toggle": nearpin_toggle,
+    }
+
+    if olympic_toggle:
+        game_setting_data["gold"] = request.form.get("gold")
+        game_setting_data["silver"] = request.form.get("silver")
+        game_setting_data["bronze"] = request.form.get("bronze")
+        game_setting_data["iron"] = request.form.get("iron")
+        game_setting_data["diamond"] = request.form.get("diamond")
+    
+    if snake_toggle:
+        game_setting_data["snake"] = request.form.get("snake")
+
+    game_setting_page_id = add_game_setting(game_setting_data)
 
     # 必要なら page_id を使った画面へ遷移も可能
     return redirect(url_for("home"))
