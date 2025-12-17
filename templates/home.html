@@ -1,16 +1,28 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ホーム</title>
+    <link href="../css/style.css" rel="stylesheet">
 </head>
-<body>
-<h1>ホーム画面</h1>
+<body class="home-page">
+    <div class="container">
+        <div class="page-header">
+            <h1>ホーム画面</h1>
+        </div>
 
-<ul>
-    <li><a href="/round/new">新規ラウンド</a></li>
-    <li><a href="/round/list">過去ラウンド</a></li>
-    <li><a href="/course/list">コース一覧</a></li>
-</ul>
-
+        <div class="menu-section">
+            <div class="menu-item">
+                <a href="/round/new" class="menu-link">新規ラウンド</a>
+            </div>
+            <div class="menu-item">
+                <a href="/round/list" class="menu-link">過去ラウンド</a>
+            </div>
+            <div class="menu-item">
+                <a href="/course/list" class="menu-link">コース一覧</a>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

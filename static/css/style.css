@@ -182,6 +182,51 @@ select:focus {
 
 /**
  * #######################################################
+ *  ホームページ（home-page）
+ * #######################################################
+ */
+
+.home-page .menu-section {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 0;
+}
+
+.home-page .menu-item {
+    width: 100%;
+}
+
+.home-page .menu-link {
+    display: block;
+    width: 100%;
+    padding: 20px;
+    font-size: 20px;
+    font-weight: 600;
+    text-align: center;
+    text-decoration: none;
+    color: #2c3e50;
+    background-color: #fff;
+    border: 2px solid #4CAF50;
+    border-radius: 8px;
+    transition: all 0.3s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.home-page .menu-link:hover {
+    background-color: #4CAF50;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.home-page .menu-link:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/**
+ * #######################################################
  *  ラウンド新規作成ページ（round-new-page）
  * #######################################################
  */
