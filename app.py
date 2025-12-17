@@ -46,7 +46,7 @@ def round_create():
         "member_count": request.form.get("member_count"),
     }
 
-    member_count = request.form.get("member_count")
+    member_count = int(request.form.get("member_count"))
     member = []
     for i in range(1, member_count + 1):
         data[f"member{i}"] = request.form.get(f"member{i}")
