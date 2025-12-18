@@ -46,7 +46,7 @@ def add_round(data: dict) -> str:
     return page["id"]
 
 # ---------------------------------
-# ラウンド新規登録
+# ゲーム設定新規登録
 # ---------------------------------
 def add_game_setting(data: dict) -> str:
 
@@ -81,17 +81,17 @@ def add_game_setting(data: dict) -> str:
     }
 
     if olympic_toggle:
-        notion_data["gold"] = "number"
-        notion_data["silver"] = "number"
-        notion_data["bronze"] = "number"
-        notion_data["iron"] = "number"
-        notion_data["diamond"] = "number"
+        column_types["gold"] = "number"
+        column_types["silver"] = "number"
+        column_types["bronze"] = "number"
+        column_types["iron"] = "number"
+        column_types["diamond"] = "number"
 
     if snake_toggle:
-        notion_data["snake"] = "select"
+        column_types["snake"] = "select"
 
     if nearpin_toggle:
-        notion_data["nearpin"] = "checkbox"
+        column_types["nearpin"] = "checkbox"
 
     # Notion 保存
     page = create_page(NOTION_DB_GAME_SETTINGS_ID, notion_data, column_types)
