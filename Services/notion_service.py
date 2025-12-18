@@ -132,7 +132,7 @@ def update_page(page_id: str, data: dict, column_types: dict):
 
 
 # --------------------------------------------------------
-# DBから読み取り
+# DBから読み取り（全レコード）
 # --------------------------------------------------------
 def fetch_db_properties(database_id: str, column_names: list = None):
     results = notion.databases.query(database_id=database_id)["results"]
@@ -160,6 +160,9 @@ def fetch_db_properties(database_id: str, column_names: list = None):
 
     return data_list
 
+# --------------------------------------------------------
+# DBから読み取り（1レコード）
+# --------------------------------------------------------
 def fetch_page(database_id: str, page_id: str, column_names: list = None):
     page = notion.pages.retrieve(page_id=page_id)
     props = page["properties"]
@@ -180,3 +183,26 @@ def fetch_page(database_id: str, page_id: str, column_names: list = None):
             item[col] = None
 
     return item
+
+# --------------------------------------------------------
+# name辞書作成
+# --------------------------------------------------------
+def build_id_name_map(items: list, name_column: str):
+    return {
+        item["page_id"]: item.get(name_column)
+        for item in items
+        if item.get("page_id")
+    }
+
+# --------------------------------------------------------
+# relation の page_id リストを name のリストに変換
+# --------------------------------------------------------
+def resolve_relation(relation_ids: list, id_name_map: dict):
+    if not relation_ids:
+        return []
+
+    return [
+        id_name_map.get(rid)
+        for rid in relation_ids
+        if rid in id_name_map
+    ]

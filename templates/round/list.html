@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>過去ラウンド一覧</title>
-    <link href="../../css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body class="round-list-page">
     <div class="container">
@@ -22,18 +22,9 @@
                 <div class="round-date">{{ round.play_date }}</div>
                 <div class="round-course">{{ round.course }}</div>
                 <div class="round-members">
-                    {% if round.member1 %}
-                    <span class="member-badge">{{ round.member1 }}</span>
-                    {% endif %}
-                    {% if round.member2 %}
-                    <span class="member-badge">{{ round.member2 }}</span>
-                    {% endif %}
-                    {% if round.member3 %}
-                    <span class="member-badge">{{ round.member3 }}</span>
-                    {% endif %}
-                    {% if round.member4 %}
-                    <span class="member-badge">{{ round.member4 }}</span>
-                    {% endif %}
+                    {% for member in round.members %}
+                        <span class="member-badge">{{ member }}</span>
+                    {% endfor %}
                 </div>
             </div>
             {% endfor %}

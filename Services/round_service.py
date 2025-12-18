@@ -1,6 +1,6 @@
 from datetime import datetime
 from Services.notion_service import fetch_db_properties,create_page,fetch_page
-from config import NOTION_DB_ROUNDS_ID,NOTION_DB_GAME_SETTINGS_ID
+from config import NOTION_DB_ROUNDS_ID,NOTION_DB_GAME_SETTINGS_ID,NOTION_DB_COURSES_ID,NOTION_DB_USERS_ID
 
 # ---------------------------------
 # ラウンド一覧取得
@@ -9,9 +9,32 @@ def get_rounds():
     results = []
 
     try:
-        data = fetch_db_properties(NOTION_DB_ROUNDS_ID)
+        rounds = fetch_db_properties(NOTION_DB_ROUNDS_ID)
 
-        results = data
+        courses = fetch_db_properties(NOTION_DB_COURSES_ID, ["name"])
+        course_map = build_id_name_map(courses, "name")
+        for r in rounds:
+            r["course_name"] = resolve_relation(
+                r.get("course", []),
+                course_map
+            )
+
+        users = fetch_db_properties(NOTION_DB_USERS_ID, ["name"])
+        user_map = build_id_name_map(users, "name")
+        for r in rounds:
+            for key in ["member1", "member2", "member3", "member4"]:
+                r[key] = resolve_relation(
+                    r.get(key, []),
+                    user_map
+                )
+                
+        for r in rounds:
+            members = []
+            for key in ["member1","member2","member3","member4"]:
+                members += r.get(key, [])
+            r["members"] = members
+
+        results = rounds
 
     except Exception as e:
         print("get_rounds error:", e)
