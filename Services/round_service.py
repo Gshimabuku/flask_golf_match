@@ -88,7 +88,7 @@ def add_game_setting(data: dict) -> str:
         notion_data["diamond"] = "number"
 
     if snake_toggle:
-        notion_data["snake"] = "rich_text"
+        notion_data["snake"] = "select"
 
     if nearpin_toggle:
         notion_data["nearpin"] = "checkbox"
