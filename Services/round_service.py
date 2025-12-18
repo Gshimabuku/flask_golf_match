@@ -71,15 +71,15 @@ def add_game_setting(data: dict) -> str:
         notion_data["bronze"] = int(data["bronze"])
         notion_data["iron"] = int(data["iron"])
         notion_data["diamond"] = int(data["diamond"])
-        notion_data["olympic_member"] = [data["olympic_member"]]
+        notion_data["olympic_member"] = data["olympic_member"]
     
     if snake_toggle:
         notion_data["snake"] = data["snake"]
-        notion_data["snake_member"] = [data["snake_member"]]
+        notion_data["snake_member"] = data["snake_member"]
 
     if nearpin_toggle:
         notion_data["nearpin"] = bool(1)
-        notion_data["nearpin_member"] = [data["nearpin_member"]]
+        notion_data["nearpin_member"] = data["nearpin_member"]
 
     column_types = {
         "name": "title",
