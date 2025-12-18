@@ -524,3 +524,87 @@ select:focus {
     border: 1px solid #ddd;
     border-radius: 16px;
 }
+
+/**
+ * #######################################################
+ *  コース一覧ページ（course-list-page）
+ * #######################################################
+ */
+
+.course-list-page .course-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.course-list-page .course-card {
+    padding: 16px;
+    background-color: #fafafa;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    transition: all 0.3s;
+}
+
+.course-list-page .course-card:hover {
+    background-color: #f5f5f5;
+    border-color: #4CAF50;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+}
+
+.course-list-page .course-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #ddd;
+}
+
+.course-list-page .course-title {
+    font-size: 22px;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.course-list-page .course-type {
+    font-size: 14px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    color: white;
+    font-weight: bold;
+}
+
+.course-list-page .type-short {
+    background-color: #4CAF50;
+}
+
+.course-list-page .type-middle {
+    background-color: #FF9800;
+}
+
+.course-list-page .type-long {
+    background-color: #2196F3;
+}
+
+.course-list-page .course-details {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.course-list-page .detail-row {
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+}
+
+.course-list-page .detail-label {
+    width: 60px;
+    color: #666;
+    font-weight: 500;
+}
+
+.course-list-page .detail-value {
+    color: #333;
+    font-weight: 600;
+}

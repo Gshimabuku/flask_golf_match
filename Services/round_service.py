@@ -14,9 +14,11 @@ def get_rounds():
         courses = fetch_db_properties(NOTION_DB_COURSES_ID, ["name"])
         course_map = build_id_name_map(courses, "name")
         for r in rounds:
-            r["course_name"] = resolve_relation(
-                r.get("course", []),
-                course_map
+            r["course_name"] = ", ".join(
+                resolve_relation(
+                    r.get("course", []),
+                    course_map
+                )
             )
 
         users = fetch_db_properties(NOTION_DB_USERS_ID, ["name"])
