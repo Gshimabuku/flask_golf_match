@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>コース詳細</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="course-detail-page">
+    <div class="container">
+        <div class="page-header">
+            <h1>コース詳細</h1>
+            <button type="button" class="back-btn" id="back-button">戻る</button>
+        </div>
+
+        <!-- コース基本情報 -->
+        <div class="course-info-card">
+            <div class="course-header">
+                <div class="course-title">{{ course.name }}</div>
+                <span class="course-type type-{{ course.course_type }}">{{ course.type_display }}</span>
+            </div>
+            <div class="course-details">
+                <div class="detail-row">
+                    <span class="detail-label">PAR:</span>
+                    <span class="detail-value">{{ course.par }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">住所:</span>
+                    <span class="detail-value">{{ course.address }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- レイアウト情報 -->
+        <div class="layouts-section">
+            <h2 class="section-title">詳細情報</h2>
+            
+            {% for layout in layouts %}
+            <div class="layout-card">
+                <div class="layout-header">
+                    <span class="layout-name">{{ layout.layout_name }}</span>
+                </div>
+                <div class="layout-table-wrapper">
+                    <table class="layout-table">
+                        <thead>
+                            <tr>
+                                <th>Hole</th>
+                                {% for hole in layout.holes %}
+                                <th>{{ hole.hole_number }}</th>
+                                {% endfor %}
+                                <th class="total-col">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="label-col">Par</td>
+                                {% for hole in layout.holes %}
+                                <td>{{ hole.par }}</td>
+                                {% endfor %}
+                                <td class="total-col">{{ layout.par }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+        // 戻るボタンの処理
+        document.getElementById('back-button').addEventListener('click', function () {
+            location.href = '{{ url_for("course_list") }}';
+        });
+    </script>
+</body>
+</html>

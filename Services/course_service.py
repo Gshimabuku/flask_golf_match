@@ -18,6 +18,63 @@ def get_courses():
         print("get_courses error:", e)
 
     return results
+
+# ---------------------------------
+# コース詳細取得
+# ---------------------------------
+def get_course_detail(course_id: str):
+    """
+    コースIDから詳細情報を取得（レイアウトとホール情報を含む）
+    
+    Args:
+        course_id: コースのpage_id
+        
+    Returns:
+        course: Courseモデル
+        layouts: レイアウトとホール情報のリスト
+    """
+    try:
+        # コース情報取得
+        course_data = fetch_db_properties(NOTION_DB_COURSES_ID)
+        course = None
+        for c in course_data:
+            if c.get("page_id") == course_id:
+                course = Course.from_notion(c)
+                break
+        
+        if not course:
+            return None, []
+        
+        # レイアウト情報取得
+        layouts_data = fetch_db_properties(NOTION_DB_LAYOUTS_ID)
+        layouts = []
+        
+        for layout_data in layouts_data:
+            # このコースに関連するレイアウトのみ
+            if course_id in layout_data.get("course", []):
+                layout = Layout.from_notion(layout_data)
+                
+                # ホール情報取得
+                holes_data = fetch_db_properties(NOTION_DB_HOLES_ID)
+                holes = []
+                
+                for hole_data in holes_data:
+                    # このレイアウトに関連するホールのみ
+                    if layout.page_id in hole_data.get("layout", []):
+                        hole = Hole.from_notion(hole_data)
+                        holes.append(hole)
+                
+                # ホール番号でソート
+                holes.sort(key=lambda h: h.hole_number or 0)
+                layout.holes = holes
+                layouts.append(layout)
+        
+        return course, layouts
+        
+    except Exception as e:
+        print("get_course_detail error:", e)
+        return None, []
+
 # ---------------------------------
 # コース新規作成
 # ---------------------------------

@@ -573,12 +573,14 @@ select:focus {
     border: 1px solid #e0e0e0;
     border-radius: 8px;
     transition: all 0.3s;
+    cursor: pointer;
 }
 
 .course-list-page .course-card:hover {
     background-color: #f5f5f5;
     border-color: #4CAF50;
     box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+    transform: translateY(-2px);
 }
 
 .course-list-page .course-header {
@@ -738,5 +740,145 @@ select:focus {
     .course-new-page .holes-grid input[type="number"] {
         font-size: 14px;
         height: 32px;
+    }
+}
+
+/**
+ * #######################################################
+ *  コース詳細ページ
+ * #######################################################
+ */
+
+/* コース情報カード */
+.course-detail-page .course-info-card {
+    padding: 16px;
+    background-color: #fafafa;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    margin-bottom: 24px;
+}
+
+.course-detail-page .course-info-card .course-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #ddd;
+}
+
+.course-detail-page .course-info-card .course-title {
+    font-size: 22px;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.course-detail-page .course-details {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.course-detail-page .detail-row {
+    display: flex;
+    gap: 12px;
+}
+
+.course-detail-page .detail-label {
+    font-weight: 600;
+    color: #555;
+    min-width: 60px;
+}
+
+.course-detail-page .detail-value {
+    color: #333;
+}
+
+/* レイアウトセクション */
+.course-detail-page .layouts-section {
+    margin-top: 24px;
+}
+
+.course-detail-page .section-title {
+    font-size: 20px;
+    font-weight: bold;
+    color: #2c3e50;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #4CAF50;
+}
+
+/* レイアウトカード */
+.course-detail-page .layout-card {
+    background-color: #fafafa;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+.course-detail-page .layout-header {
+    margin-bottom: 12px;
+}
+
+.course-detail-page .layout-name {
+    font-size: 18px;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+/* レイアウトテーブル */
+.course-detail-page .layout-table-wrapper {
+    overflow-x: auto;
+}
+
+.course-detail-page .layout-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.course-detail-page .layout-table th,
+.course-detail-page .layout-table td {
+    padding: 10px;
+    text-align: center;
+    border: 1px solid #ddd;
+}
+
+.course-detail-page .layout-table th {
+    background-color: #f5f5f5;
+    font-weight: 600;
+    color: #555;
+    font-size: 14px;
+}
+
+.course-detail-page .layout-table td {
+    font-size: 16px;
+    color: #333;
+}
+
+.course-detail-page .layout-table .label-col {
+    background-color: #f5f5f5;
+    font-weight: 600;
+    color: #555;
+}
+
+.course-detail-page .layout-table .total-col {
+    background-color: #e8f5e9;
+    font-weight: bold;
+    color: #2e7d32;
+}
+
+/* スマホ対応 */
+@media (max-width: 768px) {
+    .course-detail-page .layout-table {
+        font-size: 14px;
+    }
+    
+    .course-detail-page .layout-table th,
+    .course-detail-page .layout-table td {
+        padding: 8px 4px;
     }
 }

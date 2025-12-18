@@ -1,6 +1,6 @@
 from flask import Flask, render_template, jsonify, redirect, url_for, Response, request
 import os
-from Services.course_service import get_courses,get_layouts,add_course
+from Services.course_service import get_courses,get_layouts,add_course,get_course_detail
 from Services.round_service import get_rounds,add_round,add_game_setting
 from Services.user_service import get_users
 
@@ -29,6 +29,11 @@ def course_list():
 @app.route('/course/new')
 def course_new():
     return render_template('course/new.html')
+
+@app.route('/course/<course_id>')
+def course_detail(course_id):
+    course, layouts = get_course_detail(course_id)
+    return render_template('course/detail.html', course=course, layouts=layouts)
 
 @app.route('/course/create', methods=['POST'])
 def course_create():

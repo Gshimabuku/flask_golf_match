@@ -16,7 +16,7 @@
 
         <div class="course-list">
             {% for course in courses %}
-            <div class="course-card">
+            <div class="course-card" data-course-id="{{ course.page_id }}">
                 <div class="course-header">
                     <div class="course-title">{{ course.name }}</div>
                     <span class="course-type type-{{ course.course_type }}">{{ course.type_display }}</span>
@@ -45,6 +45,14 @@
         // 新規作成ボタンの処理
         document.getElementById('new-course-button').addEventListener('click', function () {
             location.href = '{{ url_for("course_new") }}';
+        });
+
+        // コースカードのクリックイベント
+        document.querySelectorAll('.course-card').forEach(function(card) {
+            card.addEventListener('click', function() {
+                const courseId = this.getAttribute('data-course-id');
+                location.href = '{{ url_for("course_detail", course_id="COURSE_ID") }}'.replace('COURSE_ID', courseId);
+            });
         });
     </script>
 </body>
