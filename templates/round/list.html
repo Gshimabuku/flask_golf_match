@@ -13,14 +13,12 @@
             <button type="button" class="back-btn" id="back-button">戻る</button>
         </div>
 
-        <p>{{ rounds }}</p>
-
         <div class="round-list">
             <!-- モックデータ -->
             {% for round in rounds %}
             <div class="round-card">
                 <div class="round-date">{{ round.play_date }}</div>
-                <div class="round-course">{{ round.course }}</div>
+                <div class="round-course">{{ round.course_name }}</div>
                 <div class="round-members">
                     {% for member in round.members %}
                         <span class="member-badge">{{ member }}</span>
@@ -28,45 +26,6 @@
                 </div>
             </div>
             {% endfor %}
-            <div class="round-card">
-                <div class="round-date">2025年12月15日</div>
-                <div class="round-course">知花ゴルフクラブ</div>
-                <div class="round-members">
-                    <span class="member-badge">メンバーA</span>
-                    <span class="member-badge">メンバーB</span>
-                    <span class="member-badge">メンバーC</span>
-                    <span class="member-badge">メンバーD</span>
-                </div>
-            </div>
-
-            <div class="round-card">
-                <div class="round-date">2025年12月10日</div>
-                <div class="round-course">ベルビーチゴルフクラブ</div>
-                <div class="round-members">
-                    <span class="member-badge">メンバーA</span>
-                    <span class="member-badge">メンバーC</span>
-                    <span class="member-badge">メンバーE</span>
-                </div>
-            </div>
-
-            <div class="round-card">
-                <div class="round-date">2025年12月05日</div>
-                <div class="round-course">知花ゴルフクラブ</div>
-                <div class="round-members">
-                    <span class="member-badge">メンバーB</span>
-                    <span class="member-badge">メンバーD</span>
-                </div>
-            </div>
-
-            <div class="round-card">
-                <div class="round-date">2025年11月28日</div>
-                <div class="round-course">ベルビーチゴルフクラブ</div>
-                <div class="round-members">
-                    <span class="member-badge">メンバーA</span>
-                    <span class="member-badge">メンバーB</span>
-                    <span class="member-badge">メンバーC</span>
-                </div>
-            </div>
         </div>
     </div>
 
