@@ -1,5 +1,5 @@
 from datetime import datetime
-from Services.notion_service import fetch_db_properties,create_page,fetch_page
+from Services.notion_service import fetch_db_properties,create_page,fetch_page,build_id_name_map,resolve_relation
 from config import NOTION_DB_ROUNDS_ID,NOTION_DB_GAME_SETTINGS_ID,NOTION_DB_COURSES_ID,NOTION_DB_USERS_ID
 
 # ---------------------------------
