@@ -62,6 +62,7 @@ def round_create():
     round_page_id = add_round(round_data)
 
     game_setting_data = {
+        "play_date": play_date,
         "round_page_id": round_page_id,
         "olympic_toggle": olympic_toggle,
         "snake_toggle": snake_toggle,
@@ -74,9 +75,14 @@ def round_create():
         game_setting_data["bronze"] = request.form.get("bronze")
         game_setting_data["iron"] = request.form.get("iron")
         game_setting_data["diamond"] = request.form.get("diamond")
+        game_setting_data["olympic_member"] = request.form.getlist("olympic_member[]")
     
     if snake_toggle:
         game_setting_data["snake"] = request.form.get("snake")
+        game_setting_data["snake_member"] = request.form.getlist("snake_member[]")
+
+    if nearpin_toggle:
+        game_setting_data["nearpin_member"] = request.form.getlist("nearpin_member[]")
 
     game_setting_page_id = add_game_setting(game_setting_data)
 

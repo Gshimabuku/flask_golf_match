@@ -50,12 +50,15 @@ def add_round(data: dict) -> str:
 # ---------------------------------
 def add_game_setting(data: dict) -> str:
 
+    play_date = data["play_date"]
     round_page_id = data["round_page_id"]
     olympic_toggle = data["olympic_toggle"]
     snake_toggle = data["snake_toggle"]
     nearpin_toggle = data["nearpin_toggle"]
 
-    name = "aaa"
+    # title 用 name（yymmdd-hhmm）
+    now = datetime.now()
+    name = f"game-{play_date.replace('-', '')[2:]}-{now.strftime('%H%M')}"
 
     notion_data = {
         "name": name,
@@ -68,12 +71,15 @@ def add_game_setting(data: dict) -> str:
         notion_data["bronze"] = int(data["bronze"])
         notion_data["iron"] = int(data["iron"])
         notion_data["diamond"] = int(data["diamond"])
+        notion_data["olympic_member"] = [data["olympic_member"]]
     
     if snake_toggle:
         notion_data["snake"] = data["snake"]
+        notion_data["snake_member"] = [data["snake_member"]]
 
     if nearpin_toggle:
         notion_data["nearpin"] = bool(1)
+        notion_data["nearpin_member"] = [data["nearpin_member"]]
 
     column_types = {
         "name": "title",
@@ -86,12 +92,15 @@ def add_game_setting(data: dict) -> str:
         column_types["bronze"] = "number"
         column_types["iron"] = "number"
         column_types["diamond"] = "number"
+        column_types["olympic_member"] = "relation"
 
     if snake_toggle:
         column_types["snake"] = "select"
+        column_types["snake_member"] = "relation"
 
     if nearpin_toggle:
         column_types["nearpin"] = "checkbox"
+        column_types["nearpin_member"] = "relation"
 
     # Notion 保存
     page = create_page(NOTION_DB_GAME_SETTINGS_ID, notion_data, column_types)
