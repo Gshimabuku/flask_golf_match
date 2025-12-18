@@ -312,44 +312,20 @@
         });
 
         // メンバー人数選択時の処理
-        document.getElementById("member_count").addEventListener("change", function () {
-            const count = parseInt(this.value);
-
-            // 全メンバー行を取得
-            const memberRows = [
-                { row: document.getElementById("member1_row"), select: document.getElementById("member1") },
-                { row: document.getElementById("member2_row"), select: document.getElementById("member2") },
-                { row: document.getElementById("member3_row"), select: document.getElementById("member3") },
-                { row: document.getElementById("member4_row"), select: document.getElementById("member4") }
-            ];
-
-            // 選択された人数分だけ表示
-            memberRows.forEach((member, index) => {
-                if (index < count) {
-                    member.row.style.display = "flex";
-                    member.select.disabled = false;
-                    if (index === 0) {
-                        member.select.required = true;
-                    }
-                } else {
-                    member.row.style.display = "none";
-                    member.select.disabled = true;
-                    member.select.required = false;
-                    member.select.value = "";
-                }
-            });
-        });
+        // (下部で定義されているため削除)
 
         // オリンピック表示切替
         document.getElementById("olympic_toggle").addEventListener("change", function () {
             const content = document.getElementById("olympic_content");
             content.style.display = this.checked ? "block" : "none";
+            updateGameMembersSection();
         });
 
         // ヘビ表示切替
         document.getElementById("snake_toggle").addEventListener("change", function () {
             const content = document.getElementById("snake_content");
             content.style.display = this.checked ? "block" : "none";
+            updateGameMembersSection();
         });
 
         // ニアピン表示切替

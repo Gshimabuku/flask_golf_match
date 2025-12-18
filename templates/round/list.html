@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>過去ラウンド一覧</title>
+    <link href="../../css/style.css" rel="stylesheet">
+</head>
+<body class="round-list-page">
+    <div class="container">
+        <div class="page-header">
+            <h1>過去ラウンド一覧</h1>
+            <button type="button" class="back-btn" id="back-button">戻る</button>
+        </div>
+
+        <p>{{ rounds }}</p>
+
+        <div class="round-list">
+            <!-- モックデータ -->
+            {% for round in rounds %}
+            <div class="round-card">
+                <div class="round-date">{{ round.play_date }}</div>
+                <div class="round-course">{{ round.course }}</div>
+                <div class="round-members">
+                    {% if round.member1 %}
+                    <span class="member-badge">{{ round.member1 }}</span>
+                    {% endfor %}
+                    {% if round.member2 %}
+                    <span class="member-badge">{{ round.member2 }}</span>
+                    {% endfor %}
+                    {% if round.member3 %}
+                    <span class="member-badge">{{ round.member3 }}</span>
+                    {% endfor %}
+                    {% if round.member4 %}
+                    <span class="member-badge">{{ round.member4 }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+            <div class="round-card">
+                <div class="round-date">2025年12月15日</div>
+                <div class="round-course">知花ゴルフクラブ</div>
+                <div class="round-members">
+                    <span class="member-badge">メンバーA</span>
+                    <span class="member-badge">メンバーB</span>
+                    <span class="member-badge">メンバーC</span>
+                    <span class="member-badge">メンバーD</span>
+                </div>
+            </div>
+
+            <div class="round-card">
+                <div class="round-date">2025年12月10日</div>
+                <div class="round-course">ベルビーチゴルフクラブ</div>
+                <div class="round-members">
+                    <span class="member-badge">メンバーA</span>
+                    <span class="member-badge">メンバーC</span>
+                    <span class="member-badge">メンバーE</span>
+                </div>
+            </div>
+
+            <div class="round-card">
+                <div class="round-date">2025年12月05日</div>
+                <div class="round-course">知花ゴルフクラブ</div>
+                <div class="round-members">
+                    <span class="member-badge">メンバーB</span>
+                    <span class="member-badge">メンバーD</span>
+                </div>
+            </div>
+
+            <div class="round-card">
+                <div class="round-date">2025年11月28日</div>
+                <div class="round-course">ベルビーチゴルフクラブ</div>
+                <div class="round-members">
+                    <span class="member-badge">メンバーA</span>
+                    <span class="member-badge">メンバーB</span>
+                    <span class="member-badge">メンバーC</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 戻るボタンの処理
+        document.getElementById('back-button').addEventListener('click', function () {
+            location.href = '{{ url_for("home") }}';
+        });
+    </script>
+</body>
+</html>

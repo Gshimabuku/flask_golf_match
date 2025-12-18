@@ -3,6 +3,22 @@ from Services.notion_service import fetch_db_properties,create_page,fetch_page
 from config import NOTION_DB_ROUNDS_ID,NOTION_DB_GAME_SETTINGS_ID
 
 # ---------------------------------
+# ラウンド一覧取得
+# ---------------------------------
+def get_rounds():
+    results = []
+
+    try:
+        data = fetch_db_properties(NOTION_DB_ROUNDS_ID)
+
+        results = data
+
+    except Exception as e:
+        print("get_rounds error:", e)
+
+    return results
+
+# ---------------------------------
 # ラウンド新規登録
 # ---------------------------------
 def add_round(data: dict) -> str:

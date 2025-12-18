@@ -1,7 +1,7 @@
 from flask import Flask, render_template, jsonify, redirect, url_for, Response, request
 import os
 from Services.course_service import get_courses,get_layouts
-from Services.round_service import add_round,add_game_setting
+from Services.round_service import get_rounds,add_round,add_game_setting
 from Services.user_service import get_users
 
 app = Flask(__name__)
@@ -29,6 +29,11 @@ def course_list():
 # --------------------------
 # ラウンド
 # --------------------------
+@app.route('/round/list')
+def round_list():
+    data = get_rounds()
+    return render_template('round/list.html', rounds=data)
+    
 @app.route('/round/new')
 def round_new():
     courses = get_courses()
