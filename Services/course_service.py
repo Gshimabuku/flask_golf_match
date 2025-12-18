@@ -1,4 +1,4 @@
-from Services.notion_service import fetch_db_properties
+from Services.notion_service import fetch_db_properties, create_page
 from config import NOTION_DB_COURSES_ID,NOTION_DB_LAYOUTS_ID,NOTION_DB_HOLES_ID
 from Models.course import Course
 from Models.layout import Layout
@@ -18,7 +18,88 @@ def get_courses():
         print("get_courses error:", e)
 
     return results
-
+# ---------------------------------
+# コース新規作成
+# ---------------------------------
+def add_course(course_data: dict, layouts_data: list) -> str:
+    """
+    コース、レイアウト、ホールを一括作成
+    
+    Args:
+        course_data: コース情報 (name, type, par, address)
+        layouts_data: レイアウト情報のリスト [{'layout_name': str, 'pars': [int]}]
+        
+    Returns:
+        作成されたコースのpage_id
+    """
+    try:
+        # 1. コース作成
+        course_column_types = {
+            "name": "title",
+            "type": "select",
+            "par": "number",
+            "address": "rich_text"
+        }
+        
+        course_props = {
+            "name": course_data["name"],
+            "type": course_data["type"],
+            "par": course_data.get("par"),
+            "address": course_data.get("address")
+        }
+        
+        course_response = create_page(NOTION_DB_COURSES_ID, course_props, course_column_types)
+        course_page_id = course_response["id"]
+        
+        # 2. 各レイアウトとホールを作成
+        for layout_data in layouts_data:
+            layout_name = layout_data["layout_name"]
+            pars = layout_data["pars"]
+            
+            # レイアウトのPAR合計を計算
+            layout_par = sum(pars)
+            
+            # レイアウト作成
+            layout_column_types = {
+                "name": "title",
+                "course": "relation",
+                "layout_name": "rich_text",
+                "par": "number"
+            }
+            
+            layout_props = {
+                "name": f"{course_data['name']}-{layout_name}",
+                "course": [course_page_id],
+                "layout_name": layout_name,
+                "par": layout_par
+            }
+            
+            layout_response = create_page(NOTION_DB_LAYOUTS_ID, layout_props, layout_column_types)
+            layout_page_id = layout_response["id"]
+            
+            # 各ホールを作成
+            hole_column_types = {
+                "name": "title",
+                "layout": "relation",
+                "hole_number": "number",
+                "par": "number"
+            }
+            
+            for hole_num, hole_par in enumerate(pars, start=1):
+                hole_props = {
+                    "name": f"{course_data['name']}-{layout_name}-{hole_num}",
+                    "layout": [layout_page_id],
+                    "hole_number": hole_num,
+                    "par": hole_par
+                }
+                
+                create_page(NOTION_DB_HOLES_ID, hole_props, hole_column_types)
+        
+        return course_page_id
+        
+    except Exception as e:
+        print("add_course error:", e)
+        raise e
 # ---------------------------------
 # レイアウト一覧取得
 # ---------------------------------

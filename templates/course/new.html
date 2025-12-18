@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新規コース作成</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body class="course-new-page">
+    <div class="container">
+        <div class="page-header">
+            <h1>新規コース作成</h1>
+            <button type="button" class="back-btn" id="back-button">戻る</button>
+        </div>
+
+        <form action="/course/create" method="POST" class="course-form">
+            <div class="form-section">
+                <div class="form-row">
+                    <label for="name">コース名:</label>
+                    <input type="text" id="name" name="name" required placeholder="例: 知花ゴルフクラブ">
+                </div>
+                <div class="form-row">
+                    <label for="type">種類:</label>
+                    <select id="type" name="type" required>
+                        <option value="">選択してください</option>
+                        <option value="short">ショート</option>
+                        <option value="middle">ミドル</option>
+                        <option value="long">ロング</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <label for="par">PAR:</label>
+                    <input type="number" id="par" name="par" required placeholder="例: 72">
+                </div>
+                <div class="form-row">
+                    <label for="address">住所:</label>
+                    <input type="text" id="address" name="address" placeholder="例: うるま市">
+                </div>
+            </div>
+
+            <!-- レイアウト・ホール情報 -->
+            <div id="layouts-container">
+                <!-- JSで追加される -->
+            </div>
+
+            <div class="form-section" style="text-align: center; background: none; border: none;">
+                <button type="button" id="add-layout-btn" class="action-btn" style="width: 100%;">＋ レイアウトを追加</button>
+            </div>
+
+            <div class="form-section">
+                <button type="submit" class="submit-btn">作成</button>
+            </div>
+        </form>
+    </div>
+
+    <template id="layout-template">
+        <div class="form-section layout-section">
+            <div class="layout-header">
+                <h2 class="mid-title">レイアウト設定</h2>
+                <button type="button" class="remove-layout-btn">削除</button>
+            </div>
+            <div class="form-row">
+                <label>レイアウト名:</label>
+                <input type="text" name="layout_name[]" required placeholder="例: OUTコース">
+            </div>
+            <div class="holes-container">
+                <div class="holes-grid">
+                    <div class="hole-header">Hole</div>
+                    <div>1</div><div>2</div><div>3</div><div>4</div><div>5</div><div>6</div><div>7</div><div>8</div><div>9</div>
+                    
+                    <div class="hole-header">Par</div>
+                    <div><input type="number" name="par_1[]" value="4" min="3" max="6" readonly></div>
+                    <div><input type="number" name="par_2[]" value="4" min="3" max="6" readonly></div>
+                    <div><input type="number" name="par_3[]" value="4" min="3" max="6" readonly></div>
+                    <div><input type="number" name="par_4[]" value="4" min="3" max="6" readonly></div>
+                    <div><input type="number" name="par_5[]" value="4" min="3" max="6" readonly></div>
+                    <div><input type="number" name="par_6[]" value="4" min="3" max="6" readonly></div>
+                    <div><input type="number" name="par_7[]" value="4" min="3" max="6" readonly></div>
+                    <div><input type="number" name="par_8[]" value="4" min="3" max="6" readonly></div>
+                    <div><input type="number" name="par_9[]" value="4" min="3" max="6" readonly></div>
+
+                    <div class="hole-header"></div>
+                    <div><button type="button" class="par-btn plus">＋</button></div>
+                    <div><button type="button" class="par-btn plus">＋</button></div>
+                    <div><button type="button" class="par-btn plus">＋</button></div>
+                    <div><button type="button" class="par-btn plus">＋</button></div>
+                    <div><button type="button" class="par-btn plus">＋</button></div>
+                    <div><button type="button" class="par-btn plus">＋</button></div>
+                    <div><button type="button" class="par-btn plus">＋</button></div>
+                    <div><button type="button" class="par-btn plus">＋</button></div>
+                    <div><button type="button" class="par-btn plus">＋</button></div>
+
+                    <div class="hole-header"></div>
+                    <div><button type="button" class="par-btn minus">−</button></div>
+                    <div><button type="button" class="par-btn minus">−</button></div>
+                    <div><button type="button" class="par-btn minus">−</button></div>
+                    <div><button type="button" class="par-btn minus">−</button></div>
+                    <div><button type="button" class="par-btn minus">−</button></div>
+                    <div><button type="button" class="par-btn minus">−</button></div>
+                    <div><button type="button" class="par-btn minus">−</button></div>
+                    <div><button type="button" class="par-btn minus">−</button></div>
+                    <div><button type="button" class="par-btn minus">−</button></div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const container = document.getElementById('layouts-container');
+            const template = document.getElementById('layout-template');
+            const addBtn = document.getElementById('add-layout-btn');
+            const backButton = document.getElementById('back-button');
+
+            // 戻るボタン
+            if (backButton) {
+                backButton.addEventListener('click', function() {
+                    window.location.href = "{{ url_for('course_list') }}";
+                });
+            }
+
+            function updateLayoutTitles() {
+                const sections = container.querySelectorAll('.layout-section');
+                sections.forEach((section, index) => {
+                    const title = section.querySelector('.mid-title');
+                    const header = section.querySelector('.layout-header');
+                    const removeBtn = section.querySelector('.remove-layout-btn');
+                    
+                    if (index === 0) {
+                        if (title) title.style.display = 'block';
+                        if (header) header.style.justifyContent = 'space-between';
+                        if (removeBtn) removeBtn.style.display = 'none';
+                    } else {
+                        if (title) title.style.display = 'none';
+                        if (header) header.style.justifyContent = 'flex-end';
+                        if (removeBtn) removeBtn.style.display = 'block';
+                    }
+                });
+            }
+
+            function addLayout() {
+                const clone = template.content.cloneNode(true);
+                
+                // 削除ボタンのイベント設定
+                clone.querySelector('.remove-layout-btn').addEventListener('click', function(e) {
+                    e.target.closest('.layout-section').remove();
+                    updateLayoutTitles();
+                });
+
+                // +/- ボタンのイベント設定
+                const inputs = clone.querySelectorAll('.holes-grid input[type="number"]');
+                const plusBtns = clone.querySelectorAll('.par-btn.plus');
+                const minusBtns = clone.querySelectorAll('.par-btn.minus');
+
+                inputs.forEach((input, index) => {
+                    const plusBtn = plusBtns[index];
+                    const minusBtn = minusBtns[index];
+
+                    plusBtn.addEventListener('click', () => {
+                        let val = parseInt(input.value);
+                        if (val < 6) input.value = val + 1;
+                    });
+
+                    minusBtn.addEventListener('click', () => {
+                        let val = parseInt(input.value);
+                        if (val > 3) input.value = val - 1;
+                    });
+                });
+
+                container.appendChild(clone);
+                updateLayoutTitles();
+            }
+
+            addBtn.addEventListener('click', addLayout);
+
+            // 初期表示で1つ追加
+            addLayout();
+        });
+    </script>
+</body>
+
+</html>

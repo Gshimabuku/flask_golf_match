@@ -75,6 +75,67 @@ h1 {
     background-color: #e0e0e0;
 }
 
+/* アクションボタン（新規作成など） */
+.action-btn {
+    min-width: 80px;
+    height: 48px;
+    padding: 10px 18px;
+    font-size: 17px;
+    font-weight: 500;
+    background-color: #4CAF50;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s;
+    flex-shrink: 0;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.action-btn:hover {
+    background-color: #45a049;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.action-btn:active {
+    transform: scale(0.95);
+    background-color: #3d8b40;
+}
+
+/* 送信ボタン */
+.submit-btn {
+    width: 100%;
+    height: 52px;
+    font-size: 20px;
+    font-weight: bold;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.1s;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.submit-btn:hover {
+    background-color: #45a049;
+}
+
+.submit-btn:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* ボタン用のフォームセクション */
+.form-section:has(.submit-btn) {
+    background-color: transparent;
+    border: none;
+    padding: 8px 12px;
+}
+
 /**
  * #######################################################
  *  フォーム関連（共通）
@@ -260,37 +321,6 @@ select:focus {
 .round-new-page .checkbox-label span {
     font-size: 18px;
     color: #333;
-}
-
-/* 送信ボタン */
-.round-new-page .submit-btn {
-    width: 100%;
-    height: 52px;
-    font-size: 20px;
-    font-weight: bold;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.1s;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.round-new-page .submit-btn:hover {
-    background-color: #45a049;
-}
-
-.round-new-page .submit-btn:active {
-    transform: translateY(2px);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-/* ボタン用のフォームセクション */
-.round-new-page .form-section:has(.submit-btn) {
-    background-color: transparent;
-    border: none;
-    padding: 8px 12px;
 }
 
 /**
@@ -607,4 +637,106 @@ select:focus {
 .course-list-page .detail-value {
     color: #333;
     font-weight: 600;
+}
+
+/**
+ * #######################################################
+ *  コース新規作成ページ（course-new-page）
+ * #######################################################
+ */
+
+.course-new-page .layout-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.course-new-page .remove-layout-btn {
+    background-color: #ff5252;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 4px 12px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.course-new-page .holes-container {
+    overflow-x: auto;
+    padding-bottom: 8px;
+}
+
+.course-new-page .holes-grid {
+    display: grid;
+    grid-template-columns: 60px repeat(9, 1fr);
+    gap: 4px;
+    min-width: 500px; /* スマホで横スクロールさせる */
+    text-align: center;
+    align-items: center;
+}
+
+.course-new-page .hole-header {
+    font-weight: bold;
+    background-color: #eee;
+    padding: 8px 4px;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.course-new-page .holes-grid input[type="number"] {
+    width: 100%;
+    height: 36px;
+    padding: 4px;
+    text-align: center;
+    font-size: 16px;
+    margin-bottom: 0;
+    background-color: #f9f9f9; /* Readonly look */
+}
+
+.course-new-page .par-btn {
+    width: 100%;
+    height: 36px;
+    font-size: 20px;
+    font-weight: bold;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    transition: background-color 0.2s;
+}
+
+.course-new-page .par-btn.plus {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+    border-color: #a5d6a7;
+}
+
+.course-new-page .par-btn.plus:active {
+    background-color: #c8e6c9;
+}
+
+.course-new-page .par-btn.minus {
+    background-color: #ffebee;
+    color: #c62828;
+    border-color: #ef9a9a;
+}
+
+.course-new-page .par-btn.minus:active {
+    background-color: #ffcdd2;
+}
+
+/* スマホでの微調整 */
+@media (max-width: 375px) {
+    .course-new-page .holes-grid {
+        min-width: 450px;
+    }
+    
+    .course-new-page .holes-grid input[type="number"] {
+        font-size: 14px;
+        height: 32px;
+    }
 }

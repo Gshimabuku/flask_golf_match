@@ -1,6 +1,6 @@
 from flask import Flask, render_template, jsonify, redirect, url_for, Response, request
 import os
-from Services.course_service import get_courses,get_layouts
+from Services.course_service import get_courses,get_layouts,add_course
 from Services.round_service import get_rounds,add_round,add_game_setting
 from Services.user_service import get_users
 
@@ -25,6 +25,45 @@ def health():
 def course_list():
     data = get_courses()
     return render_template('course/list.html', courses=data)
+
+@app.route('/course/new')
+def course_new():
+    return render_template('course/new.html')
+
+@app.route('/course/create', methods=['POST'])
+def course_create():
+    name = request.form.get('name')
+    course_type = request.form.get('type')
+    par = request.form.get('par')
+    address = request.form.get('address')
+    
+    course_data = {
+        'name': name,
+        'type': course_type,
+        'par': int(par) if par else None,
+        'address': address
+    }
+    
+    # レイアウト情報の取得
+    layout_names = request.form.getlist('layout_name[]')
+    layouts_data = []
+    
+    for i, layout_name in enumerate(layout_names):
+        layout_pars = []
+        for hole in range(1, 10):
+            par_key = f'par_{hole}[]'
+            pars = request.form.getlist(par_key)
+            if i < len(pars):
+                layout_pars.append(int(pars[i]))
+        
+        layouts_data.append({
+            'layout_name': layout_name,
+            'pars': layout_pars
+        })
+    
+    course_page_id = add_course(course_data, layouts_data)
+    
+    return redirect(url_for('course_list'))
 
 # --------------------------
 # ラウンド
