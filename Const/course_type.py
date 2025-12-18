@@ -12,3 +12,9 @@ DISPLAY = {
 
 # DB値のリスト
 ALL = [LONG, MIDDLE, SHORT]
+
+# ---------------------------------
+# コースタイプ表示名取得
+# ---------------------------------
+def get_display_name(course_type: str) -> str:
+    return DISPLAY.get(course_type, "不明")

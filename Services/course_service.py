@@ -1,6 +1,8 @@
 from Services.notion_service import fetch_db_properties
 from config import NOTION_DB_COURSES_ID,NOTION_DB_LAYOUTS_ID,NOTION_DB_HOLES_ID
-from Const.course_type import DISPLAY
+from Models.course import Course
+from Models.layout import Layout
+from Models.hole import Hole
 
 # ---------------------------------
 # コース一覧取得
@@ -10,11 +12,7 @@ def get_courses():
 
     try:
         data = fetch_db_properties(NOTION_DB_COURSES_ID)
-
-        for course in data:
-            course["type_display"] = DISPLAY.get(course["type"], "不明")
-
-        results = data
+        results = [Course.from_notion(d) for d in data]
 
     except Exception as e:
         print("get_courses error:", e)
@@ -29,10 +27,24 @@ def get_layouts():
 
     try:
         data = fetch_db_properties(NOTION_DB_LAYOUTS_ID)
-
-        results = data
+        results = [Layout.from_notion(d) for d in data]
 
     except Exception as e:
         print("get_layouts error:", e)
+
+    return results
+
+# ---------------------------------
+# ホール一覧取得
+# ---------------------------------
+def get_holes():
+    results = []
+
+    try:
+        data = fetch_db_properties(NOTION_DB_HOLES_ID)
+        results = [Hole.from_notion(d) for d in data]
+
+    except Exception as e:
+        print("get_holes error:", e)
 
     return results
