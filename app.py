@@ -33,13 +33,13 @@ def course_new():
 @app.route('/course/create', methods=['POST'])
 def course_create():
     name = request.form.get('name')
-    course_type = request.form.get('type')
+    course_type = request.form.get('course_type')
     par = request.form.get('par')
     address = request.form.get('address')
     
     course_data = {
         'name': name,
-        'type': course_type,
+        'course_type': course_type,
         'par': int(par) if par else None,
         'address': address
     }

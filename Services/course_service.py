@@ -36,14 +36,14 @@ def add_course(course_data: dict, layouts_data: list) -> str:
         # 1. コース作成
         course_column_types = {
             "name": "title",
-            "type": "select",
+            "course_type": "select",
             "par": "number",
             "address": "rich_text"
         }
         
         course_props = {
             "name": course_data["name"],
-            "type": course_data["type"],
+            "course_type": course_data["course_type"],
             "par": course_data.get("par"),
             "address": course_data.get("address")
         }
