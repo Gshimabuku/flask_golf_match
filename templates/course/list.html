@@ -10,6 +10,7 @@
     <div class="container">
         <div class="page-header">
             <h1>コース一覧</h1>
+            <button type="button" class="action-btn" id="new-course-button">新規作成</button>
             <button type="button" class="back-btn" id="back-button">戻る</button>
         </div>
 
@@ -39,6 +40,11 @@
         // 戻るボタンの処理
         document.getElementById('back-button').addEventListener('click', function () {
             location.href = '{{ url_for("home") }}';
+        });
+
+        // 新規作成ボタンの処理
+        document.getElementById('new-course-button').addEventListener('click', function () {
+            location.href = '{{ url_for("course_new") }}';
         });
     </script>
 </body>
