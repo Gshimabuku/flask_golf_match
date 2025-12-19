@@ -136,6 +136,64 @@ h1 {
     padding: 8px 12px;
 }
 
+/* コースタイプバッジ（共通） */
+.course-type {
+    font-size: 14px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    color: white;
+    font-weight: bold;
+}
+
+.type-short {
+    background-color: #4CAF50;
+}
+
+.type-middle {
+    background-color: #FF9800;
+}
+
+.type-long {
+    background-color: #2196F3;
+}
+
+/* コースカード共通スタイル */
+.course-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #ddd;
+}
+
+.course-title {
+    font-size: 22px;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.course-details {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.detail-row {
+    display: flex;
+    gap: 12px;
+}
+
+.detail-label {
+    font-weight: 600;
+    color: #555;
+    min-width: 60px;
+}
+
+.detail-value {
+    color: #333;
+}
+
 /**
  * #######################################################
  *  フォーム関連（共通）
@@ -573,59 +631,16 @@ select:focus {
     border: 1px solid #e0e0e0;
     border-radius: 8px;
     transition: all 0.3s;
-    cursor: pointer;
 }
 
 .course-list-page .course-card:hover {
     background-color: #f5f5f5;
     border-color: #4CAF50;
     box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
-    transform: translateY(-2px);
 }
 
-.course-list-page .course-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 12px;
-    padding-bottom: 8px;
-    border-bottom: 2px solid #ddd;
-}
-
-.course-list-page .course-title {
-    font-size: 22px;
-    font-weight: bold;
-    color: #2c3e50;
-}
-
-.course-list-page .course-type {
-    font-size: 14px;
-    padding: 4px 10px;
-    border-radius: 4px;
-    color: white;
-    font-weight: bold;
-}
-
-.course-list-page .type-short {
-    background-color: #4CAF50;
-}
-
-.course-list-page .type-middle {
-    background-color: #FF9800;
-}
-
-.course-list-page .type-long {
-    background-color: #2196F3;
-}
-
-.course-list-page .course-details {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
+/* course-list-page固有のdetail-rowスタイル */
 .course-list-page .detail-row {
-    display: flex;
     align-items: center;
     font-size: 16px;
 }
@@ -637,7 +652,6 @@ select:focus {
 }
 
 .course-list-page .detail-value {
-    color: #333;
     font-weight: 600;
 }
 
@@ -758,42 +772,6 @@ select:focus {
     margin-bottom: 24px;
 }
 
-.course-detail-page .course-info-card .course-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 12px;
-    padding-bottom: 8px;
-    border-bottom: 2px solid #ddd;
-}
-
-.course-detail-page .course-info-card .course-title {
-    font-size: 22px;
-    font-weight: bold;
-    color: #2c3e50;
-}
-
-.course-detail-page .course-details {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.course-detail-page .detail-row {
-    display: flex;
-    gap: 12px;
-}
-
-.course-detail-page .detail-label {
-    font-weight: 600;
-    color: #555;
-    min-width: 60px;
-}
-
-.course-detail-page .detail-value {
-    color: #333;
-}
-
 /* レイアウトセクション */
 .course-detail-page .layouts-section {
     margin-top: 24px;
@@ -880,5 +858,456 @@ select:focus {
     .course-detail-page .layout-table th,
     .course-detail-page .layout-table td {
         padding: 8px 4px;
+    }
+}
+/**
+ * #######################################################
+ *  ホールスコア入力画面
+ * #######################################################
+ */
+.hole-page {
+    background-color: #f5f5f5;
+}
+
+.hole-header {
+    background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+    color: white;
+    padding: 20px;
+    margin: -16px -16px 20px -16px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.hole-header h1 {
+    color: white;
+    border: none;
+    padding: 0;
+    margin: 0;
+    font-size: 24px;
+}
+
+.hole-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 12px;
+    font-size: 16px;
+}
+
+.hole-number {
+    font-size: 36px;
+    font-weight: bold;
+}
+
+.par-info {
+    font-size: 20px;
+}
+
+.score-form {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    min-height: 300px;
+}
+
+.member-content {
+    display: none;
+}
+
+.member-content.active {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+.member-name-display {
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+    color: #2c3e50;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #4CAF50;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.members-container {
+    display: flex;
+    gap: 16px;
+    min-width: min-content;
+}
+
+.member-section {
+    flex: 1;
+    min-width: 200px;
+    padding: 16px;
+    background: #f9f9f9;
+    border-radius: 8px;
+    border: 2px solid #e0e0e0;
+}
+
+.member-section:last-child {
+    margin-bottom: 0;
+}
+
+.member-name {
+    font-size: 16px;
+    font-weight: bold;
+    color: #2c3e50;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #4CAF50;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.score-inputs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    max-width: 400px;
+    margin-bottom: 24px;
+}
+
+.game-scores {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 400px;
+}
+
+.game-score-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.game-score-item > label:first-child {
+    font-size: 14px;
+    font-weight: 600;
+    color: #666;
+    text-align: left;
+}
+
+.game-score-item select {
+    padding: 12px;
+    font-size: 16px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    background-color: #fff;
+    width: fit-content;
+    max-width: 100%;
+}
+
+.snake-controls {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.snake-controls .input-controls {
+    flex: 0 0 auto;
+}
+
+.snake-controls .input-controls input {
+    max-width: 80px;
+}
+
+.snake-controls .checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+    margin-left: 0;
+}
+
+.snake-controls .checkbox-label input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.snake-controls .checkbox-label span {
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.nearpin-checkbox {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    width: fit-content;
+}
+
+.nearpin-checkbox:hover {
+    opacity: 0.7;
+}
+
+.nearpin-checkbox input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.nearpin-checkbox span {
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.plus-btn.small,
+.minus-btn.small {
+    width: 40px;
+    height: 50px;
+    font-size: 24px;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.input-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.plus-btn,
+.minus-btn {
+    flex-shrink: 0;
+    width: 50px;
+    height: 60px;
+    font-size: 28px;
+    font-weight: bold;
+    border: 2px solid #ddd;
+    background-color: #f5f5f5;
+    color: #555;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+}
+
+.plus-btn:hover,
+.minus-btn:hover {
+    background-color: #4CAF50;
+    border-color: #4CAF50;
+    color: white;
+    transform: scale(1.05);
+}
+
+.plus-btn:active,
+.minus-btn:active {
+    transform: scale(0.95);
+}
+
+.input-group label {
+    font-size: 16px;
+    font-weight: 500;
+    color: #555;
+    margin-bottom: 8px;
+    text-align: center;
+}
+
+.input-group input {
+    flex: 1;
+    width: 100%;
+    padding: 20px;
+    font-size: 32px;
+    font-weight: bold;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    text-align: center;
+    transition: all 0.3s ease;
+    cursor: default;
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: #4CAF50;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+}
+
+.input-group input[readonly] {
+    background-color: #fff;
+    cursor: default;
+}
+
+.input-group input[type="number"]::-webkit-inner-spin-button,
+.input-group input[type="number"]::-webkit-outer-spin-button {
+    opacity: 0;
+    height: 0;
+}
+
+.button-group {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.btn {
+    flex: 1;
+    padding: 16px;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #45a049;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+}
+
+.btn-secondary {
+    background-color: #757575;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background-color: #616161;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.navigation-buttons {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.member-tabs {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.tab-btn {
+    padding: 12px;
+    font-size: 15px;
+    font-weight: bold;
+    border: 2px solid #ddd;
+    background-color: white;
+    color: #555;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.tab-btn:hover {
+    border-color: #4CAF50;
+    color: #4CAF50;
+}
+
+.tab-btn.active {
+    background-color: #4CAF50;
+    color: white;
+    border-color: #4CAF50;
+}
+
+.nav-btn {
+    flex: 1;
+    padding: 12px;
+    font-size: 14px;
+    font-weight: bold;
+    border: 2px solid #4CAF50;
+    background-color: white;
+    color: #4CAF50;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.nav-btn:hover:not(:disabled) {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.nav-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+@media (max-width: 480px) {
+    .hole-header {
+        padding: 16px;
+    }
+
+    .hole-number {
+        font-size: 28px;
+    }
+
+    .par-info {
+        font-size: 16px;
+    }
+
+    .score-form {
+        padding: 16px;
+        min-height: 250px;
+    }
+
+    .member-tabs {
+        gap: 6px;
+    }
+
+    .tab-btn {
+        padding: 10px 6px;
+        font-size: 13px;
+    }
+
+    .score-inputs {
+        gap: 16px;
+        margin-bottom: 20px;
+    }
+
+    .game-scores {
+        gap: 12px;
+    }
+
+    .game-score-item select {
+        padding: 10px;
+        font-size: 15px;
+    }
+
+    .plus-btn,
+    .minus-btn {
+        width: 45px;
+        height: 55px;
+        font-size: 24px;
+    }
+
+    .plus-btn.small,
+    .minus-btn.small {
+        width: 38px;
+        height: 48px;
+        font-size: 22px;
+    }
+
+    .input-group input {
+        padding: 16px;
+        font-size: 28px;
+    }
+
+    .button-group {
+        flex-direction: column;
     }
 }
