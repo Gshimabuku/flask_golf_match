@@ -698,6 +698,7 @@ select:focus {
     padding: 8px 4px;
     border-radius: 4px;
     font-size: 14px;
+    box-sizing: border-box;
 }
 
 .course-new-page .holes-grid input[type="number"] {
@@ -869,37 +870,33 @@ select:focus {
     background-color: #f5f5f5;
 }
 
-.hole-page .hole-header {
+/* ホール情報セクション */
+.hole-page .hole-info-section {
     background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
     color: white;
-    padding: 20px;
+    padding: 16px 20px;
     margin: -16px -16px 20px -16px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.hole-page .hole-header h1 {
-    color: white;
-    border: none;
-    padding: 0;
-    margin: 0;
-    font-size: 24px;
+    border-radius: 0;
 }
 
 .hole-page .hole-info {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: 12px;
-    font-size: 16px;
+    max-width: 600px;
+    margin: 0 auto;
 }
 
 .hole-page .hole-number {
-    font-size: 36px;
+    font-size: 32px;
     font-weight: bold;
+    color: white;
 }
 
 .hole-page .par-info {
     font-size: 20px;
+    font-weight: 600;
+    color: white;
 }
 
 .hole-page .score-form {
@@ -910,23 +907,13 @@ select:focus {
     min-height: 300px;
 }
 
-.hole-page .member-content {
+.member-content {
     display: none;
 }
 
-.hole-page .member-content.active {
+.member-content.active {
     display: block;
     animation: fadeIn 0.3s ease;
-}
-
-.hole-page .member-name-display {
-    font-size: 20px;
-    font-weight: bold;
-    text-align: center;
-    margin-bottom: 20px;
-    color: #2c3e50;
-    padding-bottom: 10px;
-    border-bottom: 2px solid #4CAF50;
 }
 
 @keyframes fadeIn {
@@ -940,13 +927,13 @@ select:focus {
     }
 }
 
-.hole-page .members-container {
+.members-container {
     display: flex;
     gap: 16px;
     min-width: min-content;
 }
 
-.hole-page .member-section {
+.member-section {
     flex: 1;
     min-width: 200px;
     padding: 16px;
@@ -955,11 +942,11 @@ select:focus {
     border: 2px solid #e0e0e0;
 }
 
-.hole-page .member-section:last-child {
+.member-section:last-child {
     margin-bottom: 0;
 }
 
-.hole-page .member-name {
+.member-name {
     font-size: 16px;
     font-weight: bold;
     color: #2c3e50;
@@ -970,7 +957,7 @@ select:focus {
     white-space: nowrap;
 }
 
-.hole-page .score-inputs {
+.score-inputs {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 20px;
@@ -978,27 +965,27 @@ select:focus {
     margin-bottom: 24px;
 }
 
-.hole-page .game-scores {
+.game-scores {
     display: flex;
     flex-direction: column;
     gap: 16px;
     max-width: 400px;
 }
 
-.hole-page .game-score-item {
+.game-score-item {
     display: flex;
     flex-direction: column;
     gap: 8px;
 }
 
-.hole-page .game-score-item > label:first-child {
+.game-score-item > label:first-child {
     font-size: 14px;
     font-weight: 600;
     color: #666;
     text-align: left;
 }
 
-.hole-page .game-score-item select {
+.game-score-item select {
     padding: 12px;
     font-size: 16px;
     border: 2px solid #ddd;
@@ -1008,21 +995,21 @@ select:focus {
     max-width: 100%;
 }
 
-.hole-page .snake-controls {
+.snake-controls {
     display: flex;
     gap: 12px;
     align-items: center;
 }
 
-.hole-page .snake-controls .input-controls {
+.snake-controls .input-controls {
     flex: 0 0 auto;
 }
 
-.hole-page .snake-controls .input-controls input {
+.snake-controls .input-controls input {
     max-width: 80px;
 }
 
-.hole-page .snake-controls .checkbox-label {
+.snake-controls .checkbox-label {
     display: flex;
     align-items: center;
     gap: 6px;
@@ -1030,18 +1017,18 @@ select:focus {
     margin-left: 0;
 }
 
-.hole-page .snake-controls .checkbox-label input[type="checkbox"] {
+.snake-controls .checkbox-label input[type="checkbox"] {
     width: 20px;
     height: 20px;
     cursor: pointer;
 }
 
-.hole-page .snake-controls .checkbox-label span {
+.snake-controls .checkbox-label span {
     font-size: 15px;
     font-weight: 500;
 }
 
-.hole-page .nearpin-checkbox {
+.nearpin-checkbox {
     display: inline-flex;
     align-items: center;
     gap: 8px;
@@ -1049,41 +1036,41 @@ select:focus {
     width: fit-content;
 }
 
-.hole-page .nearpin-checkbox:hover {
+.nearpin-checkbox:hover {
     opacity: 0.7;
 }
 
-.hole-page .nearpin-checkbox input[type="checkbox"] {
+.nearpin-checkbox input[type="checkbox"] {
     width: 20px;
     height: 20px;
     cursor: pointer;
 }
 
-.hole-page .nearpin-checkbox span {
+.nearpin-checkbox span {
     font-size: 15px;
     font-weight: 500;
 }
 
-.hole-page .plus-btn.small,
-.hole-page .minus-btn.small {
+.plus-btn.small,
+.minus-btn.small {
     width: 40px;
     height: 50px;
     font-size: 24px;
 }
 
-.hole-page .input-group {
+.input-group {
     display: flex;
     flex-direction: column;
 }
 
-.hole-page .input-controls {
+.input-controls {
     display: flex;
     align-items: center;
     gap: 8px;
 }
 
-.hole-page .plus-btn,
-.hole-page .minus-btn {
+.plus-btn,
+.minus-btn {
     flex-shrink: 0;
     width: 50px;
     height: 60px;
@@ -1098,20 +1085,20 @@ select:focus {
     user-select: none;
 }
 
-.hole-page .plus-btn:hover,
-.hole-page .minus-btn:hover {
+.plus-btn:hover,
+.minus-btn:hover {
     background-color: #4CAF50;
     border-color: #4CAF50;
     color: white;
     transform: scale(1.05);
 }
 
-.hole-page .plus-btn:active,
-.hole-page .minus-btn:active {
+.plus-btn:active,
+.minus-btn:active {
     transform: scale(0.95);
 }
 
-.hole-page .input-group label {
+.input-group label {
     font-size: 16px;
     font-weight: 500;
     color: #555;
@@ -1119,7 +1106,7 @@ select:focus {
     text-align: center;
 }
 
-.hole-page .input-group input {
+.input-group input {
     flex: 1;
     width: 100%;
     padding: 20px;
@@ -1132,30 +1119,30 @@ select:focus {
     cursor: default;
 }
 
-.hole-page .input-group input:focus {
+.input-group input:focus {
     outline: none;
     border-color: #4CAF50;
     box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
 }
 
-.hole-page .input-group input[readonly] {
+.input-group input[readonly] {
     background-color: #fff;
     cursor: default;
 }
 
-.hole-page .input-group input[type="number"]::-webkit-inner-spin-button,
-.hole-page .input-group input[type="number"]::-webkit-outer-spin-button {
+.input-group input[type="number"]::-webkit-inner-spin-button,
+.input-group input[type="number"]::-webkit-outer-spin-button {
     opacity: 0;
     height: 0;
 }
 
-.hole-page .button-group {
+.button-group {
     display: flex;
     gap: 12px;
     margin-top: 24px;
 }
 
-.hole-page .btn {
+.btn {
     flex: 1;
     padding: 16px;
     font-size: 16px;
@@ -1166,42 +1153,42 @@ select:focus {
     transition: all 0.3s ease;
 }
 
-.hole-page .btn-primary {
+.btn-primary {
     background-color: #4CAF50;
     color: white;
 }
 
-.hole-page .btn-primary:hover {
+.btn-primary:hover {
     background-color: #45a049;
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
 }
 
-.hole-page .btn-secondary {
+.btn-secondary {
     background-color: #757575;
     color: white;
 }
 
-.hole-page .btn-secondary:hover {
+.btn-secondary:hover {
     background-color: #616161;
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-.hole-page .navigation-buttons {
+.navigation-buttons {
     display: flex;
     gap: 12px;
     margin-bottom: 20px;
 }
 
-.hole-page .member-tabs {
+.member-tabs {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 8px;
     margin-bottom: 20px;
 }
 
-.hole-page .tab-btn {
+.tab-btn {
     padding: 12px;
     font-size: 15px;
     font-weight: bold;
@@ -1213,18 +1200,18 @@ select:focus {
     transition: all 0.3s ease;
 }
 
-.hole-page .tab-btn:hover {
+.tab-btn:hover {
     border-color: #4CAF50;
     color: #4CAF50;
 }
 
-.hole-page .tab-btn.active {
+.tab-btn.active {
     background-color: #4CAF50;
     color: white;
     border-color: #4CAF50;
 }
 
-.hole-page .nav-btn {
+.nav-btn {
     flex: 1;
     padding: 12px;
     font-size: 14px;
@@ -1237,19 +1224,19 @@ select:focus {
     transition: all 0.3s ease;
 }
 
-.hole-page .nav-btn:hover:not(:disabled) {
+.nav-btn:hover:not(:disabled) {
     background-color: #4CAF50;
     color: white;
 }
 
-.hole-page .nav-btn:disabled {
+.nav-btn:disabled {
     opacity: 0.3;
     cursor: not-allowed;
 }
 
 @media (max-width: 480px) {
-    .hole-page .hole-header {
-        padding: 16px;
+    .hole-page .hole-info-section {
+        padding: 12px 16px;
     }
 
     .hole-page .hole-number {
@@ -1257,7 +1244,7 @@ select:focus {
     }
 
     .hole-page .par-info {
-        font-size: 16px;
+        font-size: 18px;
     }
 
     .hole-page .score-form {
@@ -1265,49 +1252,49 @@ select:focus {
         min-height: 250px;
     }
 
-    .hole-page .member-tabs {
+    .member-tabs {
         gap: 6px;
     }
 
-    .hole-page .tab-btn {
+    .tab-btn {
         padding: 10px 6px;
         font-size: 13px;
     }
 
-    .hole-page .score-inputs {
+    .score-inputs {
         gap: 16px;
         margin-bottom: 20px;
     }
 
-    .hole-page .game-scores {
+    .game-scores {
         gap: 12px;
     }
 
-    .hole-page .game-score-item select {
+    .game-score-item select {
         padding: 10px;
         font-size: 15px;
     }
 
-    .hole-page .plus-btn,
-    .hole-page .minus-btn {
+    .plus-btn,
+    .minus-btn {
         width: 45px;
         height: 55px;
         font-size: 24px;
     }
 
-    .hole-page .plus-btn.small,
-    .hole-page .minus-btn.small {
+    .plus-btn.small,
+    .minus-btn.small {
         width: 38px;
         height: 48px;
         font-size: 22px;
     }
 
-    .hole-page .input-group input {
+    .input-group input {
         padding: 16px;
         font-size: 28px;
     }
 
-    .hole-page .button-group {
+    .button-group {
         flex-direction: column;
     }
 }

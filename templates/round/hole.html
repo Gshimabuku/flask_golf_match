@@ -10,8 +10,17 @@
 
 <body class="hole-page">
     <div class="container">
-        <div class="hole-header">
-            <h1>{{ round.get('name', 'ラウンド') }}</h1>
+        <!-- ページヘッダー -->
+        <div class="page-header">
+            <h1>スコア入力</h1>
+            <div style="display: flex; gap: 8px;">
+                <button type="button" class="back-btn" id="home-button">ホーム</button>
+                <button type="button" class="back-btn" id="round-setting-button">ラウンド設定</button>
+            </div>
+        </div>
+
+        <!-- ホール情報 -->
+        <div class="hole-info-section">
             <div class="hole-info">
                 <div class="hole-number">HOLE {{ hole_number }}</div>
                 <div class="par-info">PAR {{ hole_par }}</div>
@@ -20,14 +29,18 @@
 
         <!-- ホール間移動ボタン -->
         <div class="navigation-buttons">
-            <a href="{{ url_for('round_hole', round_id=round['page_id'], hole_number=hole_number-1) if hole_number > 1 else '#' }}" 
-               class="nav-btn {{ 'disabled' if hole_number <= 1 else '' }}">
+            <button type="button" 
+                    class="nav-btn nav-prev {{ 'disabled' if hole_number <= 1 else '' }}"
+                    data-hole="{{ hole_number - 1 }}"
+                    {{ 'disabled' if hole_number <= 1 else '' }}>
                 ← 前のホール
-            </a>
-            <a href="{{ url_for('round_hole', round_id=round['page_id'], hole_number=hole_number+1) if hole_number < 18 else '#' }}" 
-               class="nav-btn {{ 'disabled' if hole_number >= 18 else '' }}">
+            </button>
+            <button type="button" 
+                    class="nav-btn nav-next {{ 'disabled' if hole_number >= 18 else '' }}"
+                    data-hole="{{ hole_number + 1 }}"
+                    {{ 'disabled' if hole_number >= 18 else '' }}>
                 次のホール →
-            </a>
+            </button>
         </div>
 
         <!-- メンバータブ -->
@@ -39,15 +52,17 @@
             {% endfor %}
         </div>
 
-        <form action="{{ url_for('round_hole_save', round_id=round['page_id'], hole_number=hole_number) }}" method="POST" class="score-form">
+        <form action="{{ url_for('round_hole_save', round_id=round['page_id'], hole_number=hole_number) }}" 
+              method="POST" 
+              class="score-form"
+              data-round-id="{{ round['page_id'] }}"
+              data-hole-number="{{ hole_number }}">
             {% for member in members %}
             {% set member_idx = loop.index %}
             {% set existing = existing_scores.get(member.page_id, {}) %}
             
             <!-- メンバー{{ member_idx }} -->
             <div class="member-content {{ 'active' if loop.index == 1 else '' }}" data-member="{{ member_idx }}">
-                <div class="member-name-display">{{ member.display_name }}</div>
-                
                 <input type="hidden" name="member_id[]" value="{{ member.page_id }}">
                 
                 <div class="score-inputs">
@@ -137,13 +152,58 @@
 
             <div class="button-group">
                 <button type="submit" class="btn btn-primary">
-                    保存
+                    保存（このホールに留まる）
                 </button>
             </div>
         </form>
     </div>
 
     <script>
+        // フォームからデータ属性を取得
+        const form = document.querySelector('.score-form');
+        const roundId = form.dataset.roundId;
+        const currentHole = parseInt(form.dataset.holeNumber);
+
+        // ホームボタンの処理
+        document.getElementById('home-button').addEventListener('click', function() {
+            if (confirm('ホームに戻りますか？\n保存していないデータは失われます。')) {
+                window.location.href = '/home';
+            }
+        });
+
+        // ラウンド設定ボタンの処理
+        document.getElementById('round-setting-button').addEventListener('click', function() {
+            alert('ラウンド設定画面は未実装です');
+        });
+
+        // ホール移動ボタンのイベントリスナー設定
+        document.addEventListener('DOMContentLoaded', function() {
+            // 前のホールボタン
+            const prevBtn = document.querySelector('.nav-prev');
+            if (prevBtn && !prevBtn.disabled) {
+                prevBtn.addEventListener('click', function() {
+                    const nextHole = parseInt(this.dataset.hole);
+                    navigateToHole(nextHole);
+                });
+            }
+
+            // 次のホールボタン
+            const nextBtn = document.querySelector('.nav-next');
+            if (nextBtn && !nextBtn.disabled) {
+                nextBtn.addEventListener('click', function() {
+                    const nextHole = parseInt(this.dataset.hole);
+                    navigateToHole(nextHole);
+                });
+            }
+        });
+
+        // ホール移動関数（保存してから遷移）
+        function navigateToHole(nextHole) {
+            // フォームのaction URLを変更して次のホールへ遷移させる
+            form.action = `/round/${roundId}/hole/${nextHole}/save`;
+            form.submit();
+        }
+
         // タブ切り替え機能
         document.querySelectorAll('.tab-btn').forEach(tab => {
             tab.addEventListener('click', function() {

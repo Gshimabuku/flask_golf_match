@@ -15,7 +15,7 @@
 
         <div class="round-list">
             {% for round in rounds %}
-            <div class="round-card">
+            <div class="round-card" data-round-id="{{ round.page_id }}">
                 <div class="round-date">{{ round.play_date }}</div>
                 <div class="round-course">{{ round.course_name }}</div>
                 <div class="round-members">
@@ -32,6 +32,14 @@
         // 戻るボタンの処理
         document.getElementById('back-button').addEventListener('click', function () {
             location.href = '{{ url_for("home") }}';
+        });
+
+        // ラウンドカードのクリックイベント
+        document.querySelectorAll('.round-card').forEach(function(card) {
+            card.addEventListener('click', function() {
+                const roundId = this.getAttribute('data-round-id');
+                location.href = '{{ url_for("round_hole", round_id="ROUND_ID", hole_number=1) }}'.replace('ROUND_ID', roundId);
+            });
         });
     </script>
 </body>
