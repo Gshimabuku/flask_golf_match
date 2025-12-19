@@ -20,7 +20,7 @@ class Course:
         return cls(
             page_id=data.get("page_id"),
             name=data.get("name", ""),
-            course_type=data.get("type", ""),
+            course_type=data.get("course_type", ""),
             address=data.get("address"),
             par=data.get("par")
         )
