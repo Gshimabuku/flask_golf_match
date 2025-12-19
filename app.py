@@ -245,11 +245,12 @@ def round_hole_save(round_id, hole_number):
             
             add_score(score_data)
     
-    # 次のホールへ遷移（または完了画面へ）
-    next_hole = hole_number + 1
-    if next_hole <= 18:  # 18ホールまで
-        return redirect(url_for('round_hole', round_id=round_id, hole_number=next_hole))
+    # リクエストされたホール番号へ遷移
+    # URLのhole_numberは保存先だが、次に表示するホールも同じ
+    if hole_number < 18:
+        return redirect(url_for('round_hole', round_id=round_id, hole_number=hole_number))
     else:
+        # 18ホール完了したらラウンド一覧へ
         return redirect(url_for('round_list'))
 
 if __name__ == '__main__':

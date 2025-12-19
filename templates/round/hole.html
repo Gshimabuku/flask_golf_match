@@ -62,7 +62,9 @@
             {% set existing = existing_scores.get(member.page_id, {}) %}
             
             <!-- メンバー{{ member_idx }} -->
-            <div class="member-content {{ 'active' if loop.index == 1 else '' }}" data-member="{{ member_idx }}">
+            <div class="member-content {{ 'active' if loop.index == 1 else '' }}" 
+                 data-member="{{ member_idx }}"
+                 data-has-score="{{ 'true' if existing.stroke else 'false' }}">
                 <input type="hidden" name="member_id[]" value="{{ member.page_id }}">
                 
                 <div class="score-inputs">
@@ -151,8 +153,8 @@
             {% endfor %}
 
             <div class="button-group">
-                <button type="submit" class="btn btn-primary">
-                    保存（このホールに留まる）
+                <button type="submit" class="btn btn-primary" id="save-button">
+                    保存
                 </button>
             </div>
         </form>
@@ -163,6 +165,76 @@
         const form = document.querySelector('.score-form');
         const roundId = form.dataset.roundId;
         const currentHole = parseInt(form.dataset.holeNumber);
+
+        // 初期データの保存と変更追跡
+        const initialData = {};
+        let hasChanges = false;
+        let hasExistingScore = false;
+
+        // 初期データを記録
+        document.querySelectorAll('.member-content').forEach(function(member) {
+            const memberNum = member.dataset.member;
+            const hasScore = member.dataset.hasScore === 'true';
+            
+            if (hasScore) {
+                hasExistingScore = true;
+            }
+            
+            initialData[memberNum] = {
+                stroke: document.getElementById(`stroke_${memberNum}`).value,
+                putt: document.getElementById(`putt_${memberNum}`).value,
+                olympic: document.getElementById(`olympic_${memberNum}`) ? document.getElementById(`olympic_${memberNum}`).value : '',
+                snake: document.getElementById(`snake_${memberNum}`) ? document.getElementById(`snake_${memberNum}`).value : '',
+                snake_out: document.getElementById(`snake_out_${memberNum}`) ? document.getElementById(`snake_out_${memberNum}`).checked : false,
+                nearpin: document.getElementById(`nearpin_${memberNum}`) ? document.getElementById(`nearpin_${memberNum}`).checked : false
+            };
+        });
+
+        // 変更検知関数
+        function checkForChanges() {
+            hasChanges = false;
+            document.querySelectorAll('.member-content').forEach(function(member) {
+                const memberNum = member.dataset.member;
+                const current = {
+                    stroke: document.getElementById(`stroke_${memberNum}`).value,
+                    putt: document.getElementById(`putt_${memberNum}`).value,
+                    olympic: document.getElementById(`olympic_${memberNum}`) ? document.getElementById(`olympic_${memberNum}`).value : '',
+                    snake: document.getElementById(`snake_${memberNum}`) ? document.getElementById(`snake_${memberNum}`).value : '',
+                    snake_out: document.getElementById(`snake_out_${memberNum}`) ? document.getElementById(`snake_out_${memberNum}`).checked : false,
+                    nearpin: document.getElementById(`nearpin_${memberNum}`) ? document.getElementById(`nearpin_${memberNum}`).checked : false
+                };
+                
+                if (JSON.stringify(current) !== JSON.stringify(initialData[memberNum])) {
+                    hasChanges = true;
+                }
+            });
+        }
+
+        // 全ての入力フィールドに変更検知を追加
+        document.querySelectorAll('input, select').forEach(function(input) {
+            input.addEventListener('change', checkForChanges);
+            input.addEventListener('input', checkForChanges);
+        });
+
+        // 保存ボタンの処理
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (hasExistingScore) {
+                // 更新：このホールに留まる
+                form.action = `/round/${roundId}/hole/${currentHole}/save`;
+                form.submit();
+            } else {
+                // 新規登録：次のホールへ
+                const nextHole = currentHole + 1;
+                if (nextHole <= 18) {
+                    form.action = `/round/${roundId}/hole/${nextHole}/save`;
+                } else {
+                    form.action = `/round/${roundId}/hole/${currentHole}/save`;
+                }
+                form.submit();
+            }
+        });
 
         // ホームボタンの処理
         document.getElementById('home-button').addEventListener('click', function() {
@@ -183,7 +255,13 @@
             if (prevBtn && !prevBtn.disabled) {
                 prevBtn.addEventListener('click', function() {
                     const nextHole = parseInt(this.dataset.hole);
-                    navigateToHole(nextHole);
+                    if (hasChanges) {
+                        if (confirm('変更が保存されていません。\nこのまま移動しますか？')) {
+                            window.location.href = `/round/${roundId}/hole/${nextHole}`;
+                        }
+                    } else {
+                        window.location.href = `/round/${roundId}/hole/${nextHole}`;
+                    }
                 });
             }
 
@@ -192,16 +270,20 @@
             if (nextBtn && !nextBtn.disabled) {
                 nextBtn.addEventListener('click', function() {
                     const nextHole = parseInt(this.dataset.hole);
-                    navigateToHole(nextHole);
+                    if (hasChanges) {
+                        if (confirm('変更が保存されていません。\nこのまま移動しますか？')) {
+                            window.location.href = `/round/${roundId}/hole/${nextHole}`;
+                        }
+                    } else {
+                        window.location.href = `/round/${roundId}/hole/${nextHole}`;
+                    }
                 });
             }
         });
 
-        // ホール移動関数（保存してから遷移）
+        // ホール移動関数（使用されなくなったが互換性のため残す）
         function navigateToHole(nextHole) {
-            // フォームのaction URLを変更して次のホールへ遷移させる
-            form.action = `/round/${roundId}/hole/${nextHole}/save`;
-            form.submit();
+            window.location.href = `/round/${roundId}/hole/${nextHole}`;
         }
 
         // タブ切り替え機能
