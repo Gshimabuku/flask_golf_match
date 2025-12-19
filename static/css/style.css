@@ -869,7 +869,7 @@ select:focus {
     background-color: #f5f5f5;
 }
 
-.hole-header {
+.hole-page .hole-header {
     background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
     color: white;
     padding: 20px;
@@ -877,7 +877,7 @@ select:focus {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.hole-header h1 {
+.hole-page .hole-header h1 {
     color: white;
     border: none;
     padding: 0;
@@ -885,7 +885,7 @@ select:focus {
     font-size: 24px;
 }
 
-.hole-info {
+.hole-page .hole-info {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -893,16 +893,16 @@ select:focus {
     font-size: 16px;
 }
 
-.hole-number {
+.hole-page .hole-number {
     font-size: 36px;
     font-weight: bold;
 }
 
-.par-info {
+.hole-page .par-info {
     font-size: 20px;
 }
 
-.score-form {
+.hole-page .score-form {
     background: white;
     border-radius: 8px;
     padding: 20px;
@@ -910,16 +910,16 @@ select:focus {
     min-height: 300px;
 }
 
-.member-content {
+.hole-page .member-content {
     display: none;
 }
 
-.member-content.active {
+.hole-page .member-content.active {
     display: block;
     animation: fadeIn 0.3s ease;
 }
 
-.member-name-display {
+.hole-page .member-name-display {
     font-size: 20px;
     font-weight: bold;
     text-align: center;
@@ -940,13 +940,13 @@ select:focus {
     }
 }
 
-.members-container {
+.hole-page .members-container {
     display: flex;
     gap: 16px;
     min-width: min-content;
 }
 
-.member-section {
+.hole-page .member-section {
     flex: 1;
     min-width: 200px;
     padding: 16px;
@@ -955,11 +955,11 @@ select:focus {
     border: 2px solid #e0e0e0;
 }
 
-.member-section:last-child {
+.hole-page .member-section:last-child {
     margin-bottom: 0;
 }
 
-.member-name {
+.hole-page .member-name {
     font-size: 16px;
     font-weight: bold;
     color: #2c3e50;
@@ -970,7 +970,7 @@ select:focus {
     white-space: nowrap;
 }
 
-.score-inputs {
+.hole-page .score-inputs {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 20px;
@@ -978,27 +978,27 @@ select:focus {
     margin-bottom: 24px;
 }
 
-.game-scores {
+.hole-page .game-scores {
     display: flex;
     flex-direction: column;
     gap: 16px;
     max-width: 400px;
 }
 
-.game-score-item {
+.hole-page .game-score-item {
     display: flex;
     flex-direction: column;
     gap: 8px;
 }
 
-.game-score-item > label:first-child {
+.hole-page .game-score-item > label:first-child {
     font-size: 14px;
     font-weight: 600;
     color: #666;
     text-align: left;
 }
 
-.game-score-item select {
+.hole-page .game-score-item select {
     padding: 12px;
     font-size: 16px;
     border: 2px solid #ddd;
@@ -1008,21 +1008,21 @@ select:focus {
     max-width: 100%;
 }
 
-.snake-controls {
+.hole-page .snake-controls {
     display: flex;
     gap: 12px;
     align-items: center;
 }
 
-.snake-controls .input-controls {
+.hole-page .snake-controls .input-controls {
     flex: 0 0 auto;
 }
 
-.snake-controls .input-controls input {
+.hole-page .snake-controls .input-controls input {
     max-width: 80px;
 }
 
-.snake-controls .checkbox-label {
+.hole-page .snake-controls .checkbox-label {
     display: flex;
     align-items: center;
     gap: 6px;
@@ -1030,18 +1030,18 @@ select:focus {
     margin-left: 0;
 }
 
-.snake-controls .checkbox-label input[type="checkbox"] {
+.hole-page .snake-controls .checkbox-label input[type="checkbox"] {
     width: 20px;
     height: 20px;
     cursor: pointer;
 }
 
-.snake-controls .checkbox-label span {
+.hole-page .snake-controls .checkbox-label span {
     font-size: 15px;
     font-weight: 500;
 }
 
-.nearpin-checkbox {
+.hole-page .nearpin-checkbox {
     display: inline-flex;
     align-items: center;
     gap: 8px;
@@ -1049,41 +1049,41 @@ select:focus {
     width: fit-content;
 }
 
-.nearpin-checkbox:hover {
+.hole-page .nearpin-checkbox:hover {
     opacity: 0.7;
 }
 
-.nearpin-checkbox input[type="checkbox"] {
+.hole-page .nearpin-checkbox input[type="checkbox"] {
     width: 20px;
     height: 20px;
     cursor: pointer;
 }
 
-.nearpin-checkbox span {
+.hole-page .nearpin-checkbox span {
     font-size: 15px;
     font-weight: 500;
 }
 
-.plus-btn.small,
-.minus-btn.small {
+.hole-page .plus-btn.small,
+.hole-page .minus-btn.small {
     width: 40px;
     height: 50px;
     font-size: 24px;
 }
 
-.input-group {
+.hole-page .input-group {
     display: flex;
     flex-direction: column;
 }
 
-.input-controls {
+.hole-page .input-controls {
     display: flex;
     align-items: center;
     gap: 8px;
 }
 
-.plus-btn,
-.minus-btn {
+.hole-page .plus-btn,
+.hole-page .minus-btn {
     flex-shrink: 0;
     width: 50px;
     height: 60px;
@@ -1098,20 +1098,20 @@ select:focus {
     user-select: none;
 }
 
-.plus-btn:hover,
-.minus-btn:hover {
+.hole-page .plus-btn:hover,
+.hole-page .minus-btn:hover {
     background-color: #4CAF50;
     border-color: #4CAF50;
     color: white;
     transform: scale(1.05);
 }
 
-.plus-btn:active,
-.minus-btn:active {
+.hole-page .plus-btn:active,
+.hole-page .minus-btn:active {
     transform: scale(0.95);
 }
 
-.input-group label {
+.hole-page .input-group label {
     font-size: 16px;
     font-weight: 500;
     color: #555;
@@ -1119,7 +1119,7 @@ select:focus {
     text-align: center;
 }
 
-.input-group input {
+.hole-page .input-group input {
     flex: 1;
     width: 100%;
     padding: 20px;
@@ -1132,30 +1132,30 @@ select:focus {
     cursor: default;
 }
 
-.input-group input:focus {
+.hole-page .input-group input:focus {
     outline: none;
     border-color: #4CAF50;
     box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
 }
 
-.input-group input[readonly] {
+.hole-page .input-group input[readonly] {
     background-color: #fff;
     cursor: default;
 }
 
-.input-group input[type="number"]::-webkit-inner-spin-button,
-.input-group input[type="number"]::-webkit-outer-spin-button {
+.hole-page .input-group input[type="number"]::-webkit-inner-spin-button,
+.hole-page .input-group input[type="number"]::-webkit-outer-spin-button {
     opacity: 0;
     height: 0;
 }
 
-.button-group {
+.hole-page .button-group {
     display: flex;
     gap: 12px;
     margin-top: 24px;
 }
 
-.btn {
+.hole-page .btn {
     flex: 1;
     padding: 16px;
     font-size: 16px;
@@ -1166,42 +1166,42 @@ select:focus {
     transition: all 0.3s ease;
 }
 
-.btn-primary {
+.hole-page .btn-primary {
     background-color: #4CAF50;
     color: white;
 }
 
-.btn-primary:hover {
+.hole-page .btn-primary:hover {
     background-color: #45a049;
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
 }
 
-.btn-secondary {
+.hole-page .btn-secondary {
     background-color: #757575;
     color: white;
 }
 
-.btn-secondary:hover {
+.hole-page .btn-secondary:hover {
     background-color: #616161;
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-.navigation-buttons {
+.hole-page .navigation-buttons {
     display: flex;
     gap: 12px;
     margin-bottom: 20px;
 }
 
-.member-tabs {
+.hole-page .member-tabs {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 8px;
     margin-bottom: 20px;
 }
 
-.tab-btn {
+.hole-page .tab-btn {
     padding: 12px;
     font-size: 15px;
     font-weight: bold;
@@ -1213,18 +1213,18 @@ select:focus {
     transition: all 0.3s ease;
 }
 
-.tab-btn:hover {
+.hole-page .tab-btn:hover {
     border-color: #4CAF50;
     color: #4CAF50;
 }
 
-.tab-btn.active {
+.hole-page .tab-btn.active {
     background-color: #4CAF50;
     color: white;
     border-color: #4CAF50;
 }
 
-.nav-btn {
+.hole-page .nav-btn {
     flex: 1;
     padding: 12px;
     font-size: 14px;
@@ -1237,77 +1237,77 @@ select:focus {
     transition: all 0.3s ease;
 }
 
-.nav-btn:hover:not(:disabled) {
+.hole-page .nav-btn:hover:not(:disabled) {
     background-color: #4CAF50;
     color: white;
 }
 
-.nav-btn:disabled {
+.hole-page .nav-btn:disabled {
     opacity: 0.3;
     cursor: not-allowed;
 }
 
 @media (max-width: 480px) {
-    .hole-header {
+    .hole-page .hole-header {
         padding: 16px;
     }
 
-    .hole-number {
+    .hole-page .hole-number {
         font-size: 28px;
     }
 
-    .par-info {
+    .hole-page .par-info {
         font-size: 16px;
     }
 
-    .score-form {
+    .hole-page .score-form {
         padding: 16px;
         min-height: 250px;
     }
 
-    .member-tabs {
+    .hole-page .member-tabs {
         gap: 6px;
     }
 
-    .tab-btn {
+    .hole-page .tab-btn {
         padding: 10px 6px;
         font-size: 13px;
     }
 
-    .score-inputs {
+    .hole-page .score-inputs {
         gap: 16px;
         margin-bottom: 20px;
     }
 
-    .game-scores {
+    .hole-page .game-scores {
         gap: 12px;
     }
 
-    .game-score-item select {
+    .hole-page .game-score-item select {
         padding: 10px;
         font-size: 15px;
     }
 
-    .plus-btn,
-    .minus-btn {
+    .hole-page .plus-btn,
+    .hole-page .minus-btn {
         width: 45px;
         height: 55px;
         font-size: 24px;
     }
 
-    .plus-btn.small,
-    .minus-btn.small {
+    .hole-page .plus-btn.small,
+    .hole-page .minus-btn.small {
         width: 38px;
         height: 48px;
         font-size: 22px;
     }
 
-    .input-group input {
+    .hole-page .input-group input {
         padding: 16px;
         font-size: 28px;
     }
 
-    .button-group {
+    .hole-page .button-group {
         flex-direction: column;
     }
 }
