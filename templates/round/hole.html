@@ -14,7 +14,7 @@
             <h1>{{ round.get('name', 'ラウンド') }}</h1>
             <div class="hole-info">
                 <div class="hole-number">HOLE {{ hole_number }}</div>
-                <div class="par-info">PAR 4</div>
+                <div class="par-info">PAR {{ hole_par }}</div>
             </div>
         </div>
 
@@ -83,43 +83,54 @@
 
                 <!-- ゲームスコア -->
                 <div class="game-scores">
-                    <div class="game-score-item">
-                        <label for="olympic_{{ member_idx }}">オリンピック</label>
-                        <select id="olympic_{{ member_idx }}" name="olympic_{{ member_idx }}">
-                            <option value="">なし</option>
-                            {% for value, display_name in olympic_types %}
-                            <option value="{{ value }}" {{ 'selected' if existing.olympic == value else '' }}>{{ display_name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
+                    {% if game_setting %}
+                        <!-- オリンピック -->
+                        {% if game_setting.gold is not none and member.page_id in (game_setting.olympic_member or []) %}
+                        <div class="game-score-item">
+                            <label for="olympic_{{ member_idx }}">オリンピック</label>
+                            <select id="olympic_{{ member_idx }}" name="olympic_{{ member_idx }}">
+                                <option value="">なし</option>
+                                {% for value, display_name in olympic_types %}
+                                <option value="{{ value }}" {{ 'selected' if existing.olympic == value else '' }}>{{ display_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        {% endif %}
 
-                    <div class="game-score-item">
-                        <label for="snake_{{ member_idx }}">ヘビ</label>
-                        <div class="snake-controls">
-                            <div class="input-controls">
-                                <button type="button" class="minus-btn small" data-target="snake_{{ member_idx }}">−</button>
-                                <input type="number" 
-                                       id="snake_{{ member_idx }}" 
-                                       name="snake_{{ member_idx }}" 
-                                       min="0" 
-                                       max="99"
-                                       value="{{ existing.snake or 0 }}"
-                                       readonly>
-                                <button type="button" class="plus-btn small" data-target="snake_{{ member_idx }}">+</button>
+                        <!-- ヘビ -->
+                        {% if game_setting.snake is not none and member.page_id in (game_setting.snake_member or []) %}
+                        <div class="game-score-item">
+                            <label for="snake_{{ member_idx }}">ヘビ</label>
+                            <div class="snake-controls">
+                                <div class="input-controls">
+                                    <button type="button" class="minus-btn small" data-target="snake_{{ member_idx }}">−</button>
+                                    <input type="number" 
+                                           id="snake_{{ member_idx }}" 
+                                           name="snake_{{ member_idx }}" 
+                                           min="0" 
+                                           max="99"
+                                           value="{{ existing.snake or 0 }}"
+                                           readonly>
+                                    <button type="button" class="plus-btn small" data-target="snake_{{ member_idx }}">+</button>
+                                </div>
+                                <label class="checkbox-label">
+                                    <span>アウト</span>
+                                    <input type="checkbox" id="snake_out_{{ member_idx }}" name="snake_out_{{ member_idx }}" {{ 'checked' if existing.snake_out else '' }}>
+                                </label>
                             </div>
-                            <label class="checkbox-label">
-                                <span>アウト</span>
-                                <input type="checkbox" id="snake_out_{{ member_idx }}" name="snake_out_{{ member_idx }}" {{ 'checked' if existing.snake_out else '' }}>
+                        </div>
+                        {% endif %}
+
+                        <!-- ニアピン（パー3のみ） -->
+                        {% if game_setting.nearpin and hole_par == 3 and member.page_id in (game_setting.nearpin_member or []) %}
+                        <div class="game-score-item">
+                            <label class="checkbox-label nearpin-checkbox">
+                                <span>ニアピン</span>
+                                <input type="checkbox" id="nearpin_{{ member_idx }}" name="nearpin_{{ member_idx }}" {{ 'checked' if existing.nearpin else '' }}>
                             </label>
                         </div>
-                    </div>
-
-                    <div class="game-score-item">
-                        <label class="checkbox-label nearpin-checkbox">
-                            <span>ニアピン</span>
-                            <input type="checkbox" id="nearpin_{{ member_idx }}" name="nearpin_{{ member_idx }}" {{ 'checked' if existing.nearpin else '' }}>
-                        </label>
-                    </div>
+                        {% endif %}
+                    {% endif %}
                 </div>
             </div>
             {% endfor %}

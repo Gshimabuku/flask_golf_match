@@ -2,9 +2,11 @@ from flask import Flask, render_template, jsonify, redirect, url_for, Response, 
 import os
 from Services.course_service import get_courses,get_layouts,add_course,get_course_detail
 from Services.round_service import get_rounds,add_round,get_round_detail
-from Services.game_setting_service import add_game_setting
+from Services.game_setting_service import add_game_setting, get_game_setting_by_round
 from Services.score_service import get_scores, add_score, get_hole_scores
 from Services.user_service import get_users
+from Services.notion_service import fetch_db_properties
+from config import NOTION_DB_HOLES_ID
 from Const import olympic_type
 
 app = Flask(__name__)
@@ -152,6 +154,24 @@ def round_hole(round_id, hole_number):
     if not round_data:
         return "Round not found", 404
     
+    # ゲーム設定取得
+    game_setting = get_game_setting_by_round(round_id)
+    
+    # ホール情報取得（PARを取得するため）
+    hole_par = 4  # デフォルト値
+    try:
+        # layout_outまたはlayout_inからホール情報を取得
+        layout_ids = round_data.get("layout_out", []) + round_data.get("layout_in", [])
+        if layout_ids:
+            holes_data = fetch_db_properties(NOTION_DB_HOLES_ID)
+            for hole_data in holes_data:
+                if (hole_data.get("hole_number") == hole_number and 
+                    any(layout_id in hole_data.get("layout", []) for layout_id in layout_ids)):
+                    hole_par = hole_data.get("par", 4)
+                    break
+    except Exception as e:
+        print(f"Error fetching hole info: {e}")
+    
     # 既存スコア取得
     existing_scores = get_hole_scores(round_id, hole_number)
     
@@ -161,9 +181,11 @@ def round_hole(round_id, hole_number):
     return render_template('round/hole.html', 
                          round=round_data, 
                          hole_number=hole_number,
+                         hole_par=hole_par,
                          members=round_data.get('member_list', []),
                          existing_scores=existing_scores,
-                         olympic_types=olympic_types)
+                         olympic_types=olympic_types,
+                         game_setting=game_setting)
 
 @app.route('/round/<round_id>/hole/<int:hole_number>/save', methods=['POST'])
 def round_hole_save(round_id, hole_number):

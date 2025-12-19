@@ -47,6 +47,26 @@ def get_game_settings(round_id=None):
     return results
 
 # ---------------------------------
+# ゲーム設定取得（ラウンド指定）
+# ---------------------------------
+def get_game_setting_by_round(round_id: str):
+    """指定されたラウンドのゲーム設定を取得（モデル形式で返す）"""
+    try:
+        settings = fetch_db_properties(NOTION_DB_GAME_SETTINGS_ID)
+        # round_idに一致する設定を取得
+        setting_data = next((s for s in settings if round_id in s.get("round", [])), None)
+        
+        if not setting_data:
+            # ゲーム設定が存在しない場合はNoneを返す
+            return None
+        
+        # GameSettingモデルに変換して返す
+        return GameSetting.from_notion(setting_data)
+    except Exception as e:
+        print("get_game_setting_by_round error:", e)
+        return None
+
+# ---------------------------------
 # ゲーム設定登録
 # ---------------------------------
 def add_game_setting(data: dict) -> str:
