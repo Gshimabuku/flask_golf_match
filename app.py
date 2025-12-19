@@ -1,8 +1,11 @@
 from flask import Flask, render_template, jsonify, redirect, url_for, Response, request
 import os
 from Services.course_service import get_courses,get_layouts,add_course,get_course_detail
-from Services.round_service import get_rounds,add_round,add_game_setting
+from Services.round_service import get_rounds,add_round
+from Services.game_setting_service import add_game_setting
+from Services.score_service import get_scores, add_score
 from Services.user_service import get_users
+from Const import olympic_type
 
 app = Flask(__name__)
 
@@ -83,7 +86,8 @@ def round_new():
     courses = get_courses()
     layouts = get_layouts()
     users = get_users()
-    return render_template('round/new.html', courses=courses, layouts=layouts, users=users)
+    olympic_types = [(val, olympic_type.DISPLAY[val]) for val in olympic_type.ALL]
+    return render_template('round/new.html', courses=courses, layouts=layouts, users=users, olympic_types=olympic_types)
 
 @app.route("/round/create", methods=["POST"])
 def round_create():

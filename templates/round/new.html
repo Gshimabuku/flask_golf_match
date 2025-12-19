@@ -123,50 +123,16 @@
                         </label>
                     </h2>
                     <div id="olympic_content" style="display: none;">
+                        {% for value, display_name in olympic_types %}
                         <div class="form-row">
-                            <label for="gold">金:</label>
+                            <label for="{{ value }}">{{ display_name }}:</label>
                             <div class="rate-control">
-                                <button type="button" id="gold_minus">−</button>
-                                <input type="number" id="gold" name="gold" value="4" readonly>
-                                <button type="button" id="gold_plus">＋</button>
+                                <button type="button" id="{{ value }}_minus">−</button>
+                                <input type="number" id="{{ value }}" name="{{ value }}" value="{{ 5 - loop.index0 }}" readonly>
+                                <button type="button" id="{{ value }}_plus">＋</button>
                             </div>
                         </div>
-
-                        <div class="form-row">
-                            <label for="silver">銀:</label>
-                            <div class="rate-control">
-                                <button type="button" id="silver_minus">−</button>
-                                <input type="number" id="silver" name="silver" value="3" readonly>
-                                <button type="button" id="silver_plus">＋</button>
-                            </div>
-                        </div>
-
-                        <div class="form-row">
-                            <label for="bronze">銅:</label>
-                            <div class="rate-control">
-                                <button type="button" id="bronze_minus">−</button>
-                                <input type="number" id="bronze" name="bronze" value="2" readonly>
-                                <button type="button" id="bronze_plus">＋</button>
-                            </div>
-                        </div>
-
-                        <div class="form-row">
-                            <label for="iron">鉄:</label>
-                            <div class="rate-control">
-                                <button type="button" id="iron_minus">−</button>
-                                <input type="number" id="iron" name="iron" value="1" readonly>
-                                <button type="button" id="iron_plus">＋</button>
-                            </div>
-                        </div>
-
-                        <div class="form-row">
-                            <label for="diamond">ダイヤモンド:</label>
-                            <div class="rate-control">
-                                <button type="button" id="diamond_minus">−</button>
-                                <input type="number" id="diamond" name="diamond" value="5" readonly>
-                                <button type="button" id="diamond_plus">＋</button>
-                            </div>
-                        </div>
+                        {% endfor %}
                     </div>
                 </div>
 
