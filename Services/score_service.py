@@ -50,6 +50,40 @@ def get_scores(round_id=None, user_id=None):
     return results
 
 # ---------------------------------
+# 特定ラウンド・ホールのスコア取得
+# ---------------------------------
+def get_hole_scores(round_id: str, hole_number: int):
+    """指定されたラウンドとホール番号のスコアを全メンバー分取得"""
+    results = {}
+
+    try:
+        scores = fetch_db_properties(NOTION_DB_SCORES_ID, ["name", "round", "user", "hole", "hole_number", "stroke", "putt", "olympic", "snake", "snake_out", "nearpin"])
+        
+        # フィルタリング
+        hole_scores = [s for s in scores if round_id in s.get("round", []) and s.get("hole_number") == hole_number]
+        
+        # user_idをキーにした辞書に変換
+        for s in hole_scores:
+            user_ids = s.get("user", [])
+            if user_ids:
+                user_id = user_ids[0]
+                score = Score.from_notion(s)
+                results[user_id] = {
+                    "page_id": score.page_id,
+                    "stroke": score.stroke,
+                    "putt": score.putt,
+                    "olympic": score.olympic,
+                    "snake": score.snake,
+                    "snake_out": score.snake_out,
+                    "nearpin": score.nearpin
+                }
+
+    except Exception as e:
+        print("get_hole_scores error:", e)
+
+    return results
+
+# ---------------------------------
 # スコア登録
 # ---------------------------------
 def add_score(data: dict) -> str:

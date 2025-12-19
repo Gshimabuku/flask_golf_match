@@ -1,9 +1,9 @@
 from flask import Flask, render_template, jsonify, redirect, url_for, Response, request
 import os
 from Services.course_service import get_courses,get_layouts,add_course,get_course_detail
-from Services.round_service import get_rounds,add_round
+from Services.round_service import get_rounds,add_round,get_round_detail
 from Services.game_setting_service import add_game_setting
-from Services.score_service import get_scores, add_score
+from Services.score_service import get_scores, add_score, get_hole_scores
 from Services.user_service import get_users
 from Const import olympic_type
 
@@ -139,8 +139,70 @@ def round_create():
 
     game_setting_page_id = add_game_setting(game_setting_data)
 
-    # 必要なら page_id を使った画面へ遷移も可能
-    return redirect(url_for("home"))
+    # 作成したラウンドのhole1のスコア入力画面へ遷移
+    return redirect(url_for('round_hole', round_id=round_page_id, hole_number=1))
+
+# --------------------------
+# スコア入力画面
+# --------------------------
+@app.route('/round/<round_id>/hole/<int:hole_number>')
+def round_hole(round_id, hole_number):
+    # ラウンド情報取得
+    round_data = get_round_detail(round_id)
+    if not round_data:
+        return "Round not found", 404
+    
+    # 既存スコア取得
+    existing_scores = get_hole_scores(round_id, hole_number)
+    
+    # オリンピック選択肢
+    olympic_types = [(val, olympic_type.DISPLAY[val]) for val in olympic_type.ALL]
+    
+    return render_template('round/hole.html', 
+                         round=round_data, 
+                         hole_number=hole_number,
+                         members=round_data.get('member_list', []),
+                         existing_scores=existing_scores,
+                         olympic_types=olympic_types)
+
+@app.route('/round/<round_id>/hole/<int:hole_number>/save', methods=['POST'])
+def round_hole_save(round_id, hole_number):
+    # TODO: hole_idの取得処理が必要（layoutから取得）
+    # 仮実装: hole_idは後で実装
+    
+    # 各メンバーのスコアを保存
+    members = request.form.getlist('member_id[]')
+    
+    for i, member_id in enumerate(members):
+        stroke = request.form.get(f'stroke_{i}')
+        putt = request.form.get(f'putt_{i}')
+        olympic = request.form.get(f'olympic_{i}')
+        snake = request.form.get(f'snake_{i}')
+        snake_out = request.form.get(f'snake_out_{i}')
+        nearpin = request.form.get(f'nearpin_{i}')
+        
+        if stroke:  # ストロークが入力されている場合のみ保存
+            score_data = {
+                "round_id": round_id,
+                "user_id": member_id,
+                "hole_id": "temp_hole_id",  # TODO: 実際のhole_idを取得
+                "hole_number": hole_number,
+                "stroke": int(stroke),
+                "putt": int(putt) if putt else 0,
+                "olympic": olympic if olympic else None,
+                "snake": int(snake) if snake else None,
+                "snake_out": bool(snake_out),
+                "nearpin": bool(nearpin)
+            }
+            
+            add_score(score_data)
+    
+    # 次のホールへ遷移（または完了画面へ）
+    next_hole = hole_number + 1
+    if next_hole <= 18:  # 18ホールまで
+        return redirect(url_for('round_hole', round_id=round_id, hole_number=next_hole))
+    else:
+        return redirect(url_for('round_list'))
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -36,6 +36,37 @@ def get_rounds():
     return results
 
 # ---------------------------------
+# ラウンド詳細取得
+# ---------------------------------
+def get_round_detail(round_id: str):
+    """指定されたラウンドの詳細情報を取得"""
+    try:
+        rounds = fetch_db_properties(NOTION_DB_ROUNDS_ID, ["name", "play_date", "course", "layout_out", "layout_in", "members"])
+        round_data = next((r for r in rounds if r["page_id"] == round_id), None)
+        
+        if not round_data:
+            return None
+        
+        # メンバー情報を取得
+        users = fetch_db_properties(NOTION_DB_USERS_ID, ["name", "display_name"])
+        member_ids = round_data.get("members", [])
+        members = []
+        for user in users:
+            if user["page_id"] in member_ids:
+                members.append({
+                    "page_id": user["page_id"],
+                    "name": user.get("name", ""),
+                    "display_name": user.get("display_name") or user.get("name", "")
+                })
+        
+        round_data["member_list"] = members
+        
+        return round_data
+    except Exception as e:
+        print("get_round_detail error:", e)
+        return None
+
+# ---------------------------------
 # ラウンド新規登録
 # ---------------------------------
 def add_round(data: dict) -> str:
