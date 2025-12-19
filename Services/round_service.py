@@ -22,8 +22,8 @@ def get_rounds():
                 )
             )
 
-        users = fetch_db_properties(NOTION_DB_USERS_ID, ["name"])
-        user_map = build_id_name_map(users, "name")
+        users = fetch_db_properties(NOTION_DB_USERS_ID, ["display_name"])
+        user_map = build_id_name_map(users, "display_name")
         for r in rounds:
             # membersを直接取得
             r["members"] = resolve_relation(r.get("members", []), user_map)
