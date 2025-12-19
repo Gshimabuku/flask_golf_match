@@ -14,13 +14,6 @@ class Round:
     
     @classmethod
     def from_notion(cls, data: dict):
-        # member1-4を統合
-        members = []
-        for i in range(1, 5):
-            member = data.get(f"member{i}")
-            if member:
-                members.extend(member if isinstance(member, list) else [member])
-        
         return cls(
             page_id=data.get("page_id"),
             name=data.get("name", ""),
@@ -28,5 +21,5 @@ class Round:
             course=data.get("course"),
             layout_out=data.get("layout_out"),
             layout_in=data.get("layout_in"),
-            members=members if members else None
+            members=data.get("members")
         )

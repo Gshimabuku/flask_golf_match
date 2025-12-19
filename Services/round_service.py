@@ -25,11 +25,8 @@ def get_rounds():
         users = fetch_db_properties(NOTION_DB_USERS_ID, ["name"])
         user_map = build_id_name_map(users, "name")
         for r in rounds:
-            # member1-4を統合してmembersに格納
-            member_ids = []
-            for key in ["member1", "member2", "member3", "member4"]:
-                member_ids.extend(r.get(key, []))
-            r["members"] = resolve_relation(member_ids, user_map)
+            # membersを直接取得
+            r["members"] = resolve_relation(r.get("members", []), user_map)
 
         results = rounds
 
@@ -53,16 +50,19 @@ def add_round(data: dict) -> str:
     now = datetime.now()
     name = f"{play_date.replace('-', '')[2:]}-{now.strftime('%H%M')}"
 
+    # membersを配列で格納
+    members = []
+    for i in range(1, member_count + 1):
+        members.append(data[f"member{i}"])
+
     notion_data = {
         "name": name,
         "play_date": play_date,
         "course": [course],
         "layout_in": [layout_in],
         "layout_out": [layout_out],
+        "members": members
     }
-
-    for i in range(1, member_count + 1):
-        notion_data[f"member{i}"] = [data[f"member{i}"]]
 
     column_types = {
         "name": "title",
@@ -70,10 +70,8 @@ def add_round(data: dict) -> str:
         "course": "relation",
         "layout_in": "relation",
         "layout_out": "relation",
+        "members": "relation"
     }
-
-    for i in range(1, member_count + 1):
-        column_types[f"member{i}"] = "relation"
 
     # Notion 保存
     page = create_page(NOTION_DB_ROUNDS_ID, notion_data, column_types)
