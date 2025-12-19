@@ -189,13 +189,39 @@ def round_hole(round_id, hole_number):
 
 @app.route('/round/<round_id>/hole/<int:hole_number>/save', methods=['POST'])
 def round_hole_save(round_id, hole_number):
-    # TODO: hole_idの取得処理が必要（layoutから取得）
-    # 仮実装: hole_idは後で実装
+    # ラウンド情報取得
+    round_data = get_round_detail(round_id)
+    if not round_data:
+        return "Round not found", 404
+    
+    # hole_idの取得
+    hole_id = None
+    try:
+        # layout_outまたはlayout_inからホール情報を取得
+        # hole_number 1-9: layout_out, 10-18: layout_in
+        layout_ids = []
+        if hole_number <= 9:
+            layout_ids = round_data.get("layout_out", [])
+        else:
+            layout_ids = round_data.get("layout_in", [])
+        
+        if layout_ids:
+            holes_data = fetch_db_properties(NOTION_DB_HOLES_ID)
+            for hole_data in holes_data:
+                if (hole_data.get("hole_number") == hole_number and 
+                    any(layout_id in hole_data.get("layout", []) for layout_id in layout_ids)):
+                    hole_id = hole_data.get("page_id")
+                    break
+    except Exception as e:
+        print(f"Error fetching hole_id: {e}")
+    
+    if not hole_id:
+        return "Hole not found", 404
     
     # 各メンバーのスコアを保存
     members = request.form.getlist('member_id[]')
     
-    for i, member_id in enumerate(members):
+    for i, member_id in enumerate(members, start=1):
         stroke = request.form.get(f'stroke_{i}')
         putt = request.form.get(f'putt_{i}')
         olympic = request.form.get(f'olympic_{i}')
@@ -207,7 +233,7 @@ def round_hole_save(round_id, hole_number):
             score_data = {
                 "round_id": round_id,
                 "user_id": member_id,
-                "hole_id": "temp_hole_id",  # TODO: 実際のhole_idを取得
+                "hole_id": hole_id,
                 "hole_number": hole_number,
                 "stroke": int(stroke),
                 "putt": int(putt) if putt else 0,
