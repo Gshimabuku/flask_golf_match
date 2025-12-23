@@ -838,12 +838,6 @@ select:focus {
     color: #333;
 }
 
-.course-detail-page .layout-table .label-col {
-    background-color: #f5f5f5;
-    font-weight: 600;
-    color: #555;
-}
-
 .course-detail-page .layout-table .total-col {
     background-color: #e8f5e9;
     font-weight: bold;
