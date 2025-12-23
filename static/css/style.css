@@ -651,6 +651,10 @@ select:focus {
     font-weight: 500;
 }
 
+.course-list-page .detail-value {
+    font-weight: 600;
+}
+
 /**
  * #######################################################
  *  コース新規作成ページ（course-new-page）
@@ -694,7 +698,6 @@ select:focus {
     padding: 8px 4px;
     border-radius: 4px;
     font-size: 14px;
-    box-sizing: border-box;
 }
 
 .course-new-page .holes-grid input[type="number"] {
@@ -834,6 +837,12 @@ select:focus {
     color: #333;
 }
 
+.course-detail-page .layout-table .label-col {
+    background-color: #f5f5f5;
+    font-weight: 600;
+    color: #555;
+}
+
 .course-detail-page .layout-table .total-col {
     background-color: #e8f5e9;
     font-weight: bold;
@@ -894,16 +903,80 @@ select:focus {
     border-radius: 8px;
     padding: 20px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    min-height: 300px;
+    min-height: auto;
 }
 
-.member-content {
+/* スコアセクション：2列グリッド */
+.hole-page .score-section {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.hole-page .score-member-card {
+    padding: 8px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    border: 2px solid #e0e0e0;
+}
+
+.hole-page .score-member-name {
+    font-size: 22px;
+    font-weight: bold;
+    color: #2c3e50;
+    margin: 0 0 12px 0;
+    padding-bottom: 6px;
+    border-bottom: 2px solid #4CAF50;
+    white-space: nowrap;
+}
+
+/* ゲームセクション：縦並び */
+.hole-page .game-section {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.hole-page .game-sub-section {
     display: none;
 }
 
-.member-content.active {
+.hole-page .game-sub-section.active {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.hole-page .game-member-card {
+    padding: 16px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    border: 2px solid #e0e0e0;
+}
+
+.hole-page .game-member-name {
+    font-size: 18px;
+    font-weight: bold;
+    color: #2c3e50;
+    margin: 0 0 16px 0;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #4CAF50;
+}
+
+/* 大項目タブコンテンツの表示切り替え */
+.hole-page .main-tab-content {
+    display: none;
+}
+
+.hole-page .main-tab-content.active {
     display: block;
-    animation: fadeIn 0.3s ease;
+}
+
+/* スコアセクションは2列グリッドで表示 */
+.hole-page .score-section.active {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
 }
 
 @keyframes fadeIn {
@@ -917,13 +990,13 @@ select:focus {
     }
 }
 
-.members-container {
+.hole-page .members-container {
     display: flex;
     gap: 16px;
     min-width: min-content;
 }
 
-.member-section {
+.hole-page .member-section {
     flex: 1;
     min-width: 200px;
     padding: 16px;
@@ -932,50 +1005,107 @@ select:focus {
     border: 2px solid #e0e0e0;
 }
 
-.member-section:last-child {
+.hole-page .member-section:last-child {
     margin-bottom: 0;
 }
 
-.member-name {
-    font-size: 16px;
-    font-weight: bold;
-    color: #2c3e50;
-    margin-bottom: 16px;
-    padding-bottom: 8px;
-    border-bottom: 2px solid #4CAF50;
-    text-align: center;
-    white-space: nowrap;
-}
-
-.score-inputs {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-    max-width: 400px;
-    margin-bottom: 24px;
-}
-
-.game-scores {
+.hole-page .score-inputs {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 8px;
     max-width: 400px;
+    margin-bottom: 16px;
 }
 
-.game-score-item {
+.hole-page .input-labels {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    padding: 0 4px;
+}
+
+.hole-page .input-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #666;
+    text-align: center;
+}
+
+.hole-page .input-values {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.hole-page .input-values input[type="number"] {
+    width: 100%;
+    padding: 12px;
+    font-size: 32px;
+    font-weight: bold;
+    text-align: center;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+.hole-page .input-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.hole-page .button-column {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.hole-page .button-column .plus-btn,
+.hole-page .button-column .minus-btn {
+    width: 100%;
+    padding: 10px;
+    font-size: 35px;
+    font-weight: bold;
+    border: 2px solid #4CAF50;
+    background-color: white;
+    color: #4CAF50;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.hole-page .button-column .plus-btn:hover,
+.hole-page .button-column .minus-btn:hover {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.hole-page .button-column .plus-btn:active,
+.hole-page .button-column .minus-btn:active {
+    transform: scale(0.95);
+}
+
+.hole-page .game-scores {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+}
+
+.hole-page .game-score-item {
     display: flex;
     flex-direction: column;
     gap: 8px;
 }
 
-.game-score-item > label:first-child {
+.hole-page .game-score-item > label:first-child {
     font-size: 14px;
     font-weight: 600;
     color: #666;
     text-align: left;
 }
 
-.game-score-item select {
+.hole-page .game-score-item select {
     padding: 12px;
     font-size: 16px;
     border: 2px solid #ddd;
@@ -985,21 +1115,23 @@ select:focus {
     max-width: 100%;
 }
 
-.snake-controls {
+.hole-page .snake-controls {
     display: flex;
-    gap: 12px;
+    flex-direction: column;
+    gap: 8px;
     align-items: center;
 }
 
-.snake-controls .input-controls {
+.hole-page .snake-controls .input-controls {
     flex: 0 0 auto;
 }
 
-.snake-controls .input-controls input {
-    max-width: 80px;
+.hole-page .snake-controls .input-controls input {
+    max-width: 50px;
+    width: 50px;
 }
 
-.snake-controls .checkbox-label {
+.hole-page .snake-controls .checkbox-label {
     display: flex;
     align-items: center;
     gap: 6px;
@@ -1007,18 +1139,18 @@ select:focus {
     margin-left: 0;
 }
 
-.snake-controls .checkbox-label input[type="checkbox"] {
+.hole-page .snake-controls .checkbox-label input[type="checkbox"] {
     width: 20px;
     height: 20px;
     cursor: pointer;
 }
 
-.snake-controls .checkbox-label span {
+.hole-page .snake-controls .checkbox-label span {
     font-size: 15px;
     font-weight: 500;
 }
 
-.nearpin-checkbox {
+.hole-page .nearpin-checkbox {
     display: inline-flex;
     align-items: center;
     gap: 8px;
@@ -1026,41 +1158,41 @@ select:focus {
     width: fit-content;
 }
 
-.nearpin-checkbox:hover {
+.hole-page .nearpin-checkbox:hover {
     opacity: 0.7;
 }
 
-.nearpin-checkbox input[type="checkbox"] {
+.hole-page .nearpin-checkbox input[type="checkbox"] {
     width: 20px;
     height: 20px;
     cursor: pointer;
 }
 
-.nearpin-checkbox span {
+.hole-page .nearpin-checkbox span {
     font-size: 15px;
     font-weight: 500;
 }
 
-.plus-btn.small,
-.minus-btn.small {
+.hole-page .plus-btn.small,
+.hole-page .minus-btn.small {
     width: 40px;
     height: 50px;
     font-size: 24px;
 }
 
-.input-group {
+.hole-page .input-group {
     display: flex;
     flex-direction: column;
 }
 
-.input-controls {
+.hole-page .input-controls {
     display: flex;
     align-items: center;
     gap: 8px;
 }
 
-.plus-btn,
-.minus-btn {
+.hole-page .plus-btn,
+.hole-page .minus-btn {
     flex-shrink: 0;
     width: 50px;
     height: 60px;
@@ -1075,20 +1207,20 @@ select:focus {
     user-select: none;
 }
 
-.plus-btn:hover,
-.minus-btn:hover {
+.hole-page .plus-btn:hover,
+.hole-page .minus-btn:hover {
     background-color: #4CAF50;
     border-color: #4CAF50;
     color: white;
     transform: scale(1.05);
 }
 
-.plus-btn:active,
-.minus-btn:active {
+.hole-page .plus-btn:active,
+.hole-page .minus-btn:active {
     transform: scale(0.95);
 }
 
-.input-group label {
+.hole-page .input-group label {
     font-size: 16px;
     font-weight: 500;
     color: #555;
@@ -1096,7 +1228,7 @@ select:focus {
     text-align: center;
 }
 
-.input-group input {
+.hole-page .input-group input {
     flex: 1;
     width: 100%;
     padding: 20px;
@@ -1109,30 +1241,31 @@ select:focus {
     cursor: default;
 }
 
-.input-group input:focus {
+.hole-page .input-group input:focus {
     outline: none;
     border-color: #4CAF50;
     box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
 }
 
-.input-group input[readonly] {
+.hole-page .input-group input[readonly] {
     background-color: #fff;
     cursor: default;
 }
 
-.input-group input[type="number"]::-webkit-inner-spin-button,
-.input-group input[type="number"]::-webkit-outer-spin-button {
+.hole-page .input-group input[type="number"]::-webkit-inner-spin-button,
+.hole-page .input-group input[type="number"]::-webkit-outer-spin-button {
     opacity: 0;
     height: 0;
 }
 
-.button-group {
+.hole-page .button-group {
     display: flex;
     gap: 12px;
     margin-top: 24px;
+    grid-column: 1 / -1;
 }
 
-.btn {
+.hole-page .btn {
     flex: 1;
     padding: 16px;
     font-size: 16px;
@@ -1143,44 +1276,45 @@ select:focus {
     transition: all 0.3s ease;
 }
 
-.btn-primary {
+.hole-page .btn-primary {
     background-color: #4CAF50;
     color: white;
 }
 
-.btn-primary:hover {
+.hole-page .btn-primary:hover {
     background-color: #45a049;
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
 }
 
-.btn-secondary {
+.hole-page .btn-secondary {
     background-color: #757575;
     color: white;
 }
 
-.btn-secondary:hover {
+.hole-page .btn-secondary:hover {
     background-color: #616161;
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-.navigation-buttons {
+.hole-page .navigation-buttons {
     display: flex;
     gap: 12px;
     margin-bottom: 20px;
 }
 
-.member-tabs {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
+/* 大項目タブ */
+.hole-page .main-tabs {
+    display: flex;
     gap: 8px;
-    margin-bottom: 20px;
+    margin-bottom: 12px;
 }
 
-.tab-btn {
-    padding: 12px;
-    font-size: 15px;
+.hole-page .main-tab-btn {
+    flex: 1;
+    padding: 14px;
+    font-size: 16px;
     font-weight: bold;
     border: 2px solid #ddd;
     background-color: white;
@@ -1190,18 +1324,50 @@ select:focus {
     transition: all 0.3s ease;
 }
 
-.tab-btn:hover {
+.hole-page .main-tab-btn:hover {
     border-color: #4CAF50;
     color: #4CAF50;
 }
 
-.tab-btn.active {
+.hole-page .main-tab-btn.active {
     background-color: #4CAF50;
     color: white;
     border-color: #4CAF50;
 }
 
-.nav-btn {
+/* 小項目タブ（ゲーム用） */
+.hole-page .sub-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.hole-page .sub-tab-btn {
+    flex: 1;
+    padding: 12px;
+    font-size: 14px;
+    font-weight: bold;
+    border: 2px solid #e0e0e0;
+    background-color: #f9f9f9;
+    color: #666;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.hole-page .sub-tab-btn:hover {
+    border-color: #4CAF50;
+    color: #4CAF50;
+    background-color: white;
+}
+
+.hole-page .sub-tab-btn.active {
+    background-color: #4CAF50;
+    color: white;
+    border-color: #4CAF50;
+}
+
+.hole-page .nav-btn {
     flex: 1;
     padding: 12px;
     font-size: 14px;
@@ -1214,77 +1380,170 @@ select:focus {
     transition: all 0.3s ease;
 }
 
-.nav-btn:hover:not(:disabled) {
+.hole-page .nav-btn:hover:not(:disabled) {
     background-color: #4CAF50;
     color: white;
 }
 
-.nav-btn:disabled {
+.hole-page .nav-btn:disabled {
     opacity: 0.3;
     cursor: not-allowed;
 }
 
 @media (max-width: 480px) {
     .hole-page .hole-info-section {
-        padding: 12px 16px;
+        padding: 8px 12px;
     }
 
     .hole-page .hole-number {
-        font-size: 28px;
+        font-size: 24px;
     }
 
     .hole-page .par-info {
-        font-size: 18px;
+        font-size: 16px;
     }
 
     .hole-page .score-form {
-        padding: 16px;
-        min-height: 250px;
+        padding: 6px;
     }
 
-    .member-tabs {
-        gap: 6px;
+    .hole-page .score-section {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 4px;
     }
 
-    .tab-btn {
-        padding: 10px 6px;
+    .hole-page .score-member-card {
+        padding: 6px;
+    }
+
+    .hole-page .score-member-name {
+        font-size: 18px;
+        margin: 0 0 4px 0;
+        padding-bottom: 3px;
+    }
+
+    .hole-page .game-member-card {
+        padding: 12px;
+    }
+
+    .hole-page .game-member-name {
+        font-size: 18px;
+        margin: 0 0 12px 0;
+    }
+
+    .hole-page .main-tabs {
+        gap: 4px;
+        margin-bottom: 8px;
+    }
+
+    .hole-page .main-tab-btn {
+        padding: 10px 4px;
         font-size: 13px;
     }
 
-    .score-inputs {
-        gap: 16px;
-        margin-bottom: 20px;
+    .hole-page .sub-tabs {
+        gap: 4px;
+        margin-bottom: 8px;
     }
 
-    .game-scores {
-        gap: 12px;
+    .hole-page .sub-tab-btn {
+        padding: 8px 4px;
+        font-size: 11px;
     }
 
-    .game-score-item select {
+    .hole-page .score-inputs {
+        gap: 3px;
+        margin-bottom: 6px;
+    }
+
+    .hole-page .input-label {
+        font-size: 15px;
+    }
+
+    .hole-page .button-column .plus-btn,
+    .hole-page .button-column .minus-btn {
+        padding: 0 4px;
+        font-size: 30px;
+    }
+
+    .hole-page .button-column {
+        gap: 3px;
+    }
+
+    .hole-page .game-scores {
+        gap: 8px;
+    }
+
+    .hole-page .game-score-item select {
         padding: 10px;
         font-size: 15px;
     }
 
-    .plus-btn,
-    .minus-btn {
+    .hole-page .plus-btn,
+    .hole-page .minus-btn {
         width: 45px;
         height: 55px;
         font-size: 24px;
     }
 
-    .plus-btn.small,
-    .minus-btn.small {
+    .hole-page .plus-btn.small,
+    .hole-page .minus-btn.small {
         width: 38px;
         height: 48px;
         font-size: 22px;
     }
 
-    .input-group input {
+    .hole-page .input-group input {
         padding: 16px;
         font-size: 28px;
     }
 
-    .button-group {
+    .hole-page .button-group {
         flex-direction: column;
+    }
+}
+
+/* 極小画面（iPhone SE等）用の追加最適化 */
+@media (max-width: 375px) {
+    .hole-page .score-form {
+        padding: 4px;
+    }
+
+    .hole-page .score-section {
+        gap: 3px;
+    }
+
+    .hole-page .score-member-card {
+        padding: 4px;
+    }
+
+    .hole-page .score-member-name {
+        font-size: 12px;
+        margin: 0 0 3px 0;
+        padding-bottom: 2px;
+    }
+
+    .hole-page .score-inputs {
+        gap: 2px;
+        margin-bottom: 4px;
+    }
+
+    .hole-page .input-label {
+        font-size: 10px;
+    }
+
+    .hole-page .input-values input[type="number"] {
+        font-size: 12px;
+        padding: 2px;
+    }
+
+    .hole-page .button-column .plus-btn,
+    .hole-page .button-column .minus-btn {
+        padding: 2px;
+        font-size: 20px;
+    }
+
+    .hole-page .button-column {
+        gap: 2px;
     }
 }

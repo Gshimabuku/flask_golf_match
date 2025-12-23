@@ -43,13 +43,25 @@
             </button>
         </div>
 
-        <!-- メンバータブ -->
-        <div class="member-tabs">
-            {% for member in members %}
-            <button type="button" class="tab-btn {{ 'active' if loop.index == 1 else '' }}" data-member="{{ loop.index }}">
-                {{ member.display_name }}
-            </button>
-            {% endfor %}
+        <!-- 大項目タブ -->
+        <div class="main-tabs">
+            <button type="button" class="main-tab-btn active" data-main-tab="score">スコア</button>
+            <button type="button" class="main-tab-btn" data-main-tab="game">ゲーム</button>
+        </div>
+
+        <!-- 小項目タブ（ゲームの場合のみ表示） -->
+        <div class="sub-tabs" id="game-sub-tabs" style="display: none;">
+            {% if game_setting %}
+            {% if game_setting.gold is not none %}
+            <button type="button" class="sub-tab-btn active" data-sub-tab="olympic">オリンピック</button>
+            {% endif %}
+            {% if game_setting.snake is not none %}
+            <button type="button" class="sub-tab-btn" data-sub-tab="snake">ヘビ</button>
+            {% endif %}
+            {% if game_setting.nearpin %}
+            <button type="button" class="sub-tab-btn" data-sub-tab="nearpin">ニアピン</button>
+            {% endif %}
+            {% endif %}
         </div>
 
         <form action="{{ url_for('round_hole_save', round_id=round['page_id'], hole_number=hole_number) }}" 
@@ -57,54 +69,54 @@
               class="score-form"
               data-round-id="{{ round['page_id'] }}"
               data-hole-number="{{ hole_number }}">
-            {% for member in members %}
-            {% set member_idx = loop.index %}
-            {% set existing = existing_scores.get(member.page_id, {}) %}
             
-            <!-- メンバー{{ member_idx }} -->
-            <div class="member-content {{ 'active' if loop.index == 1 else '' }}" 
-                 data-member="{{ member_idx }}"
-                 data-has-score="{{ 'true' if existing.stroke else 'false' }}">
-                <input type="hidden" name="member_id[]" value="{{ member.page_id }}">
+            <!-- スコアセクション -->
+            <div class="score-section main-tab-content active" data-main-content="score">
+                {% for member in members %}
+                {% set member_idx = loop.index %}
+                {% set existing = existing_scores.get(member.page_id, {}) %}
+                <input type="hidden" name="member_id[]" value="{{ member.page_id }}" data-has-score="{{ 'true' if existing.stroke else 'false' }}">
                 
-                <div class="score-inputs">
-                    <div class="input-group">
-                        <label for="stroke_{{ member_idx }}">ストローク</label>
-                        <div class="input-controls">
-                            <button type="button" class="minus-btn" data-target="stroke_{{ member_idx }}">−</button>
-                            <input type="number" 
-                                   id="stroke_{{ member_idx }}" 
-                                   name="stroke_{{ member_idx }}" 
-                                   min="1" 
-                                   max="15"
-                                   value="{{ existing.stroke or 4 }}"
-                                   readonly>
-                            <button type="button" class="plus-btn" data-target="stroke_{{ member_idx }}">+</button>
+                <!-- メンバー{{ member_idx }} スコア -->
+                <div class="score-member-card">
+                    <h3 class="score-member-name">{{ member.display_name }}</h3>
+                    <div class="score-inputs">
+                        <div class="input-labels">
+                            <span class="input-label">Score</span>
+                            <span class="input-label">Putts</span>
                         </div>
-                    </div>
-                    <div class="input-group">
-                        <label for="putt_{{ member_idx }}">パット</label>
-                        <div class="input-controls">
-                            <button type="button" class="minus-btn" data-target="putt_{{ member_idx }}">−</button>
-                            <input type="number" 
-                                   id="putt_{{ member_idx }}" 
-                                   name="putt_{{ member_idx }}" 
-                                   min="0" 
-                                   max="3"
-                                   value="{{ existing.putt or 0 }}"
-                                   readonly>
-                            <button type="button" class="plus-btn" data-target="putt_{{ member_idx }}">+</button>
+                        <div class="input-values">
+                            <input type="number" id="stroke_{{ member_idx }}" name="stroke_{{ member_idx }}" min="1" max="15" value="{{ existing.stroke or 4 }}" readonly>
+                            <input type="number" id="putt_{{ member_idx }}" name="putt_{{ member_idx }}" min="0" max="3" value="{{ existing.putt or 0 }}" readonly>
+                        </div>
+                        <div class="input-buttons">
+                            <div class="button-column">
+                                <button type="button" class="plus-btn" data-target="stroke_{{ member_idx }}">+</button>
+                                <button type="button" class="minus-btn" data-target="stroke_{{ member_idx }}">−</button>
+                            </div>
+                            <div class="button-column">
+                                <button type="button" class="plus-btn" data-target="putt_{{ member_idx }}">+</button>
+                                <button type="button" class="minus-btn" data-target="putt_{{ member_idx }}">−</button>
+                            </div>
                         </div>
                     </div>
                 </div>
+                {% endfor %}
+            </div>
 
-                <!-- ゲームスコア -->
-                <div class="game-scores">
-                    {% if game_setting %}
-                        <!-- オリンピック -->
-                        {% if game_setting.gold is not none and member.page_id in (game_setting.olympic_member or []) %}
+            <!-- ゲームセクション -->
+            <div class="game-section main-tab-content" data-main-content="game">
+                {% if game_setting %}
+                <!-- オリンピック小項目 -->
+                {% if game_setting.gold is not none %}
+                <div class="game-sub-section sub-tab-content active" data-sub-content="olympic">
+                    {% for member in members %}
+                    {% set member_idx = loop.index %}
+                    {% set existing = existing_scores.get(member.page_id, {}) %}
+                    {% if member.page_id in (game_setting.olympic_member or []) %}
+                    <div class="game-member-card">
+                        <h3 class="game-member-name">{{ member.display_name }}</h3>
                         <div class="game-score-item">
-                            <label for="olympic_{{ member_idx }}">オリンピック</label>
                             <select id="olympic_{{ member_idx }}" name="olympic_{{ member_idx }}">
                                 <option value="">なし</option>
                                 {% for value, display_name in olympic_types %}
@@ -112,23 +124,27 @@
                                 {% endfor %}
                             </select>
                         </div>
-                        {% endif %}
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+                {% endif %}
 
-                        <!-- ヘビ -->
-                        {% if game_setting.snake is not none and member.page_id in (game_setting.snake_member or []) %}
+                <!-- ヘビ小項目 -->
+                {% if game_setting.snake is not none %}
+                <div class="game-sub-section sub-tab-content" data-sub-content="snake">
+                    {% for member in members %}
+                    {% set member_idx = loop.index %}
+                    {% set existing = existing_scores.get(member.page_id, {}) %}
+                    {% if member.page_id in (game_setting.snake_member or []) %}
+                    <div class="game-member-card">
+                        <h3 class="game-member-name">{{ member.display_name }}</h3>
                         <div class="game-score-item">
-                            <label for="snake_{{ member_idx }}">ヘビ</label>
                             <div class="snake-controls">
                                 <div class="input-controls">
-                                    <button type="button" class="minus-btn small" data-target="snake_{{ member_idx }}">−</button>
-                                    <input type="number" 
-                                           id="snake_{{ member_idx }}" 
-                                           name="snake_{{ member_idx }}" 
-                                           min="0" 
-                                           max="99"
-                                           value="{{ existing.snake or 0 }}"
-                                           readonly>
                                     <button type="button" class="plus-btn small" data-target="snake_{{ member_idx }}">+</button>
+                                    <input type="number" id="snake_{{ member_idx }}" name="snake_{{ member_idx }}" min="0" max="99" value="{{ existing.snake or 0 }}" readonly>
+                                    <button type="button" class="minus-btn small" data-target="snake_{{ member_idx }}">−</button>
                                 </div>
                                 <label class="checkbox-label">
                                     <span>アウト</span>
@@ -136,21 +152,34 @@
                                 </label>
                             </div>
                         </div>
-                        {% endif %}
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+                {% endif %}
 
-                        <!-- ニアピン（パー3のみ） -->
-                        {% if game_setting.nearpin and hole_par == 3 and member.page_id in (game_setting.nearpin_member or []) %}
+                <!-- ニアピン小項目 -->
+                {% if game_setting.nearpin %}
+                <div class="game-sub-section sub-tab-content" data-sub-content="nearpin">
+                    {% for member in members %}
+                    {% set member_idx = loop.index %}
+                    {% set existing = existing_scores.get(member.page_id, {}) %}
+                    {% if member.page_id in (game_setting.nearpin_member or []) %}
+                    <div class="game-member-card">
+                        <h3 class="game-member-name">{{ member.display_name }}</h3>
                         <div class="game-score-item">
                             <label class="checkbox-label nearpin-checkbox">
                                 <span>ニアピン</span>
                                 <input type="checkbox" id="nearpin_{{ member_idx }}" name="nearpin_{{ member_idx }}" {{ 'checked' if existing.nearpin else '' }}>
                             </label>
                         </div>
-                        {% endif %}
+                    </div>
                     {% endif %}
+                    {% endfor %}
                 </div>
+                {% endif %}
+                {% endif %}
             </div>
-            {% endfor %}
 
             <div class="button-group">
                 <button type="submit" class="btn btn-primary" id="save-button">
@@ -172,17 +201,17 @@
         let hasExistingScore = false;
 
         // 初期データを記録
-        document.querySelectorAll('.member-content').forEach(function(member) {
-            const memberNum = member.dataset.member;
-            const hasScore = member.dataset.hasScore === 'true';
+        document.querySelectorAll('input[name="member_id[]"]').forEach(function(hiddenInput, index) {
+            const memberNum = index + 1;
+            const hasScore = hiddenInput.dataset.hasScore === 'true';
             
             if (hasScore) {
                 hasExistingScore = true;
             }
             
             initialData[memberNum] = {
-                stroke: document.getElementById(`stroke_${memberNum}`).value,
-                putt: document.getElementById(`putt_${memberNum}`).value,
+                stroke: document.getElementById(`stroke_${memberNum}`) ? document.getElementById(`stroke_${memberNum}`).value : '',
+                putt: document.getElementById(`putt_${memberNum}`) ? document.getElementById(`putt_${memberNum}`).value : '',
                 olympic: document.getElementById(`olympic_${memberNum}`) ? document.getElementById(`olympic_${memberNum}`).value : '',
                 snake: document.getElementById(`snake_${memberNum}`) ? document.getElementById(`snake_${memberNum}`).value : '',
                 snake_out: document.getElementById(`snake_out_${memberNum}`) ? document.getElementById(`snake_out_${memberNum}`).checked : false,
@@ -193,11 +222,11 @@
         // 変更検知関数
         function checkForChanges() {
             hasChanges = false;
-            document.querySelectorAll('.member-content').forEach(function(member) {
-                const memberNum = member.dataset.member;
+            document.querySelectorAll('input[name="member_id[]"]').forEach(function(hiddenInput, index) {
+                const memberNum = index + 1;
                 const current = {
-                    stroke: document.getElementById(`stroke_${memberNum}`).value,
-                    putt: document.getElementById(`putt_${memberNum}`).value,
+                    stroke: document.getElementById(`stroke_${memberNum}`) ? document.getElementById(`stroke_${memberNum}`).value : '',
+                    putt: document.getElementById(`putt_${memberNum}`) ? document.getElementById(`putt_${memberNum}`).value : '',
                     olympic: document.getElementById(`olympic_${memberNum}`) ? document.getElementById(`olympic_${memberNum}`).value : '',
                     snake: document.getElementById(`snake_${memberNum}`) ? document.getElementById(`snake_${memberNum}`).value : '',
                     snake_out: document.getElementById(`snake_out_${memberNum}`) ? document.getElementById(`snake_out_${memberNum}`).checked : false,
@@ -281,23 +310,41 @@
             }
         });
 
-        // ホール移動関数（使用されなくなったが互換性のため残す）
-        function navigateToHole(nextHole) {
-            window.location.href = `/round/${roundId}/hole/${nextHole}`;
-        }
-
-        // タブ切り替え機能
-        document.querySelectorAll('.tab-btn').forEach(tab => {
+        // 大項目タブ切り替え機能
+        document.querySelectorAll('.main-tab-btn').forEach(tab => {
             tab.addEventListener('click', function() {
-                const memberId = this.dataset.member;
+                const mainTab = this.dataset.mainTab;
                 
-                // タブのアクティブ状態を切り替え
-                document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
+                // 大項目タブのアクティブ状態を切り替え
+                document.querySelectorAll('.main-tab-btn').forEach(t => t.classList.remove('active'));
                 this.classList.add('active');
                 
-                // コンテンツの表示を切り替え
-                document.querySelectorAll('.member-content').forEach(c => c.classList.remove('active'));
-                document.querySelector(`.member-content[data-member="${memberId}"]`).classList.add('active');
+                // 大項目コンテンツの表示を切り替え
+                document.querySelectorAll('.main-tab-content').forEach(c => c.classList.remove('active'));
+                document.querySelector(`.main-tab-content[data-main-content="${mainTab}"]`).classList.add('active');
+                
+                // 小項目タブの表示/非表示
+                const subTabs = document.getElementById('game-sub-tabs');
+                if (mainTab === 'game') {
+                    subTabs.style.display = 'flex';
+                } else {
+                    subTabs.style.display = 'none';
+                }
+            });
+        });
+
+        // 小項目タブ切り替え機能
+        document.querySelectorAll('.sub-tab-btn').forEach(tab => {
+            tab.addEventListener('click', function() {
+                const subTab = this.dataset.subTab;
+                
+                // 小項目タブのアクティブ状態を切り替え
+                document.querySelectorAll('.sub-tab-btn').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                
+                // 小項目コンテンツの表示を切り替え
+                document.querySelectorAll('.sub-tab-content').forEach(c => c.classList.remove('active'));
+                document.querySelector(`.sub-tab-content[data-sub-content="${subTab}"]`).classList.add('active');
             });
         });
 
@@ -335,6 +382,8 @@
             const memberNum = changedInputId.match(/\d+/)[0];
             const strokeInput = document.getElementById(`stroke_${memberNum}`);
             const puttInput = document.getElementById(`putt_${memberNum}`);
+            
+            if (!strokeInput || !puttInput) return;
             
             let stroke = parseInt(strokeInput.value) || 0;
             let putt = parseInt(puttInput.value) || 0;
@@ -374,22 +423,6 @@
         document.querySelectorAll('input[type="number"]').forEach(input => {
             input.addEventListener('focus', function() {
                 this.select();
-            });
-        });
-
-        // Enterキーで次の入力フィールドへ移動（同じメンバー内）
-        document.querySelectorAll('.member-content').forEach(member => {
-            const inputs = member.querySelectorAll('input[type="number"]');
-            inputs.forEach((input, index) => {
-                input.addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') {
-                        e.preventDefault();
-                        const nextIndex = index + 1;
-                        if (nextIndex < inputs.length) {
-                            inputs[nextIndex].focus();
-                        }
-                    }
-                });
             });
         });
     </script>
