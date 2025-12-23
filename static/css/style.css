@@ -651,10 +651,6 @@ select:focus {
     font-weight: 500;
 }
 
-.course-list-page .detail-value {
-    font-weight: 600;
-}
-
 /**
  * #######################################################
  *  コース新規作成ページ（course-new-page）
