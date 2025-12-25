@@ -5,13 +5,78 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}ゴルフスコア管理{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        #loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+        }
+        #loading-overlay .loading-content {
+            background-color: white;
+            padding: 30px 50px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+        #loading-overlay .loading-text {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+        }
+        #loading-overlay .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #4CAF50;
+            border-radius: 50%;
+            margin: 0 auto;
+            animation: spin 1s linear infinite;
+        }
+    </style>
     {% block extra_css %}{% endblock %}
 </head>
 <body class="{% block body_class %}{% endblock %}">
+    <!-- 共通ローディングオーバーレイ -->
+    <div id="loading-overlay">
+        <div class="loading-content">
+            <div class="loading-text" id="loading-text">処理中...</div>
+            <div class="loading-spinner"></div>
+        </div>
+    </div>
+
     <div class="container">
         {% block header %}{% endblock %}
         {% block content %}{% endblock %}
     </div>
+    
+    <script>
+        // 共通ローディングオーバーレイの表示/非表示関数
+        function showLoading(message) {
+            const overlay = document.getElementById('loading-overlay');
+            const text = document.getElementById('loading-text');
+            if (message) {
+                text.textContent = message;
+            }
+            overlay.style.display = 'flex';
+        }
+
+        function hideLoading() {
+            const overlay = document.getElementById('loading-overlay');
+            overlay.style.display = 'none';
+        }
+    </script>
     
     {% block scripts %}{% endblock %}
 </body>
