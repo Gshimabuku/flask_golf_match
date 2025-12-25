@@ -6,11 +6,15 @@
 
 {% block header %}
 {% set header_title = "コース一覧" %}
-{% set action_button = {'text': '新規作成', 'id': 'new-course-button'} %}
 {% include '_header.html' %}
 {% endblock %}
 
 {% block content %}
+<!-- ページ固有のアクションボタン -->
+<div class="page-actions">
+    <button type="button" class="action-btn" id="new-course-button">新規作成</button>
+</div>
+
 <div class="course-list">
     {% for course in courses %}
     <div class="course-card" data-course-id="{{ course.page_id }}">
