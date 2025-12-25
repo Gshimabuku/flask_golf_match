@@ -6,13 +6,16 @@
 
 {% block header %}
 {% set header_title = "コース詳細" %}
-{% set header_buttons = [
-    {'text': '戻る', 'id': 'back-button', 'type': 'back'}
-] %}
 {% include '_header.html' %}
 {% endblock %}
 
 {% block content %}
+
+        <!-- ページ固有のアクションボタン -->
+        <div class="page-actions">
+            <button type="button" class="action-btn" id="edit-course-button">編集</button>
+            <button type="button" class="action-btn" id="delete-course-button" style="background-color: #ff5252;">削除</button>
+        </div>
 
         <!-- コース基本情報 -->
         <div class="course-info-card">
@@ -71,8 +74,28 @@
 {% block scripts %}
 <script>
     // 戻るボタンの処理
-    document.getElementById('back-button').addEventListener('click', function () {
+    document.addEventListener('header-back-clicked', function () {
         location.href = '{{ url_for("course_list") }}';
     });
+
+    // 編集ボタンの処理
+    const editButton = document.getElementById('edit-course-button');
+    if (editButton) {
+        editButton.addEventListener('click', function () {
+            // TODO: 編集機能実装
+            alert('編集機能は準備中です');
+        });
+    }
+
+    // 削除ボタンの処理
+    const deleteButton = document.getElementById('delete-course-button');
+    if (deleteButton) {
+        deleteButton.addEventListener('click', function () {
+            if (confirm('本当にこのコースを削除しますか？')) {
+                // TODO: 削除機能実装
+                alert('削除機能は準備中です');
+            }
+        });
+    }
 </script>
 {% endblock %}

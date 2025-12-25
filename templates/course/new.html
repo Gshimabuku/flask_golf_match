@@ -6,9 +6,6 @@
 
 {% block header %}
 {% set header_title = "新規コース作成" %}
-{% set header_buttons = [
-    {'text': '戻る', 'id': 'back-button', 'type': 'back'}
-] %}
 {% include '_header.html' %}
 {% endblock %}
 
@@ -111,14 +108,6 @@
             const container = document.getElementById('layouts-container');
             const template = document.getElementById('layout-template');
             const addBtn = document.getElementById('add-layout-btn');
-            const backButton = document.getElementById('back-button');
-
-            // 戻るボタン
-            if (backButton) {
-                backButton.addEventListener('click', function() {
-                    window.location.href = "{{ url_for('course_list') }}";
-                });
-            }
 
             function updateLayoutTitles() {
                 const sections = container.querySelectorAll('.layout-section');
@@ -183,7 +172,7 @@
 {% block scripts %}
 <script>
     // 戻るボタンの処理
-    document.getElementById('back-button').addEventListener('click', function() {
+    document.addEventListener('header-back-clicked', function () {
         location.href = '{{ url_for("course_list") }}';
     });
 </script>

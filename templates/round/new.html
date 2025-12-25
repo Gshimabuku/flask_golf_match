@@ -6,9 +6,6 @@
 
 {% block header %}
 {% set header_title = "新規ラウンド作成" %}
-{% set header_buttons = [
-    {'text': '戻る', 'id': 'back-button', 'type': 'back'}
-] %}
 {% include '_header.html' %}
 {% endblock %}
 
@@ -197,11 +194,6 @@
 
     <script type="application/json" id="layout-data">{{ layouts | tojson }}</script>
     <script>
-        // 戻るボタンの処理
-        document.getElementById('back-button').addEventListener('click', function () {
-            location.href = '{{ url_for("home") }}';
-        });
-
         // 参加メンバーセクションの表示/非表示を更新
         function updateGameMembersSection() {
             const olympicChecked = document.getElementById("olympic_toggle").checked;
@@ -404,7 +396,7 @@
 {% block scripts %}
 <script>
     // 戻るボタンの処理
-    document.getElementById('back-button').addEventListener('click', function() {
+    document.addEventListener('header-back-clicked', function () {
         location.href = '{{ url_for("home") }}';
     });
 </script>

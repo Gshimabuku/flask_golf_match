@@ -6,9 +6,6 @@
 
 {% block header %}
 {% set header_title = "過去ラウンド一覧" %}
-{% set header_buttons = [
-    {'text': '戻る', 'id': 'back-button', 'type': 'back'}
-] %}
 {% include '_header.html' %}
 {% endblock %}
 
@@ -27,29 +24,21 @@
             </div>
             {% endfor %}
         </div>
-    </div>
-
-    <script>
-        // 戻るボタンの処理
-        document.getElementById('back-button').addEventListener('click', function () {
-            location.href = '{{ url_for("home") }}';
-        });
-
-        // ラウンドカードのクリックイベント
-        document.querySelectorAll('.round-card').forEach(function(card) {
-            card.addEventListener('click', function() {
-                const roundId = this.getAttribute('data-round-id');
-                location.href = '{{ url_for("round_hole", round_id="ROUND_ID", hole_number=1) }}'.replace('ROUND_ID', roundId);
-            });
-        });
-    </script>
 {% endblock %}
 
 {% block scripts %}
 <script>
     // 戻るボタンの処理
-    document.getElementById('back-button').addEventListener('click', function() {
+    document.addEventListener('header-back-clicked', function () {
         location.href = '{{ url_for("home") }}';
+    });
+
+    // ラウンドカードのクリックイベント
+    document.querySelectorAll('.round-card').forEach(function(card) {
+        card.addEventListener('click', function() {
+            const roundId = this.getAttribute('data-round-id');
+            location.href = '{{ url_for("round_hole", round_id="ROUND_ID", hole_number=1) }}'.replace('ROUND_ID', roundId);
+        });
     });
 </script>
 {% endblock %}

@@ -6,10 +6,7 @@
 
 {% block header %}
 {% set header_title = "コース一覧" %}
-{% set header_buttons = [
-    {'text': '新規作成', 'id': 'new-course-button', 'type': 'action'},
-    {'text': '戻る', 'id': 'back-button', 'type': 'back'}
-] %}
+{% set action_button = {'text': '新規作成', 'id': 'new-course-button'} %}
 {% include '_header.html' %}
 {% endblock %}
 
@@ -39,7 +36,7 @@
 {% block scripts %}
 <script>
     // 戻るボタンの処理
-    document.getElementById('back-button').addEventListener('click', function () {
+    document.addEventListener('header-back-clicked', function () {
         location.href = '{{ url_for("home") }}';
     });
 

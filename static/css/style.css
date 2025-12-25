@@ -872,14 +872,15 @@ select:focus {
     padding: 16px 20px;
     margin: -16px -16px 20px -16px;
     border-radius: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .hole-page .hole-info {
     display: flex;
-    justify-content: space-between;
+    gap: 16px;
     align-items: center;
-    max-width: 600px;
-    margin: 0 auto;
 }
 
 .hole-page .hole-number {
@@ -892,6 +893,21 @@ select:focus {
     font-size: 20px;
     font-weight: 600;
     color: white;
+}
+
+.hole-page .hole-info-section .action-btn {
+    background-color: white;
+    color: #4CAF50;
+    border: 2px solid white;
+}
+
+.hole-page .hole-info-section .action-btn:hover {
+    background-color: rgba(255, 255, 255, 0.9);
+    color: #45a049;
+}
+
+.hole-page .hole-info-section .action-btn:active {
+    background-color: rgba(255, 255, 255, 0.8);
 }
 
 .hole-page .score-form {
@@ -1391,12 +1407,24 @@ select:focus {
         padding: 8px 12px;
     }
 
+    .hole-page .hole-info {
+        gap: 8px;
+    }
+
     .hole-page .hole-number {
-        font-size: 24px;
+        font-size: 20px;
     }
 
     .hole-page .par-info {
-        font-size: 16px;
+        font-size: 14px;
+    }
+
+    .hole-page .hole-info-section .action-btn {
+        padding: 8px 12px;
+        font-size: 14px;
+        height: auto;
+        min-width: auto;
+        white-space: nowrap;
     }
 
     .hole-page .score-form {
@@ -1615,18 +1643,18 @@ select:focus {
 .hamburger-menu {
     position: fixed;
     top: 0;
-    right: -280px;
+    left: -280px;
     width: 280px;
     height: 100%;
     background-color: #fff;
-    box-shadow: -2px 0 8px rgba(0, 0, 0, 0.15);
-    transition: right 0.3s ease-in-out;
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.15);
+    transition: left 0.3s ease-in-out;
     z-index: 1000;
     overflow-y: auto;
 }
 
 .hamburger-menu.active {
-    right: 0;
+    left: 0;
 }
 
 .hamburger-menu-header {
@@ -1711,6 +1739,6 @@ select:focus {
     
     .hamburger-menu {
         width: 240px;
-        right: -240px;
+        left: -240px;
     }
 }

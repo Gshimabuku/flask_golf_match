@@ -1,45 +1,31 @@
-{# ヘッダーコンポーネント - ハンバーガーメニュー対応 #}
+{# ヘッダーコンポーネント - 固定ハンバーガーメニュー対応 #}
 {# 使用方法: 
-   {% include '_header.html' with context %}
-   または
    {% set header_title = "ページタイトル" %}
-   {% set header_buttons = [
-       {'text': 'ボタン1', 'id': 'button1-id', 'type': 'back'},
-       {'text': 'ボタン2', 'id': 'button2-id', 'type': 'action'}
-   ] %}
+   {% set action_button = {'text': '新規作成', 'id': 'new-button'} %} {# オプション #}
    {% include '_header.html' %}
 #}
 
-{% set show_hamburger = header_buttons|length > 1 and not (header_buttons|selectattr('type', 'equalto', 'action')|list|length == 1 and header_buttons|length == 2) %}
-{% set action_buttons = header_buttons|selectattr('type', 'equalto', 'action')|list if header_buttons else [] %}
-{% set nav_buttons = header_buttons|rejectattr('type', 'equalto', 'action')|list if header_buttons else [] %}
-
 <div class="page-header">
+    <button type="button" class="hamburger-btn" id="hamburger-toggle">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
     <h1>{{ header_title|default('ページタイトル') }}</h1>
     <div class="page-header-buttons">
-        {# 新規作成などのアクションボタンは常に表示 #}
-        {% for button in action_buttons %}
-        <button type="button" class="action-btn" id="{{ button.id }}">{{ button.text }}</button>
-        {% endfor %}
+        {# ページ固有のアクションボタン（新規作成など） #}
+        {% if action_button %}
+        <button type="button" class="action-btn" id="{{ action_button.id }}">{{ action_button.text }}</button>
+        {% endif %}
         
-        {# ナビゲーションボタンが2つ以上の場合はハンバーガーメニュー #}
-        {% if show_hamburger %}
-        <button type="button" class="hamburger-btn" id="hamburger-toggle">
-            <span></span>
-            <span></span>
-            <span></span>
-        </button>
-        {% else %}
-        {# ナビゲーションボタンが1つの場合は通常表示 #}
-        {% for button in nav_buttons %}
-        <button type="button" class="back-btn" id="{{ button.id }}">{{ button.text }}</button>
-        {% endfor %}
+        {# 戻るボタン（ホーム以外のページで表示） #}
+        {% if request.endpoint != 'home' %}
+        <button type="button" class="back-btn" id="back-button">戻る</button>
         {% endif %}
     </div>
 </div>
 
-{# ハンバーガーメニュー（2つ以上のナビゲーションボタンがある場合のみ） #}
-{% if show_hamburger %}
+{# ハンバーガーメニュー（全ページで表示） #}
 <div class="hamburger-overlay" id="hamburger-overlay"></div>
 <div class="hamburger-menu" id="hamburger-menu">
     <div class="hamburger-menu-header">
@@ -47,9 +33,10 @@
         <button type="button" class="hamburger-close-btn" id="hamburger-close">×</button>
     </div>
     <div class="hamburger-menu-items">
-        {% for button in nav_buttons %}
-        <button type="button" class="hamburger-menu-item" id="{{ button.id }}">{{ button.text }}</button>
-        {% endfor %}
+        <button type="button" class="hamburger-menu-item" id="home-button">ホーム</button>
+        <button type="button" class="hamburger-menu-item" id="new-round-button">新規ラウンド</button>
+        <button type="button" class="hamburger-menu-item" id="round-list-button">過去ラウンド</button>
+        <button type="button" class="hamburger-menu-item" id="course-list-button">コース一覧</button>
     </div>
 </div>
 
@@ -90,6 +77,43 @@
         document.querySelectorAll('.hamburger-menu-item').forEach(function(item) {
             item.addEventListener('click', closeHamburgerMenu);
         });
+
+        // ハンバーガーメニュー内のボタンのナビゲーション処理
+        const homeButton = document.getElementById('home-button');
+        if (homeButton) {
+            homeButton.addEventListener('click', function () {
+                location.href = '{{ url_for("home") }}';
+            });
+        }
+
+        const newRoundButton = document.getElementById('new-round-button');
+        if (newRoundButton) {
+            newRoundButton.addEventListener('click', function () {
+                location.href = '{{ url_for("round_new") }}';
+            });
+        }
+
+        const roundListButton = document.getElementById('round-list-button');
+        if (roundListButton) {
+            roundListButton.addEventListener('click', function () {
+                location.href = '{{ url_for("round_list") }}';
+            });
+        }
+
+        const courseListButton = document.getElementById('course-list-button');
+        if (courseListButton) {
+            courseListButton.addEventListener('click', function () {
+                location.href = '{{ url_for("course_list") }}';
+            });
+        }
+
+        const backButton = document.getElementById('back-button');
+        if (backButton) {
+            backButton.addEventListener('click', function () {
+                // 戻るボタンは各ページで異なる動作をするため、カスタムイベントを発火
+                const event = new CustomEvent('header-back-clicked');
+                document.dispatchEvent(event);
+            });
+        }
     })();
 </script>
-{% endif %}

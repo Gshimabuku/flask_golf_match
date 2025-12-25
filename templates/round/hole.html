@@ -6,10 +6,6 @@
 
 {% block header %}
 {% set header_title = "スコア入力" %}
-{% set header_buttons = [
-    {'text': 'ホーム', 'id': 'home-button', 'type': 'nav'},
-    {'text': 'ラウンド設定', 'id': 'round-setting-button', 'type': 'nav'}
-] %}
 {% include '_header.html' %}
 {% endblock %}
 
@@ -21,6 +17,7 @@
                 <div class="hole-number">HOLE {{ hole_number }}</div>
                 <div class="par-info">PAR {{ hole_par }}</div>
             </div>
+            <button type="button" class="action-btn" id="round-setting-button">ラウンド設定</button>
         </div>
 
         <!-- ホール間移動ボタン -->
@@ -426,16 +423,44 @@
 
 {% block scripts %}
 <script>
-    // ホームボタンの処理
+    // hole画面は確認ダイアログを表示する必要があるため、ハンバーガーメニューボタンを個別に処理
     document.getElementById('home-button').addEventListener('click', function () {
         if (confirm('ホームに戻りますか?\n保存していないデータは失われます。')) {
             window.location.href = '{{ url_for("home") }}';
         }
     });
 
-    // ラウンド設定ボタンの処理
-    document.getElementById('round-setting-button').addEventListener('click', function () {
-        alert('ラウンド設定画面は未実装です');
+    document.getElementById('new-round-button').addEventListener('click', function () {
+        if (confirm('新規ラウンドを作成しますか?\n保存していないデータは失われます。')) {
+            window.location.href = '{{ url_for("round_new") }}';
+        }
     });
+
+    document.getElementById('round-list-button').addEventListener('click', function () {
+        if (confirm('過去ラウンド一覧に移動しますか?\n保存していないデータは失われます。')) {
+            window.location.href = '{{ url_for("round_list") }}';
+        }
+    });
+
+    document.getElementById('course-list-button').addEventListener('click', function () {
+        if (confirm('コース一覧に移動しますか?\n保存していないデータは失われます。')) {
+            window.location.href = '{{ url_for("course_list") }}';
+        }
+    });
+
+    // 戻るボタンの処理
+    document.addEventListener('header-back-clicked', function () {
+        if (confirm('過去ラウンド一覧に戻りますか?\n保存していないデータは失われます。')) {
+            window.location.href = '{{ url_for("round_list") }}';
+        }
+    });
+
+    // ラウンド設定ボタンの処理
+    const roundSettingButton = document.getElementById('round-setting-button');
+    if (roundSettingButton) {
+        roundSettingButton.addEventListener('click', function () {
+            alert('ラウンド設定画面は未実装です');
+        });
+    }
 </script>
 {% endblock %}
