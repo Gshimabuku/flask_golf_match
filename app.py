@@ -1,6 +1,6 @@
 from flask import Flask, render_template, jsonify, redirect, url_for, Response, request
 import os
-from Services.course_service import get_courses,get_layouts,add_course,get_course_detail
+from Services.course_service import get_courses,get_layouts,add_course,get_course_detail,delete_course
 from Services.round_service import get_rounds,add_round,get_round_detail
 from Services.game_setting_service import add_game_setting, get_game_setting_by_round
 from Services.score_service import get_scores, add_score, get_hole_scores
@@ -74,6 +74,14 @@ def course_create():
     course_page_id = add_course(course_data, layouts_data)
     
     return redirect(url_for('course_list'))
+
+@app.route('/course/<course_id>/delete', methods=['POST'])
+def course_delete(course_id):
+    success = delete_course(course_id)
+    if success:
+        return jsonify({'status': 'success', 'message': 'コースを削除しました'}), 200
+    else:
+        return jsonify({'status': 'error', 'message': 'コースの削除に失敗しました'}), 500
 
 # --------------------------
 # ラウンド

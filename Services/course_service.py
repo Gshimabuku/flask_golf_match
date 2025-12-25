@@ -1,4 +1,4 @@
-from Services.notion_service import fetch_db_properties, create_page
+from Services.notion_service import fetch_db_properties, create_page, delete_page
 from config import NOTION_DB_COURSES_ID,NOTION_DB_LAYOUTS_ID,NOTION_DB_HOLES_ID
 from Models.course import Course
 from Models.layout import Layout
@@ -186,3 +186,48 @@ def get_holes():
         print("get_holes error:", e)
 
     return results
+
+# ---------------------------------
+# コース削除
+# ---------------------------------
+def delete_course(course_id: str) -> bool:
+    """
+    コースとそれに関連するレイアウト・ホールを削除（アーカイブ）
+    
+    Args:
+        course_id: 削除するコースのpage_id
+        
+    Returns:
+        成功: True, 失敗: False
+    """
+    try:
+        # 1. このコースに関連するレイアウトを取得
+        layouts_data = fetch_db_properties(NOTION_DB_LAYOUTS_ID)
+        layout_ids = []
+        
+        for layout_data in layouts_data:
+            if course_id in layout_data.get("course", []):
+                layout_ids.append(layout_data["page_id"])
+        
+        # 2. 各レイアウトに関連するホールを削除
+        if layout_ids:
+            holes_data = fetch_db_properties(NOTION_DB_HOLES_ID)
+            
+            for hole_data in holes_data:
+                hole_layout_ids = hole_data.get("layout", [])
+                # このホールが削除対象のレイアウトに属している場合
+                if any(layout_id in hole_layout_ids for layout_id in layout_ids):
+                    delete_page(hole_data["page_id"])
+        
+        # 3. レイアウトを削除
+        for layout_id in layout_ids:
+            delete_page(layout_id)
+        
+        # 4. コースを削除
+        delete_page(course_id)
+        
+        return True
+        
+    except Exception as e:
+        print("delete_course error:", e)
+        return False

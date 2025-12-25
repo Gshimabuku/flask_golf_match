@@ -91,9 +91,29 @@
     const deleteButton = document.getElementById('delete-course-button');
     if (deleteButton) {
         deleteButton.addEventListener('click', function () {
-            if (confirm('本当にこのコースを削除しますか？')) {
-                // TODO: 削除機能実装
-                alert('削除機能は準備中です');
+            if (confirm('本当にこのコースを削除しますか？\n関連するレイアウトとホール情報もすべて削除されます。')) {
+                // 削除APIを呼び出し
+                const courseId = '{{ course.page_id }}';
+                fetch(`/course/${courseId}/delete`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        alert(data.message);
+                        // コース一覧に戻る
+                        location.href = '{{ url_for("course_list") }}';
+                    } else {
+                        alert('エラー: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('削除処理中にエラーが発生しました');
+                });
             }
         });
     }

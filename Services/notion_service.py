@@ -132,6 +132,25 @@ def update_page(page_id: str, data: dict, column_types: dict):
 
 
 # --------------------------------------------------------
+# ページ削除（アーカイブ）
+# --------------------------------------------------------
+def delete_page(page_id: str):
+    """
+    Notionページをアーカイブ（削除）する
+    
+    Args:
+        page_id: 削除するページのID
+        
+    Returns:
+        削除されたページのレスポンス
+    """
+    return notion.pages.update(
+        page_id=page_id,
+        archived=True
+    )
+
+
+# --------------------------------------------------------
 # DBから読み取り（全レコード）
 # --------------------------------------------------------
 def fetch_db_properties(database_id: str, column_names: list = None):
