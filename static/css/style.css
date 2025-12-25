@@ -34,9 +34,12 @@ body {
 .page-header {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    margin-bottom: 24px;
     gap: 12px;
+    margin-bottom: 24px;
+}
+
+.page-header .hamburger-btn {
+    order: -1;
 }
 
 h1 {
@@ -1741,4 +1744,12 @@ select:focus {
         width: 240px;
         left: -240px;
     }
+}
+
+/* ページ固有ボタンエリア */
+.page-actions {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    justify-content: flex-end;
 }
