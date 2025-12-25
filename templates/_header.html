@@ -1,0 +1,95 @@
+{# ヘッダーコンポーネント - ハンバーガーメニュー対応 #}
+{# 使用方法: 
+   {% include '_header.html' with context %}
+   または
+   {% set header_title = "ページタイトル" %}
+   {% set header_buttons = [
+       {'text': 'ボタン1', 'id': 'button1-id', 'type': 'back'},
+       {'text': 'ボタン2', 'id': 'button2-id', 'type': 'action'}
+   ] %}
+   {% include '_header.html' %}
+#}
+
+{% set show_hamburger = header_buttons|length > 1 and not (header_buttons|selectattr('type', 'equalto', 'action')|list|length == 1 and header_buttons|length == 2) %}
+{% set action_buttons = header_buttons|selectattr('type', 'equalto', 'action')|list if header_buttons else [] %}
+{% set nav_buttons = header_buttons|rejectattr('type', 'equalto', 'action')|list if header_buttons else [] %}
+
+<div class="page-header">
+    <h1>{{ header_title|default('ページタイトル') }}</h1>
+    <div class="page-header-buttons">
+        {# 新規作成などのアクションボタンは常に表示 #}
+        {% for button in action_buttons %}
+        <button type="button" class="action-btn" id="{{ button.id }}">{{ button.text }}</button>
+        {% endfor %}
+        
+        {# ナビゲーションボタンが2つ以上の場合はハンバーガーメニュー #}
+        {% if show_hamburger %}
+        <button type="button" class="hamburger-btn" id="hamburger-toggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        {% else %}
+        {# ナビゲーションボタンが1つの場合は通常表示 #}
+        {% for button in nav_buttons %}
+        <button type="button" class="back-btn" id="{{ button.id }}">{{ button.text }}</button>
+        {% endfor %}
+        {% endif %}
+    </div>
+</div>
+
+{# ハンバーガーメニュー（2つ以上のナビゲーションボタンがある場合のみ） #}
+{% if show_hamburger %}
+<div class="hamburger-overlay" id="hamburger-overlay"></div>
+<div class="hamburger-menu" id="hamburger-menu">
+    <div class="hamburger-menu-header">
+        <div class="hamburger-menu-title">メニュー</div>
+        <button type="button" class="hamburger-close-btn" id="hamburger-close">×</button>
+    </div>
+    <div class="hamburger-menu-items">
+        {% for button in nav_buttons %}
+        <button type="button" class="hamburger-menu-item" id="{{ button.id }}">{{ button.text }}</button>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+    // ハンバーガーメニュー制御
+    (function() {
+        const hamburgerToggle = document.getElementById('hamburger-toggle');
+        const hamburgerMenu = document.getElementById('hamburger-menu');
+        const hamburgerOverlay = document.getElementById('hamburger-overlay');
+        const hamburgerClose = document.getElementById('hamburger-close');
+
+        if (!hamburgerToggle) return;
+
+        function openHamburgerMenu() {
+            hamburgerMenu.classList.add('active');
+            hamburgerOverlay.classList.add('active');
+            hamburgerToggle.classList.add('active');
+        }
+
+        function closeHamburgerMenu() {
+            hamburgerMenu.classList.remove('active');
+            hamburgerOverlay.classList.remove('active');
+            hamburgerToggle.classList.remove('active');
+        }
+
+        hamburgerToggle.addEventListener('click', function() {
+            if (hamburgerMenu.classList.contains('active')) {
+                closeHamburgerMenu();
+            } else {
+                openHamburgerMenu();
+            }
+        });
+
+        hamburgerClose.addEventListener('click', closeHamburgerMenu);
+        hamburgerOverlay.addEventListener('click', closeHamburgerMenu);
+
+        // ハンバーガーメニュー内のボタンがクリックされたら閉じる
+        document.querySelectorAll('.hamburger-menu-item').forEach(function(item) {
+            item.addEventListener('click', closeHamburgerMenu);
+        });
+    })();
+</script>
+{% endif %}

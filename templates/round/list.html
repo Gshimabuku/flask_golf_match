@@ -1,17 +1,18 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>過去ラウンド一覧</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
-<body class="round-list-page">
-    <div class="container">
-        <div class="page-header">
-            <h1>過去ラウンド一覧</h1>
-            <button type="button" class="back-btn" id="back-button">戻る</button>
-        </div>
+{% extends "base.html" %}
+
+{% block title %}過去ラウンド一覧{% endblock %}
+
+{% block body_class %}round-list-page{% endblock %}
+
+{% block header %}
+{% set header_title = "過去ラウンド一覧" %}
+{% set header_buttons = [
+    {'text': '戻る', 'id': 'back-button', 'type': 'back'}
+] %}
+{% include '_header.html' %}
+{% endblock %}
+
+{% block content %}
 
         <div class="round-list">
             {% for round in rounds %}
@@ -42,5 +43,13 @@
             });
         });
     </script>
-</body>
-</html>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // 戻るボタンの処理
+    document.getElementById('back-button').addEventListener('click', function() {
+        location.href = '{{ url_for("home") }}';
+    });
+</script>
+{% endblock %}

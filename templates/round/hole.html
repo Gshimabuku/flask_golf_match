@@ -1,23 +1,19 @@
-<!DOCTYPE html>
-<html lang="ja">
+{% extends "base.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ホールスコア入力</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
+{% block title %}ホールスコア入力{% endblock %}
 
-<body class="hole-page">
-    <div class="container">
-        <!-- ページヘッダー -->
-        <div class="page-header">
-            <h1>スコア入力</h1>
-            <div style="display: flex; gap: 8px;">
-                <button type="button" class="back-btn" id="home-button">ホーム</button>
-                <button type="button" class="back-btn" id="round-setting-button">ラウンド設定</button>
-            </div>
-        </div>
+{% block body_class %}hole-page{% endblock %}
+
+{% block header %}
+{% set header_title = "スコア入力" %}
+{% set header_buttons = [
+    {'text': 'ホーム', 'id': 'home-button', 'type': 'nav'},
+    {'text': 'ラウンド設定', 'id': 'round-setting-button', 'type': 'nav'}
+] %}
+{% include '_header.html' %}
+{% endblock %}
+
+{% block content %}
 
         <!-- ホール情報 -->
         <div class="hole-info-section">
@@ -426,6 +422,20 @@
             });
         });
     </script>
-</body>
+{% endblock %}
 
-</html>
+{% block scripts %}
+<script>
+    // ホームボタンの処理
+    document.getElementById('home-button').addEventListener('click', function () {
+        if (confirm('ホームに戻りますか?\n保存していないデータは失われます。')) {
+            window.location.href = '{{ url_for("home") }}';
+        }
+    });
+
+    // ラウンド設定ボタンの処理
+    document.getElementById('round-setting-button').addEventListener('click', function () {
+        alert('ラウンド設定画面は未実装です');
+    });
+</script>
+{% endblock %}

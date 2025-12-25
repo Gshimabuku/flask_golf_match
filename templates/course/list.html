@@ -1,59 +1,59 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>コース一覧</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
-<body class="course-list-page">
-    <div class="container">
-        <div class="page-header">
-            <h1>コース一覧</h1>
-            <button type="button" class="action-btn" id="new-course-button">新規作成</button>
-            <button type="button" class="back-btn" id="back-button">戻る</button>
-        </div>
+{% extends "base.html" %}
 
-        <div class="course-list">
-            {% for course in courses %}
-            <div class="course-card" data-course-id="{{ course.page_id }}">
-                <div class="course-header">
-                    <div class="course-title">{{ course.name }}</div>
-                    <span class="course-type type-{{ course.course_type }}">{{ course.type_display }}</span>
-                </div>
-                <div class="course-details">
-                    <div class="detail-row">
-                        <span class="detail-label">住所:</span>
-                        <span class="detail-value">{{ course.address }}</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">PAR:</span>
-                        <span class="detail-value">{{ course.par }}</span>
-                    </div>
-                </div>
+{% block title %}コース一覧{% endblock %}
+
+{% block body_class %}course-list-page{% endblock %}
+
+{% block header %}
+{% set header_title = "コース一覧" %}
+{% set header_buttons = [
+    {'text': '新規作成', 'id': 'new-course-button', 'type': 'action'},
+    {'text': '戻る', 'id': 'back-button', 'type': 'back'}
+] %}
+{% include '_header.html' %}
+{% endblock %}
+
+{% block content %}
+<div class="course-list">
+    {% for course in courses %}
+    <div class="course-card" data-course-id="{{ course.page_id }}">
+        <div class="course-header">
+            <div class="course-title">{{ course.name }}</div>
+            <span class="course-type type-{{ course.course_type }}">{{ course.type_display }}</span>
+        </div>
+        <div class="course-details">
+            <div class="detail-row">
+                <span class="detail-label">住所:</span>
+                <span class="detail-value">{{ course.address }}</span>
             </div>
-            {% endfor %}
+            <div class="detail-row">
+                <span class="detail-label">PAR:</span>
+                <span class="detail-value">{{ course.par }}</span>
+            </div>
         </div>
     </div>
+    {% endfor %}
+</div>
+{% endblock %}
 
-    <script>
-        // 戻るボタンの処理
-        document.getElementById('back-button').addEventListener('click', function () {
-            location.href = '{{ url_for("home") }}';
-        });
+{% block scripts %}
+<script>
+    // 戻るボタンの処理
+    document.getElementById('back-button').addEventListener('click', function () {
+        location.href = '{{ url_for("home") }}';
+    });
 
-        // 新規作成ボタンの処理
-        document.getElementById('new-course-button').addEventListener('click', function () {
-            location.href = '{{ url_for("course_new") }}';
-        });
+    // 新規作成ボタンの処理
+    document.getElementById('new-course-button').addEventListener('click', function () {
+        location.href = '{{ url_for("course_new") }}';
+    });
 
-        // コースカードのクリックイベント
-        document.querySelectorAll('.course-card').forEach(function(card) {
-            card.addEventListener('click', function() {
-                const courseId = this.getAttribute('data-course-id');
-                location.href = '{{ url_for("course_detail", course_id="COURSE_ID") }}'.replace('COURSE_ID', courseId);
-            });
+    // コースカードのクリックイベント
+    document.querySelectorAll('.course-card').forEach(function(card) {
+        card.addEventListener('click', function() {
+            const courseId = this.getAttribute('data-course-id');
+            location.href = '{{ url_for("course_detail", course_id="COURSE_ID") }}'.replace('COURSE_ID', courseId);
         });
-    </script>
-</body>
-</html>
+    });
+</script>
+{% endblock %}

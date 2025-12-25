@@ -1,19 +1,18 @@
-<!DOCTYPE html>
-<html lang="ja">
+{% extends "base.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>新規コース作成</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
+{% block title %}新規コース作成{% endblock %}
 
-<body class="course-new-page">
-    <div class="container">
-        <div class="page-header">
-            <h1>新規コース作成</h1>
-            <button type="button" class="back-btn" id="back-button">戻る</button>
-        </div>
+{% block body_class %}course-new-page{% endblock %}
+
+{% block header %}
+{% set header_title = "新規コース作成" %}
+{% set header_buttons = [
+    {'text': '戻る', 'id': 'back-button', 'type': 'back'}
+] %}
+{% include '_header.html' %}
+{% endblock %}
+
+{% block content %}
 
         <form action="/course/create" method="POST" class="course-form">
             <div class="form-section">
@@ -179,6 +178,13 @@
             addLayout();
         });
     </script>
-</body>
+{% endblock %}
 
-</html>
+{% block scripts %}
+<script>
+    // 戻るボタンの処理
+    document.getElementById('back-button').addEventListener('click', function() {
+        location.href = '{{ url_for("course_list") }}';
+    });
+</script>
+{% endblock %}
