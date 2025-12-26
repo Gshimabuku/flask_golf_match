@@ -1,4 +1,4 @@
-from Services.notion_service import fetch_db_properties, create_page, build_id_name_map, resolve_relation
+from Services.notion_service import fetch_db_properties, create_page, build_id_name_map, resolve_relation, update_page
 from config import NOTION_DB_SCORES_ID, NOTION_DB_ROUNDS_ID, NOTION_DB_USERS_ID, NOTION_DB_HOLES_ID
 from Models.score import Score
 
@@ -71,6 +71,26 @@ def get_scores_by_round(round_id: str):
         print("get_scores_by_round error:", e)
 
     return results
+
+# ---------------------------------
+# 特定ラウンド・ユーザー・ホールのスコア取得
+# ---------------------------------
+def get_existing_score(round_id: str, user_id: str, hole_number: int):
+    """指定されたラウンド、ユーザー、ホールのスコアを取得"""
+    try:
+        scores = fetch_db_properties(NOTION_DB_SCORES_ID, ["round", "user", "hole_number"])
+        
+        # フィルタリング
+        for s in scores:
+            if (round_id in s.get("round", []) and 
+                user_id in s.get("user", []) and 
+                s.get("hole_number") == hole_number):
+                return s.get("page_id")
+        
+        return None
+    except Exception as e:
+        print("get_existing_score error:", e)
+        return None
 
 # ---------------------------------
 # 特定ラウンド・ホールのスコア取得
@@ -166,3 +186,41 @@ def add_score(data: dict) -> str:
     page = create_page(NOTION_DB_SCORES_ID, notion_data, column_types)
     
     return page["id"]
+
+# ---------------------------------
+# スコア更新
+# ---------------------------------
+def update_score(score_page_id: str, data: dict):
+    """既存のスコアを更新"""
+    stroke = data.get("stroke", 0)
+    putt = data.get("putt", 0)
+    olympic = data.get("olympic")
+    snake = data.get("snake")
+    snake_out = data.get("snake_out", False)
+    nearpin = data.get("nearpin", False)
+    
+    notion_data = {
+        "stroke": stroke,
+        "putt": putt,
+    }
+    
+    if olympic:
+        notion_data["olympic"] = olympic
+    if snake is not None:
+        notion_data["snake"] = snake
+    if snake_out:
+        notion_data["snake_out"] = snake_out
+    if nearpin:
+        notion_data["nearpin"] = nearpin
+    
+    column_types = {
+        "stroke": "number",
+        "putt": "number",
+        "olympic": "select",
+        "snake": "number",
+        "snake_out": "checkbox",
+        "nearpin": "checkbox"
+    }
+    
+    update_page(score_page_id, notion_data, column_types)
+    print(f"Score {score_page_id} updated")

@@ -244,20 +244,9 @@
             
             showLoading('保存中...');
             
-            if (hasExistingScore) {
-                // 更新：このホールに留まる
-                form.action = `/round/${roundId}/hole/${currentHole}/save`;
-                form.submit();
-            } else {
-                // 新規登録：次のホールへ
-                const nextHole = currentHole + 1;
-                if (nextHole <= 18) {
-                    form.action = `/round/${roundId}/hole/${nextHole}/save`;
-                } else {
-                    form.action = `/round/${roundId}/hole/${currentHole}/save`;
-                }
-                form.submit();
-            }
+            // 常に現在のホールで保存
+            form.action = `/round/${roundId}/hole/${currentHole}/save`;
+            form.submit();
         });
 
         // ホームボタンの処理

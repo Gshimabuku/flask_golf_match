@@ -238,20 +238,36 @@ def round_hole_save(round_id, hole_number):
         nearpin = request.form.get(f'nearpin_{i}')
         
         if stroke:  # ストロークが入力されている場合のみ保存
-            score_data = {
-                "round_id": round_id,
-                "user_id": member_id,
-                "hole_id": hole_id,
-                "hole_number": hole_number,
-                "stroke": int(stroke),
-                "putt": int(putt) if putt else 0,
-                "olympic": olympic if olympic else None,
-                "snake": int(snake) if snake else None,
-                "snake_out": bool(snake_out),
-                "nearpin": bool(nearpin)
-            }
+            # 既存スコアをチェック
+            from Services.score_service import get_existing_score, update_score
+            existing_score_id = get_existing_score(round_id, member_id, hole_number)
             
-            add_score(score_data)
+            if existing_score_id:
+                # 更新
+                score_data = {
+                    "stroke": int(stroke),
+                    "putt": int(putt) if putt else 0,
+                    "olympic": olympic if olympic else None,
+                    "snake": int(snake) if snake else None,
+                    "snake_out": bool(snake_out),
+                    "nearpin": bool(nearpin)
+                }
+                update_score(existing_score_id, score_data)
+            else:
+                # 新規作成
+                score_data = {
+                    "round_id": round_id,
+                    "user_id": member_id,
+                    "hole_id": hole_id,
+                    "hole_number": hole_number,
+                    "stroke": int(stroke),
+                    "putt": int(putt) if putt else 0,
+                    "olympic": olympic if olympic else None,
+                    "snake": int(snake) if snake else None,
+                    "snake_out": bool(snake_out),
+                    "nearpin": bool(nearpin)
+                }
+                add_score(score_data)
     
     # 全ホールのスコアが完了しているかチェック
     try:
@@ -276,13 +292,24 @@ def round_hole_save(round_id, hole_number):
     except Exception as e:
         print(f"Error checking round completion: {e}")
     
-    # リクエストされたホール番号へ遷移
-    # URLのhole_numberは保存先だが、次に表示するホールも同じ
-    if hole_number < 18:
+    # 保存後の遷移先を判定
+    # 既存スコアが1件以上あれば更新モード（現在のホールに留まる）
+    from Services.score_service import get_existing_score
+    has_existing = any(
+        get_existing_score(round_id, member_id, hole_number) 
+        for member_id in request.form.getlist('member_id[]')
+    )
+    
+    if has_existing:
+        # 更新モード：現在のホールに留まる
         return redirect(url_for('round_hole', round_id=round_id, hole_number=hole_number))
     else:
-        # 18ホール完了したらラウンド一覧へ
-        return redirect(url_for('round_list'))
+        # 新規作成モード：次のホールへ
+        if hole_number < 18:
+            return redirect(url_for('round_hole', round_id=round_id, hole_number=hole_number + 1))
+        else:
+            # 18ホール完了したらラウンド一覧へ
+            return redirect(url_for('round_list'))
 
 if __name__ == '__main__':
     app.run(debug=True)
