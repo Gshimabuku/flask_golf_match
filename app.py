@@ -229,6 +229,13 @@ def round_hole_save(round_id, hole_number):
     # 各メンバーのスコアを保存
     members = request.form.getlist('member_id[]')
     
+    # 保存前に既存スコアの有無をチェック（遷移先判定用）
+    from Services.score_service import get_existing_score, update_score
+    has_existing_before_save = any(
+        get_existing_score(round_id, member_id, hole_number) 
+        for member_id in members
+    )
+    
     for i, member_id in enumerate(members, start=1):
         stroke = request.form.get(f'stroke_{i}')
         putt = request.form.get(f'putt_{i}')
@@ -239,7 +246,6 @@ def round_hole_save(round_id, hole_number):
         
         if stroke:  # ストロークが入力されている場合のみ保存
             # 既存スコアをチェック
-            from Services.score_service import get_existing_score, update_score
             existing_score_id = get_existing_score(round_id, member_id, hole_number)
             
             if existing_score_id:
@@ -292,15 +298,8 @@ def round_hole_save(round_id, hole_number):
     except Exception as e:
         print(f"Error checking round completion: {e}")
     
-    # 保存後の遷移先を判定
-    # 既存スコアが1件以上あれば更新モード（現在のホールに留まる）
-    from Services.score_service import get_existing_score
-    has_existing = any(
-        get_existing_score(round_id, member_id, hole_number) 
-        for member_id in request.form.getlist('member_id[]')
-    )
-    
-    if has_existing:
+    # 保存後の遷移先を判定（保存前にチェックした結果を使用）
+    if has_existing_before_save:
         # 更新モード：現在のホールに留まる
         return redirect(url_for('round_hole', round_id=round_id, hole_number=hole_number))
     else:
