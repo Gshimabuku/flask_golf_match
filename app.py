@@ -169,11 +169,22 @@ def round_hole(round_id, hole_number):
     hole_par = 4  # デフォルト値
     try:
         # layout_outまたはlayout_inからホール情報を取得
-        layout_ids = round_data.get("layout_out", []) + round_data.get("layout_in", [])
+        # スコア入力画面: 1-9ホール → layout_out, 10-18ホール → layout_in
+        # holesテーブル: 各レイアウトともhole_number 1-9
+        layout_ids = []
+        actual_hole_number = hole_number  # holesテーブルで検索するhole_number
+        
+        if hole_number <= 9:
+            layout_ids = round_data.get("layout_out", [])
+            actual_hole_number = hole_number  # 1-9はそのまま
+        else:
+            layout_ids = round_data.get("layout_in", [])
+            actual_hole_number = hole_number - 9  # 10-18 → 1-9に変換
+        
         if layout_ids:
             holes_data = fetch_db_properties(NOTION_DB_HOLES_ID)
             for hole_data in holes_data:
-                if (hole_data.get("hole_number") == hole_number and 
+                if (hole_data.get("hole_number") == actual_hole_number and 
                     any(layout_id in hole_data.get("layout", []) for layout_id in layout_ids)):
                     hole_par = hole_data.get("par", 4)
                     break
@@ -206,17 +217,22 @@ def round_hole_save(round_id, hole_number):
     hole_id = None
     try:
         # layout_outまたはlayout_inからホール情報を取得
-        # hole_number 1-9: layout_out, 10-18: layout_in
+        # スコア入力画面: 1-9ホール → layout_out, 10-18ホール → layout_in
+        # holesテーブル: 各レイアウトともhole_number 1-9
         layout_ids = []
+        actual_hole_number = hole_number  # holesテーブルで検索するhole_number
+        
         if hole_number <= 9:
             layout_ids = round_data.get("layout_out", [])
+            actual_hole_number = hole_number  # 1-9はそのまま
         else:
             layout_ids = round_data.get("layout_in", [])
+            actual_hole_number = hole_number - 9  # 10-18 → 1-9に変換
         
         if layout_ids:
             holes_data = fetch_db_properties(NOTION_DB_HOLES_ID)
             for hole_data in holes_data:
-                if (hole_data.get("hole_number") == hole_number and 
+                if (hole_data.get("hole_number") == actual_hole_number and 
                     any(layout_id in hole_data.get("layout", []) for layout_id in layout_ids)):
                     hole_id = hole_data.get("page_id")
                     break
