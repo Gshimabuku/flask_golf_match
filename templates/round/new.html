@@ -399,5 +399,10 @@
     document.addEventListener('header-back-clicked', function () {
         location.href = '{{ url_for("home") }}';
     });
+
+    // フォーム送信時にローディングを表示
+    document.querySelector('.round-form').addEventListener('submit', function() {
+        showLoading('作成中...');
+    });
 </script>
 {% endblock %}

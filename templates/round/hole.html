@@ -242,6 +242,8 @@
         form.addEventListener('submit', function(e) {
             e.preventDefault();
             
+            showLoading('保存中...');
+            
             if (hasExistingScore) {
                 // 更新：このホールに留まる
                 form.action = `/round/${roundId}/hole/${currentHole}/save`;
