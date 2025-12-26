@@ -253,6 +253,29 @@ def round_hole_save(round_id, hole_number):
             
             add_score(score_data)
     
+    # 全ホールのスコアが完了しているかチェック
+    try:
+        from Services.score_service import get_scores_by_round
+        from Services.round_service import update_round_complete
+        
+        # 現在のラウンドの全スコアを取得
+        all_scores = get_scores_by_round(round_id)
+        
+        # 入力済みのホール番号を抽出
+        score_holes = {score.hole_number for score in all_scores if score.hole_number is not None}
+        
+        # 1-18のホールがすべて揃っているかチェック
+        new_complete = (score_holes == set(range(1, 19)))
+        
+        # 現在のcomplete状態を取得
+        current_complete = round_data.get('complete', False)
+        
+        # 変更があった時のみ更新
+        if current_complete != new_complete:
+            update_round_complete(round_id, new_complete)
+    except Exception as e:
+        print(f"Error checking round completion: {e}")
+    
     # リクエストされたホール番号へ遷移
     # URLのhole_numberは保存先だが、次に表示するホールも同じ
     if hole_number < 18:

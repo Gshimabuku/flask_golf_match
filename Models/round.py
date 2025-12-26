@@ -11,6 +11,7 @@ class Round:
     layout_out: Optional[List[str]] = None  # relation: OUTレイアウトのpage_id
     layout_in: Optional[List[str]] = None  # relation: INレイアウトのpage_id
     members: Optional[List[str]] = None  # relation: メンバーのpage_id（最大4名）
+    complete: bool = False  # checkbox: 全ホールのスコア入力が完了しているか
     
     @classmethod
     def from_notion(cls, data: dict):
@@ -21,5 +22,6 @@ class Round:
             course=data.get("course"),
             layout_out=data.get("layout_out"),
             layout_in=data.get("layout_in"),
-            members=data.get("members")
+            members=data.get("members"),
+            complete=data.get("complete", False)
         )

@@ -1,5 +1,5 @@
 from datetime import datetime
-from Services.notion_service import fetch_db_properties,create_page,fetch_page,build_id_name_map,resolve_relation
+from Services.notion_service import fetch_db_properties,create_page,fetch_page,build_id_name_map,resolve_relation,update_page
 from Services.game_setting_service import add_game_setting
 from config import NOTION_DB_ROUNDS_ID,NOTION_DB_COURSES_ID,NOTION_DB_USERS_ID
 
@@ -109,3 +109,23 @@ def add_round(data: dict) -> str:
 
     # 作成された page_id を返す
     return page["id"]
+
+# ---------------------------------
+# ラウンド完了状態を更新
+# ---------------------------------
+def update_round_complete(round_id: str, is_complete: bool):
+    """ラウンドのcompleteフラグを更新"""
+    try:
+        notion_data = {
+            "complete": is_complete
+        }
+        
+        column_types = {
+            "complete": "checkbox"
+        }
+        
+        update_page(round_id, notion_data, column_types)
+        print(f"Round {round_id} complete status updated to {is_complete}")
+        
+    except Exception as e:
+        print(f"update_round_complete error: {e}")

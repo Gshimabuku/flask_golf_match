@@ -50,6 +50,29 @@ def get_scores(round_id=None, user_id=None):
     return results
 
 # ---------------------------------
+# 特定ラウンドの全スコア取得（完了チェック用）
+# ---------------------------------
+def get_scores_by_round(round_id: str):
+    """指定されたラウンドの全スコアを取得"""
+    results = []
+
+    try:
+        scores = fetch_db_properties(NOTION_DB_SCORES_ID, ["round", "hole_number"])
+        
+        # フィルタリング
+        round_scores = [s for s in scores if round_id in s.get("round", [])]
+        
+        # Scoreオブジェクトに変換
+        for s in round_scores:
+            score = Score.from_notion(s)
+            results.append(score)
+
+    except Exception as e:
+        print("get_scores_by_round error:", e)
+
+    return results
+
+# ---------------------------------
 # 特定ラウンド・ホールのスコア取得
 # ---------------------------------
 def get_hole_scores(round_id: str, hole_number: int):
