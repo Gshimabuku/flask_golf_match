@@ -306,7 +306,7 @@ def delete_scores_by_round(round_id: str) -> bool:
 # ---------------------------------
 def get_olympic_results(round_id: str, member_list: list, game_setting):
     """
-    オリンピックゲームの結果を集計
+    オリンピックゲームの結果をホールごとに集計
     
     Args:
         round_id: ラウンドID
@@ -314,9 +314,9 @@ def get_olympic_results(round_id: str, member_list: list, game_setting):
         game_setting: ゲーム設定オブジェクト
     
     Returns:
-        dict: {player_name: {gold: int, silver: int, bronze: int, iron: int, diamond: int, total: int}}
+        list: [(player_name, {hole_number: points}), ...] メンバー順序保持
     """
-    results = {}
+    results = []
     
     try:
         # レート設定を取得
@@ -340,48 +340,33 @@ def get_olympic_results(round_id: str, member_list: list, game_setting):
         # ラウンドIDでフィルタリング
         round_scores = [s for s in scores_data if round_id in s.get("round", [])]
         
-        # メンバーごとに初期化
+        # メンバーごとにホール別の獲得ポイントを集計
         for member in member_list:
             member_id = member.get('page_id')
             # オリンピック参加メンバーのみ集計
-            if member_id in olympic_members:
-                player_name = member.get('display_name') or member.get('name', 'Unknown')
-                results[player_name] = {
-                    'diamond': 0,
-                    'gold': 0,
-                    'silver': 0,
-                    'bronze': 0,
-                    'iron': 0,
-                    'total': 0
-                }
-        
-        # オリンピック結果を集計
-        for score_data in round_scores:
-            user_ids = score_data.get("user", [])
-            if not user_ids:
+            if member_id not in olympic_members:
                 continue
             
-            user_id = user_ids[0]
-            # オリンピック参加メンバーのみ
-            if user_id not in olympic_members:
-                continue
+            player_name = member.get('display_name') or member.get('name', 'Unknown')
+            hole_points = {}  # {hole_number: points}
             
-            # プレイヤー名を取得
-            player_name = None
-            for member in member_list:
-                if member.get('page_id') == user_id:
-                    player_name = member.get('display_name') or member.get('name', 'Unknown')
-                    break
+            # このメンバーのスコアを取得
+            for score_data in round_scores:
+                user_ids = score_data.get("user", [])
+                if not user_ids or user_ids[0] != member_id:
+                    continue
+                
+                hole_number = score_data.get("hole_number")
+                olympic_result = score_data.get("olympic")
+                
+                if hole_number:
+                    if olympic_result:
+                        result_lower = olympic_result.lower()
+                        hole_points[hole_number] = rates.get(result_lower, 0)
+                    else:
+                        hole_points[hole_number] = 0
             
-            if not player_name or player_name not in results:
-                continue
-            
-            olympic_result = score_data.get("olympic")
-            if olympic_result:
-                result_lower = olympic_result.lower()
-                if result_lower in results[player_name]:
-                    results[player_name][result_lower] += 1
-                    results[player_name]['total'] += rates.get(result_lower, 0)
+            results.append((player_name, hole_points))
         
     except Exception as e:
         print(f"get_olympic_results error: {e}")

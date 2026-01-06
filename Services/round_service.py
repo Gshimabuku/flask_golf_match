@@ -53,8 +53,10 @@ def get_round_detail(round_id: str):
         if course_ids:
             course = next((c for c in courses if c["page_id"] == course_ids[0]), None)
             round_data["course_name"] = course.get("name", "") if course else ""
+            round_data["course_id"] = course_ids[0]
         else:
             round_data["course_name"] = ""
+            round_data["course_id"] = ""
         
         # メンバー情報を取得
         users = fetch_db_properties(NOTION_DB_USERS_ID, ["name", "display_name"])
@@ -174,7 +176,7 @@ def update_round(round_id: str, data: dict) -> bool:
     
     Args:
         round_id: 更新するラウンドのpage_id
-        data: 更新データ（play_date, members）
+        data: 更新データ（play_date, course, layout_out, layout_in, members）
         
     Returns:
         成功: True, 失敗: False
@@ -186,6 +188,18 @@ def update_round(round_id: str, data: dict) -> bool:
         if "play_date" in data:
             notion_data["play_date"] = data["play_date"]
             column_types["play_date"] = "date"
+        
+        if "course" in data:
+            notion_data["course"] = [data["course"]]
+            column_types["course"] = "relation"
+        
+        if "layout_out" in data:
+            notion_data["layout_out"] = [data["layout_out"]]
+            column_types["layout_out"] = "relation"
+        
+        if "layout_in" in data:
+            notion_data["layout_in"] = [data["layout_in"]]
+            column_types["layout_in"] = "relation"
         
         if "members" in data:
             notion_data["members"] = data["members"]

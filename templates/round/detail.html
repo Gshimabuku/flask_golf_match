@@ -201,39 +201,104 @@
             <div class="game-result-card">
                 <h3 class="game-result-title">オリンピック</h3>
                 {% if olympic_results %}
-                <div class="game-result-rates">
-                    <span>ダイヤモンド: {{ game_setting.diamond if game_setting.diamond else 5 }}点</span>
-                    <span>ゴールド: {{ game_setting.gold if game_setting.gold else 3 }}点</span>
-                    <span>シルバー: {{ game_setting.silver if game_setting.silver else 2 }}点</span>
-                    <span>ブロンズ: {{ game_setting.bronze if game_setting.bronze else 1 }}点</span>
-                    <span>アイアン: {{ game_setting.iron if game_setting.iron else 0 }}点</span>
+                <div class="olympic-tables-wrapper">
+                    <!-- OUTのオリンピック -->
+                    <div class="olympic-table-container">
+                        <div class="olympic-table-header">OUT</div>
+                        <div class="olympic-table-scroll">
+                            <table class="olympic-table">
+                                <thead>
+                                    <tr>
+                                        <th class="player-col">Player</th>
+                                        {% for hole in range(1, 10) %}
+                                        <th>{{ hole }}</th>
+                                        {% endfor %}
+                                        <th class="total-col">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for player_name, hole_points in olympic_results %}
+                                    <tr>
+                                        <td class="player-col">{{ player_name }}</td>
+                                        {% set out_total = namespace(value=0) %}
+                                        {% for hole in range(1, 10) %}
+                                        {% set points = hole_points.get(hole, 0) %}
+                                        {% set out_total.value = out_total.value + points %}
+                                        <td{% if points == (game_setting.diamond or 5) %} class="medal-diamond"{% elif points == (game_setting.gold or 3) %} class="medal-gold"{% elif points == (game_setting.silver or 2) %} class="medal-silver"{% elif points == (game_setting.bronze or 1) %} class="medal-bronze"{% elif points == (game_setting.iron or 0) %} class="medal-iron"{% endif %}>{{ points if points > 0 else '0' }}</td>
+                                        {% endfor %}
+                                        <td class="total-col">{{ out_total.value }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- INのオリンピック -->
+                    <div class="olympic-table-container">
+                        <div class="olympic-table-header">IN</div>
+                        <div class="olympic-table-scroll">
+                            <table class="olympic-table">
+                                <thead>
+                                    <tr>
+                                        <th class="player-col">Player</th>
+                                        {% for hole in range(10, 19) %}
+                                        <th>{{ hole }}</th>
+                                        {% endfor %}
+                                        <th class="total-col">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for player_name, hole_points in olympic_results %}
+                                    <tr>
+                                        <td class="player-col">{{ player_name }}</td>
+                                        {% set in_total = namespace(value=0) %}
+                                        {% for hole in range(10, 19) %}
+                                        {% set points = hole_points.get(hole, 0) %}
+                                        {% set in_total.value = in_total.value + points %}
+                                        <td{% if points == (game_setting.diamond or 5) %} class="medal-diamond"{% elif points == (game_setting.gold or 3) %} class="medal-gold"{% elif points == (game_setting.silver or 2) %} class="medal-silver"{% elif points == (game_setting.bronze or 1) %} class="medal-bronze"{% elif points == (game_setting.iron or 0) %} class="medal-iron"{% endif %}>{{ points if points > 0 else '0' }}</td>
+                                        {% endfor %}
+                                        <td class="total-col">{{ in_total.value }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
-                <table class="game-result-table">
-                    <thead>
-                        <tr>
-                            <th>Player</th>
-                            <th><span style="color: #87CEEB;">♦</span></th>
-                            <th><span style="color: #FFD700;">●</span></th>
-                            <th><span style="color: #C0C0C0;">●</span></th>
-                            <th><span style="color: #CD7F32;">●</span></th>
-                            <th><span style="color: #808080;">●</span></th>
-                            <th class="total-col">Total</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for player_name, result in olympic_results.items() %}
-                        <tr>
-                            <td>{{ player_name }}</td>
-                            <td>{{ result.diamond if result.diamond > 0 else '-' }}</td>
-                            <td>{{ result.gold if result.gold > 0 else '-' }}</td>
-                            <td>{{ result.silver if result.silver > 0 else '-' }}</td>
-                            <td>{{ result.bronze if result.bronze > 0 else '-' }}</td>
-                            <td>{{ result.iron if result.iron > 0 else '-' }}</td>
-                            <td class="total-col" style="font-weight: bold;">{{ result.total }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+
+                <!-- オリンピック合計 -->
+                <div class="olympic-summary">
+                    <h4 class="olympic-summary-title">合計スコア</h4>
+                    <table class="olympic-summary-table">
+                        <thead>
+                            <tr>
+                                <th class="player-col">Player</th>
+                                <th>OUT</th>
+                                <th>IN</th>
+                                <th class="total-col">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for player_name, hole_points in olympic_results %}
+                            {% set out_total = namespace(value=0) %}
+                            {% set in_total = namespace(value=0) %}
+                            {% for hole in range(1, 10) %}
+                                {% set out_total.value = out_total.value + hole_points.get(hole, 0) %}
+                            {% endfor %}
+                            {% for hole in range(10, 19) %}
+                                {% set in_total.value = in_total.value + hole_points.get(hole, 0) %}
+                            {% endfor %}
+                            <tr>
+                                <td class="player-col">{{ player_name }}</td>
+                                <td>{{ out_total.value }}</td>
+                                <td>{{ in_total.value }}</td>
+                                <td class="total-col">{{ out_total.value + in_total.value }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
                 {% else %}
                 <p>オリンピック結果がありません</p>
                 {% endif %}

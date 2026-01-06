@@ -166,6 +166,10 @@ def round_edit(round_id):
     # ゲーム設定取得
     game_setting = get_game_setting_by_round(round_id)
     
+    # コースとレイアウト一覧取得
+    courses = get_courses()
+    layouts = get_layouts()
+    
     # ユーザー一覧取得
     users = get_users()
     
@@ -175,6 +179,8 @@ def round_edit(round_id):
     return render_template('round/edit.html',
                          round=round_data,
                          game_setting=game_setting,
+                         courses=courses,
+                         layouts=layouts,
                          users=users,
                          return_hole=return_hole)
 
@@ -195,6 +201,9 @@ def round_update(round_id):
         
         # ラウンド基本情報の更新
         play_date = request.form.get("play_date")
+        course_id = request.form.get("course")
+        layout_out_id = request.form.get("layout_out")
+        layout_in_id = request.form.get("layout_in")
         member_count = len(round_data.get('member_list', []))
         
         members = []
@@ -205,6 +214,9 @@ def round_update(round_id):
         
         round_update_data = {
             "play_date": play_date,
+            "course": course_id,
+            "layout_out": layout_out_id,
+            "layout_in": layout_in_id,
             "members": members
         }
         

@@ -26,15 +26,29 @@
                     </div>
                 </div>
 
-                <!-- コース情報（編集不可） -->
+                <!-- コース情報 -->
                 <div class="form-section">
                     <h2 class="section-title">コース情報</h2>
                     <div class="form-row">
-                        <label>コース:</label>
-                        <span style="padding: 8px;">{{ round.course_name }}</span>
+                        <label for="course">コース:</label>
+                        <select id="course" name="course" required>
+                            <option value="">選択してください</option>
+                            {% for course in courses %}
+                            <option value="{{ course.page_id }}" {% if round.course_id == course.page_id %}selected{% endif %}>{{ course.name }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
-                    <div class="form-row">
-                        <span style="color: #666; font-size: 0.9em;">※コース・レイアウト情報は編集できません</span>
+                    <div class="form-row" id="layout_out_row">
+                        <label for="layout_out">OUT:</label>
+                        <select id="layout_out" name="layout_out" required>
+                            <option value="">コースを選択してください</option>
+                        </select>
+                    </div>
+                    <div class="form-row" id="layout_in_row">
+                        <label for="layout_in">IN:</label>
+                        <select id="layout_in" name="layout_in" required>
+                            <option value="">コースを選択してください</option>
+                        </select>
                     </div>
                 </div>
 
@@ -71,12 +85,12 @@
                             <span>オリンピック</span>
                         </label>
                     </h2>
-                    <div id="olympic_content">
+                    <div id="olympic_content" style="display: none;">
                         <div class="form-row">
                             <label for="diamond">ダイヤモンド:</label>
                             <div class="rate-control">
                                 <button type="button" id="diamond_minus">−</button>
-                                <input type="number" id="diamond" name="diamond" value="{{ game_setting.diamond if game_setting else 5 }}" readonly>
+                                <input type="number" id="diamond" name="diamond" value="{{ game_setting.diamond if game_setting and game_setting.diamond else 5 }}" readonly>
                                 <button type="button" id="diamond_plus">＋</button>
                             </div>
                         </div>
@@ -84,7 +98,7 @@
                             <label for="gold">ゴールド:</label>
                             <div class="rate-control">
                                 <button type="button" id="gold_minus">−</button>
-                                <input type="number" id="gold" name="gold" value="{{ game_setting.gold if game_setting else 4 }}" readonly>
+                                <input type="number" id="gold" name="gold" value="{{ game_setting.gold if game_setting and game_setting.gold else 4 }}" readonly>
                                 <button type="button" id="gold_plus">＋</button>
                             </div>
                         </div>
@@ -92,7 +106,7 @@
                             <label for="silver">シルバー:</label>
                             <div class="rate-control">
                                 <button type="button" id="silver_minus">−</button>
-                                <input type="number" id="silver" name="silver" value="{{ game_setting.silver if game_setting else 3 }}" readonly>
+                                <input type="number" id="silver" name="silver" value="{{ game_setting.silver if game_setting and game_setting.silver else 3 }}" readonly>
                                 <button type="button" id="silver_plus">＋</button>
                             </div>
                         </div>
@@ -100,7 +114,7 @@
                             <label for="bronze">ブロンズ:</label>
                             <div class="rate-control">
                                 <button type="button" id="bronze_minus">−</button>
-                                <input type="number" id="bronze" name="bronze" value="{{ game_setting.bronze if game_setting else 2 }}" readonly>
+                                <input type="number" id="bronze" name="bronze" value="{{ game_setting.bronze if game_setting and game_setting.bronze else 2 }}" readonly>
                                 <button type="button" id="bronze_plus">＋</button>
                             </div>
                         </div>
@@ -108,7 +122,7 @@
                             <label for="iron">アイアン:</label>
                             <div class="rate-control">
                                 <button type="button" id="iron_minus">−</button>
-                                <input type="number" id="iron" name="iron" value="{{ game_setting.iron if game_setting else 1 }}" readonly>
+                                <input type="number" id="iron" name="iron" value="{{ game_setting.iron if game_setting and game_setting.iron else 1 }}" readonly>
                                 <button type="button" id="iron_plus">＋</button>
                             </div>
                         </div>
@@ -123,7 +137,7 @@
                             <span>ヘビ</span>
                         </label>
                     </h2>
-                    <div id="snake_content">
+                    <div id="snake_content" style="display: none;">
                         <div class="form-row">
                             <label class="checkbox-label">
                                 <input type="radio" name="snake" value="All" id="snake_all" {% if game_setting and game_setting.snake == 'All' %}checked{% endif %}>
@@ -154,7 +168,7 @@
                             <span>ニアピン</span>
                         </label>
                     </h2>
-                    <div id="nearpin_content">
+                    <div id="nearpin_content" style="display: none;">
                         <div class="form-row">
                             <label for="nearpin_rate">レート:</label>
                             <div class="rate-control">
@@ -169,9 +183,9 @@
                 <!-- 参加メンバー -->
                 <div class="form-section">
                     <h2 class="section-title">参加メンバー</h2>
-                    <div id="game_members_section">
+                    <div id="game_members_section" style="display: none;">
                         <div class="game-members-container">
-                            <div class="game-member-item" id="olympic_members_row">
+                            <div class="game-member-item" id="olympic_members_row" style="display: none;">
                                 <label class="game-label">オリンピック:</label>
                                 <div id="olympic_members" class="members-inline">
                                     {% if game_setting %}
@@ -184,7 +198,7 @@
                                     {% endif %}
                                 </div>
                             </div>
-                            <div class="game-member-item" id="snake_members_row">
+                            <div class="game-member-item" id="snake_members_row" style="display: none;">
                                 <label class="game-label">ヘビ:</label>
                                 <div id="snake_members" class="members-inline">
                                     {% if game_setting %}
@@ -197,7 +211,7 @@
                                     {% endif %}
                                 </div>
                             </div>
-                            <div class="game-member-item" id="nearpin_members_row">
+                            <div class="game-member-item" id="nearpin_members_row" style="display: none;">
                                 <label class="game-label">ニアピン:</label>
                                 <div id="nearpin_members" class="members-inline">
                                     {% if game_setting %}
@@ -221,9 +235,23 @@
         </form>
     </div>
 
+    <script type="application/json" id="layout-data">{{ layouts | tojson }}</script>
+    <script type="application/json" id="round-data">{{ round | tojson }}</script>
     <script>
+        // レイアウトデータの埋め込み
+        const layoutList = JSON.parse(document.getElementById('layout-data').textContent);
+        const roundData = JSON.parse(document.getElementById('round-data').textContent);
+        const initialCourseId = roundData.course_id || '';
+        const initialLayoutOutId = roundData.layout_out ? roundData.layout_out[0] : '';
+        const initialLayoutInId = roundData.layout_in ? roundData.layout_in[0] : '';
+
         // 初期表示状態の設定
         document.addEventListener('DOMContentLoaded', function() {
+            // コース選択の初期化
+            if (initialCourseId) {
+                loadLayoutsForCourse(initialCourseId, initialLayoutOutId, initialLayoutInId);
+            }
+
             // Olympic
             const olympicToggle = document.getElementById("olympic_toggle");
             const olympicContent = document.getElementById("olympic_content");
@@ -250,6 +278,48 @@
             const anyGameEnabled = olympicToggle.checked || snakeToggle.checked || nearpinToggle.checked;
             gameMembersSection.style.display = anyGameEnabled ? "block" : "none";
         });
+
+        // コース選択時の処理
+        document.getElementById("course").addEventListener("change", function () {
+            const courseId = this.value;
+            loadLayoutsForCourse(courseId, '', '');
+        });
+
+        function loadLayoutsForCourse(courseId, selectedOutId, selectedInId) {
+            const layoutInSelect = document.getElementById("layout_in");
+            const layoutOutSelect = document.getElementById("layout_out");
+
+            // プルダウンの初期化
+            layoutInSelect.innerHTML = '<option value="">選択してください</option>';
+            layoutOutSelect.innerHTML = '<option value="">選択してください</option>';
+
+            if (courseId) {
+                // レイアウト情報フィルター
+                const filteredLayouts = layoutList.filter(
+                    l => Array.isArray(l.course) && l.course.includes(courseId)
+                );
+
+                filteredLayouts.forEach(layout => {
+                    // OUT 用
+                    const optOut = document.createElement("option");
+                    optOut.value = layout.page_id;
+                    optOut.textContent = layout.layout_name;
+                    if (layout.page_id === selectedOutId) {
+                        optOut.selected = true;
+                    }
+                    layoutOutSelect.appendChild(optOut);
+
+                    // IN 用
+                    const optIn = document.createElement("option");
+                    optIn.value = layout.page_id;
+                    optIn.textContent = layout.layout_name;
+                    if (layout.page_id === selectedInId) {
+                        optIn.selected = true;
+                    }
+                    layoutInSelect.appendChild(optIn);
+                });
+            }
+        }
         
         // ゲームトグルの処理
         document.getElementById("olympic_toggle").addEventListener("change", function () {
