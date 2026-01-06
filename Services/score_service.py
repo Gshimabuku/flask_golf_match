@@ -448,7 +448,7 @@ def get_snake_results(round_id: str, member_list: list, game_setting):
             results['hole_snakes'].append((player_name, hole_snakes))
             member_hole_snakes[player_name] = hole_snakes
         
-        # 3ホール清算の集計
+        # 3ホール清算の集計（Separateモード）
         if game_setting.snake == 'Separate':
             hole_ranges = [(1, 3), (4, 6), (7, 9), (10, 12), (13, 15), (16, 18)]
             total_gained_dict = {name: 0 for name, _ in results['hole_snakes']}
@@ -456,10 +456,12 @@ def get_snake_results(round_id: str, member_list: list, game_setting):
             for start, end in hole_ranges:
                 range_total = 0
                 out_player = None
+                player_range_snakes = {}  # {player_name: range内のヘビ合計}
                 
                 # 各プレイヤーのこの範囲の合計ヘビ数を計算
                 for player_name, hole_snakes in results['hole_snakes']:
                     range_snakes = sum(hole_snakes.get(h, 0) for h in range(start, end + 1))
+                    player_range_snakes[player_name] = range_snakes
                     range_total += range_snakes
                 
                 # この範囲のOUTプレイヤーを探す
@@ -468,22 +470,44 @@ def get_snake_results(round_id: str, member_list: list, game_setting):
                         out_player = results['hole_outs'][h]
                         break
                 
-                # 獲得者を決定（OUTプレイヤー以外が均等に分配）
-                if out_player and range_total > 0:
-                    # OUTプレイヤー以外の人数
-                    non_out_count = len([p for p, _ in results['hole_snakes'] if p != out_player])
-                    if non_out_count > 0:
-                        gain_per_person = range_total / non_out_count
-                        for player_name, _ in results['hole_snakes']:
-                            if player_name != out_player:
-                                total_gained_dict[player_name] += gain_per_person
+                # 獲得者を決定（最もヘビが少ない人）
+                winner = None
+                if player_range_snakes:
+                    # OUTプレイヤーを除外
+                    eligible_players = {p: s for p, s in player_range_snakes.items() if p != out_player}
+                    if eligible_players:
+                        # 最小ヘビ数のプレイヤーを獲得者とする
+                        winner = min(eligible_players, key=eligible_players.get)
+                        # 獲得者が全員のヘビを獲得
+                        total_gained_dict[winner] += range_total
                 
                 results['three_hole_summary'].append({
                     'holes': f'{start}-{end}',
                     'total_snakes': range_total,
                     'out_player': out_player or '-',
-                    'winner': out_player or '-'
+                    'winner': winner or '-'
                 })
+            
+            # 獲得合計をリストに変換
+            for player_name, _ in results['hole_snakes']:
+                results['total_gained'].append((player_name, int(total_gained_dict[player_name])))
+        
+        # 全ホール通しで清算（Allモード）
+        elif game_setting.snake == 'All':
+            total_gained_dict = {name: 0 for name, _ in results['hole_snakes']}
+            player_total_snakes = {}  # {player_name: 全ホールのヘビ合計}
+            grand_total = 0
+            
+            # 各プレイヤーの全ホール合計ヘビ数を計算
+            for player_name, hole_snakes in results['hole_snakes']:
+                total_snakes = sum(hole_snakes.values())
+                player_total_snakes[player_name] = total_snakes
+                grand_total += total_snakes
+            
+            # 最もヘビが少ないプレイヤーが全員のヘビを獲得
+            if player_total_snakes:
+                winner = min(player_total_snakes, key=player_total_snakes.get)
+                total_gained_dict[winner] = grand_total
             
             # 獲得合計をリストに変換
             for player_name, _ in results['hole_snakes']:
@@ -497,7 +521,7 @@ def get_snake_results(round_id: str, member_list: list, game_setting):
 # ---------------------------------
 # ニアピン結果集計
 # ---------------------------------
-def get_nearpin_results(round_id: str, member_list: list, game_setting):
+def get_nearpin_results(round_id: str, member_list: list, game_setting, pars_out: list, pars_in: list):
     """
     ニアピンゲームの結果を集計
     
@@ -505,19 +529,19 @@ def get_nearpin_results(round_id: str, member_list: list, game_setting):
         round_id: ラウンドID
         member_list: メンバーリスト [{page_id, display_name}, ...]
         game_setting: ゲーム設定オブジェクト
+        pars_out: OUTのPar情報リスト
+        pars_in: INのPar情報リスト
     
     Returns:
-        list: [(hole_number, par, winner_name), ...] ニアピンが発生したホールのみ
+        list: [{'hole_number': int, 'winner': str}, ...] Par 3のホール全て（1から順番に）
     """
     results = []
     
     try:
-        from Services.course_service import get_hole_info
-        
         # 参加メンバーのIDリスト
         nearpin_members = game_setting.nearpin_member if game_setting and game_setting.nearpin_member else []
         
-        # スコアデータを取得
+        # スコアデータを取得してニアピン獲得者を検索
         scores_data = fetch_db_properties(
             NOTION_DB_SCORES_ID,
             ["round", "user", "hole_number", "nearpin"]
@@ -526,7 +550,8 @@ def get_nearpin_results(round_id: str, member_list: list, game_setting):
         # ラウンドIDでフィルタリング
         round_scores = [s for s in scores_data if round_id in s.get("round", [])]
         
-        # ニアピン獲得者を検索
+        # ニアピン獲得者をホールごとにマップ化
+        nearpin_winners = {}  # {hole_number: winner_name}
         for score_data in round_scores:
             nearpin = score_data.get("nearpin", False)
             if not nearpin:
@@ -539,20 +564,19 @@ def get_nearpin_results(round_id: str, member_list: list, game_setting):
             hole_number = score_data.get("hole_number")
             
             # 獲得者の名前を取得
-            winner_name = None
             for member in member_list:
                 if member.get('page_id') == user_ids[0]:
                     winner_name = member.get('display_name') or member.get('name', 'Unknown')
+                    nearpin_winners[hole_number] = winner_name
                     break
-            
-            # ホール情報を取得してParを確認
-            # ニアピンはPar 3のホールでのみ有効
-            # ここでは簡略化のため、hole_numberとwinnerのみ記録
-            # Parは別途ラウンド情報から取得する必要がある
-            if hole_number and winner_name:
+        
+        # Par情報から全Par 3ホールを抽出（1から順番に）
+        all_pars = pars_out + pars_in  # ホール1-18のPar情報
+        for hole_number in range(1, 19):
+            if hole_number <= len(all_pars) and all_pars[hole_number - 1] == 3:
                 results.append({
                     'hole_number': hole_number,
-                    'winner': winner_name
+                    'winner': nearpin_winners.get(hole_number, '-')
                 })
         
     except Exception as e:

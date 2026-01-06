@@ -390,6 +390,29 @@
                         </table>
                     </div>
                     {% endif %}
+                    
+                    {% if game_setting.snake == 'All' and snake_results.total_gained %}
+                    <!-- 全ホール通し獲得合計 -->
+                    <div class="snake-summary">
+                        <h4 class="snake-summary-title">獲得合計</h4>
+                        <table class="snake-summary-table">
+                            <thead>
+                                <tr>
+                                    <th class="player-col">Player</th>
+                                    <th>獲得ヘビ数</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for player_name, gained in snake_results.total_gained %}
+                                <tr>
+                                    <td class="player-col">{{ player_name }}</td>
+                                    <td class="total-gained">{{ gained }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% endif %}
                 </div>
                 {% else %}
                 <p>ヘビ結果がありません</p>
@@ -413,7 +436,7 @@
                         <tbody>
                             {% for nearpin in nearpin_results %}
                             <tr>
-                                <td class="hole-col">{{ nearpin.hole_number }}番</td>
+                                <td class="hole-col">{{ nearpin.hole_number }}番（Par 3）</td>
                                 <td>{{ nearpin.winner }}</td>
                             </tr>
                             {% endfor %}
@@ -421,7 +444,7 @@
                     </table>
                 </div>
                 {% else %}
-                <p>ニアピン結果がありません</p>
+                <p>Par 3のホールがありません</p>
                 {% endif %}
             </div>
             {% endif %}
