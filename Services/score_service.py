@@ -461,11 +461,9 @@ def get_snake_results(round_id: str, member_list: list, game_setting):
                     range_snakes = sum(hole_snakes.get(h, 0) for h in range(start, end + 1))
                     range_total += range_snakes
                 
-                # この範囲のOUTプレイヤーを探す
-                for h in range(start, end + 1):
-                    if h in results['hole_outs']:
-                        out_player = results['hole_outs'][h]
-                        break
+                # この範囲の最後のホール（3, 6, 9, 12, 15, 18）のOUTプレイヤーを取得
+                if end in results['hole_outs']:
+                    out_player = results['hole_outs'][end]
                 
                 # OUTの人が全員のヘビを獲得
                 if out_player:
