@@ -51,7 +51,7 @@
             {% if game_setting.snake is not none %}
             <button type="button" class="sub-tab-btn" data-sub-tab="snake">ヘビ</button>
             {% endif %}
-            {% if game_setting.nearpin %}
+            {% if game_setting.nearpin and hole_par == 3 %}
             <button type="button" class="sub-tab-btn" data-sub-tab="nearpin">ニアピン</button>
             {% endif %}
             {% endif %}
@@ -151,8 +151,8 @@
                 </div>
                 {% endif %}
 
-                <!-- ニアピン小項目 -->
-                {% if game_setting.nearpin %}
+                <!-- ニアピン小項目（パー3のホールのみ表示） -->
+                {% if game_setting.nearpin and hole_par == 3 %}
                 <div class="game-sub-section sub-tab-content" data-sub-content="nearpin">
                     {% for member in members %}
                     {% set member_idx = loop.index %}
