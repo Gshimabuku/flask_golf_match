@@ -372,3 +372,190 @@ def get_olympic_results(round_id: str, member_list: list, game_setting):
         print(f"get_olympic_results error: {e}")
     
     return results
+
+# ---------------------------------
+# ヘビ結果集計
+# ---------------------------------
+def get_snake_results(round_id: str, member_list: list, game_setting):
+    """
+    ヘビゲームの結果を集計
+    
+    Args:
+        round_id: ラウンドID
+        member_list: メンバーリスト [{page_id, display_name}, ...]
+        game_setting: ゲーム設定オブジェクト
+    
+    Returns:
+        dict: {
+            'hole_snakes': [(player_name, {hole_number: snake_count}), ...],
+            'hole_outs': {hole_number: player_name},  # 各ホールのヘビOUT者
+            'three_hole_summary': [{
+                'holes': 'X-X',
+                'total_snakes': int,
+                'out_player': 'name',
+                'winner': 'name'
+            }],
+            'total_gained': [(player_name, total_count), ...]
+        }
+    """
+    results = {
+        'hole_snakes': [],
+        'hole_outs': {},
+        'three_hole_summary': [],
+        'total_gained': []
+    }
+    
+    try:
+        # 参加メンバーのIDリスト
+        snake_members = game_setting.snake_member if game_setting and game_setting.snake_member else []
+        
+        # スコアデータを取得
+        scores_data = fetch_db_properties(
+            NOTION_DB_SCORES_ID,
+            ["round", "user", "hole_number", "snake", "snake_out"]
+        )
+        
+        # ラウンドIDでフィルタリング
+        round_scores = [s for s in scores_data if round_id in s.get("round", [])]
+        
+        # メンバーごとにホール別のヘビ数を集計
+        member_hole_snakes = {}
+        for member in member_list:
+            member_id = member.get('page_id')
+            # ヘビ参加メンバーのみ集計
+            if member_id not in snake_members:
+                continue
+            
+            player_name = member.get('display_name') or member.get('name', 'Unknown')
+            hole_snakes = {}  # {hole_number: snake_count}
+            
+            # このメンバーのスコアを取得
+            for score_data in round_scores:
+                user_ids = score_data.get("user", [])
+                if not user_ids or user_ids[0] != member_id:
+                    continue
+                
+                hole_number = score_data.get("hole_number")
+                snake_count = score_data.get("snake", 0)
+                snake_out = score_data.get("snake_out", False)
+                
+                if hole_number:
+                    hole_snakes[hole_number] = snake_count or 0
+                    # ヘビOUTの記録
+                    if snake_out:
+                        results['hole_outs'][hole_number] = player_name
+            
+            results['hole_snakes'].append((player_name, hole_snakes))
+            member_hole_snakes[player_name] = hole_snakes
+        
+        # 3ホール清算の集計
+        if game_setting.snake == 'Separate':
+            hole_ranges = [(1, 3), (4, 6), (7, 9), (10, 12), (13, 15), (16, 18)]
+            total_gained_dict = {name: 0 for name, _ in results['hole_snakes']}
+            
+            for start, end in hole_ranges:
+                range_total = 0
+                out_player = None
+                
+                # 各プレイヤーのこの範囲の合計ヘビ数を計算
+                for player_name, hole_snakes in results['hole_snakes']:
+                    range_snakes = sum(hole_snakes.get(h, 0) for h in range(start, end + 1))
+                    range_total += range_snakes
+                
+                # この範囲のOUTプレイヤーを探す
+                for h in range(start, end + 1):
+                    if h in results['hole_outs']:
+                        out_player = results['hole_outs'][h]
+                        break
+                
+                # 獲得者を決定（OUTプレイヤー以外が均等に分配）
+                if out_player and range_total > 0:
+                    # OUTプレイヤー以外の人数
+                    non_out_count = len([p for p, _ in results['hole_snakes'] if p != out_player])
+                    if non_out_count > 0:
+                        gain_per_person = range_total / non_out_count
+                        for player_name, _ in results['hole_snakes']:
+                            if player_name != out_player:
+                                total_gained_dict[player_name] += gain_per_person
+                
+                results['three_hole_summary'].append({
+                    'holes': f'{start}-{end}',
+                    'total_snakes': range_total,
+                    'out_player': out_player or '-',
+                    'winner': out_player or '-'
+                })
+            
+            # 獲得合計をリストに変換
+            for player_name, _ in results['hole_snakes']:
+                results['total_gained'].append((player_name, int(total_gained_dict[player_name])))
+        
+    except Exception as e:
+        print(f"get_snake_results error: {e}")
+    
+    return results
+
+# ---------------------------------
+# ニアピン結果集計
+# ---------------------------------
+def get_nearpin_results(round_id: str, member_list: list, game_setting):
+    """
+    ニアピンゲームの結果を集計
+    
+    Args:
+        round_id: ラウンドID
+        member_list: メンバーリスト [{page_id, display_name}, ...]
+        game_setting: ゲーム設定オブジェクト
+    
+    Returns:
+        list: [(hole_number, par, winner_name), ...] ニアピンが発生したホールのみ
+    """
+    results = []
+    
+    try:
+        from Services.course_service import get_hole_info
+        
+        # 参加メンバーのIDリスト
+        nearpin_members = game_setting.nearpin_member if game_setting and game_setting.nearpin_member else []
+        
+        # スコアデータを取得
+        scores_data = fetch_db_properties(
+            NOTION_DB_SCORES_ID,
+            ["round", "user", "hole_number", "nearpin"]
+        )
+        
+        # ラウンドIDでフィルタリング
+        round_scores = [s for s in scores_data if round_id in s.get("round", [])]
+        
+        # ニアピン獲得者を検索
+        for score_data in round_scores:
+            nearpin = score_data.get("nearpin", False)
+            if not nearpin:
+                continue
+            
+            user_ids = score_data.get("user", [])
+            if not user_ids or user_ids[0] not in nearpin_members:
+                continue
+            
+            hole_number = score_data.get("hole_number")
+            
+            # 獲得者の名前を取得
+            winner_name = None
+            for member in member_list:
+                if member.get('page_id') == user_ids[0]:
+                    winner_name = member.get('display_name') or member.get('name', 'Unknown')
+                    break
+            
+            # ホール情報を取得してParを確認
+            # ニアピンはPar 3のホールでのみ有効
+            # ここでは簡略化のため、hole_numberとwinnerのみ記録
+            # Parは別途ラウンド情報から取得する必要がある
+            if hole_number and winner_name:
+                results.append({
+                    'hole_number': hole_number,
+                    'winner': winner_name
+                })
+        
+    except Exception as e:
+        print(f"get_nearpin_results error: {e}")
+    
+    return results

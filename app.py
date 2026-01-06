@@ -284,6 +284,18 @@ def round_detail(round_id):
     if game_setting and game_setting.gold:
         olympic_results = get_olympic_results(round_id, round_data.get('member_list', []), game_setting)
     
+    # ヘビ結果を集計
+    snake_results = None
+    if game_setting and game_setting.snake:
+        from Services.score_service import get_snake_results
+        snake_results = get_snake_results(round_id, round_data.get('member_list', []), game_setting)
+    
+    # ニアピン結果を集計
+    nearpin_results = None
+    if game_setting and game_setting.nearpin:
+        from Services.score_service import get_nearpin_results
+        nearpin_results = get_nearpin_results(round_id, round_data.get('member_list', []), game_setting)
+    
     return render_template('round/detail.html',
                          round=round_data,
                          game_setting=game_setting,
@@ -292,7 +304,9 @@ def round_detail(round_id):
                          pars_in=pars_in,
                          par_out_total=par_out_total,
                          par_in_total=par_in_total,
-                         olympic_results=olympic_results)
+                         olympic_results=olympic_results,
+                         snake_results=snake_results,
+                         nearpin_results=nearpin_results)
 
 # --------------------------
 # ラウンド削除
