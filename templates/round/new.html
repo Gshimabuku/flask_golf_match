@@ -124,7 +124,7 @@
                             <label for="{{ value }}">{{ display_name }}:</label>
                             <div class="rate-control">
                                 <button type="button" id="{{ value }}_minus">−</button>
-                                <input type="number" id="{{ value }}" name="{{ value }}" value="{{ 5 - loop.index0 }}" readonly>
+                                <input type="number" id="{{ value }}" name="{{ value }}" value="{% if value == 'gold' %}4{% elif value == 'silver' %}3{% elif value == 'bronze' %}2{% elif value == 'iron' %}1{% elif value == 'diamond' %}5{% endif %}" readonly>
                                 <button type="button" id="{{ value }}_plus">＋</button>
                             </div>
                         </div>
@@ -395,13 +395,13 @@
         });
 
         // 数値入力の＋／−ボタン制御
-        function setupNumberControl(id) {
+        function setupNumberControl(id, step = 1) {
             const input = document.getElementById(id);
             document.getElementById(id + "_plus").addEventListener("click", () => {
-                input.value = parseInt(input.value) + 1;
+                input.value = parseInt(input.value) + step;
             });
             document.getElementById(id + "_minus").addEventListener("click", () => {
-                input.value = parseInt(input.value) - 1;
+                input.value = parseInt(input.value) - step;
             });
         }
 
@@ -413,7 +413,6 @@
         setupNumberControl("diamond");
         setupNumberControl("snake_rate");
         setupNumberControl("nearpin_rate");
-        setupNumberControl("diamond");
     </script>
 {% endblock %}
 
