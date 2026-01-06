@@ -301,3 +301,89 @@ def delete_scores_by_round(round_id: str) -> bool:
     except Exception as e:
         print(f"delete_scores_by_round error: {e}")
         return False
+# ---------------------------------
+# オリンピック結果集計
+# ---------------------------------
+def get_olympic_results(round_id: str, member_list: list, game_setting):
+    """
+    オリンピックゲームの結果を集計
+    
+    Args:
+        round_id: ラウンドID
+        member_list: メンバーリスト [{page_id, display_name}, ...]
+        game_setting: ゲーム設定オブジェクト
+    
+    Returns:
+        dict: {player_name: {gold: int, silver: int, bronze: int, iron: int, diamond: int, total: int}}
+    """
+    results = {}
+    
+    try:
+        # レート設定を取得
+        rates = {
+            'diamond': game_setting.diamond if game_setting and game_setting.diamond else 5,
+            'gold': game_setting.gold if game_setting and game_setting.gold else 3,
+            'silver': game_setting.silver if game_setting and game_setting.silver else 2,
+            'bronze': game_setting.bronze if game_setting and game_setting.bronze else 1,
+            'iron': game_setting.iron if game_setting and game_setting.iron else 0
+        }
+        
+        # 参加メンバーのIDリスト
+        olympic_members = game_setting.olympic_member if game_setting and game_setting.olympic_member else []
+        
+        # スコアデータを取得
+        scores_data = fetch_db_properties(
+            NOTION_DB_SCORES_ID,
+            ["round", "user", "hole_number", "olympic"]
+        )
+        
+        # ラウンドIDでフィルタリング
+        round_scores = [s for s in scores_data if round_id in s.get("round", [])]
+        
+        # メンバーごとに初期化
+        for member in member_list:
+            member_id = member.get('page_id')
+            # オリンピック参加メンバーのみ集計
+            if member_id in olympic_members:
+                player_name = member.get('display_name') or member.get('name', 'Unknown')
+                results[player_name] = {
+                    'diamond': 0,
+                    'gold': 0,
+                    'silver': 0,
+                    'bronze': 0,
+                    'iron': 0,
+                    'total': 0
+                }
+        
+        # オリンピック結果を集計
+        for score_data in round_scores:
+            user_ids = score_data.get("user", [])
+            if not user_ids:
+                continue
+            
+            user_id = user_ids[0]
+            # オリンピック参加メンバーのみ
+            if user_id not in olympic_members:
+                continue
+            
+            # プレイヤー名を取得
+            player_name = None
+            for member in member_list:
+                if member.get('page_id') == user_id:
+                    player_name = member.get('display_name') or member.get('name', 'Unknown')
+                    break
+            
+            if not player_name or player_name not in results:
+                continue
+            
+            olympic_result = score_data.get("olympic")
+            if olympic_result:
+                result_lower = olympic_result.lower()
+                if result_lower in results[player_name]:
+                    results[player_name][result_lower] += 1
+                    results[player_name]['total'] += rates.get(result_lower, 0)
+        
+    except Exception as e:
+        print(f"get_olympic_results error: {e}")
+    
+    return results

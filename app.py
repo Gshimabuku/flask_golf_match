@@ -3,7 +3,7 @@ import os
 from Services.course_service import get_courses,get_layouts,add_course,get_course_detail,delete_course,get_pars_by_layouts,get_hole_info
 from Services.round_service import get_rounds,add_round,get_round_detail,delete_round,update_round
 from Services.game_setting_service import add_game_setting, get_game_setting_by_round, delete_game_setting_by_round, update_game_setting
-from Services.score_service import get_scores, add_score, get_hole_scores, get_all_scores_for_round_detail, delete_scores_by_round
+from Services.score_service import get_scores, add_score, get_hole_scores, get_all_scores_for_round_detail, delete_scores_by_round, get_olympic_results
 from Services.user_service import get_users
 from Const import olympic_type
 
@@ -267,6 +267,11 @@ def round_detail(round_id):
     layout_in_ids = round_data.get("layout_in", [])
     pars_out, pars_in, par_out_total, par_in_total = get_pars_by_layouts(layout_out_ids, layout_in_ids)
     
+    # オリンピック結果を集計
+    olympic_results = None
+    if game_setting and game_setting.gold:
+        olympic_results = get_olympic_results(round_id, round_data.get('member_list', []), game_setting)
+    
     return render_template('round/detail.html',
                          round=round_data,
                          game_setting=game_setting,
@@ -274,7 +279,8 @@ def round_detail(round_id):
                          pars_out=pars_out,
                          pars_in=pars_in,
                          par_out_total=par_out_total,
-                         par_in_total=par_in_total)
+                         par_in_total=par_in_total,
+                         olympic_results=olympic_results)
 
 # --------------------------
 # ラウンド削除
