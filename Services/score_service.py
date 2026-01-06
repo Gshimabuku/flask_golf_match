@@ -275,3 +275,34 @@ def update_score(score_page_id: str, data: dict):
     
     update_page(score_page_id, notion_data, column_types)
     print(f"Score {score_page_id} updated")
+
+# ---------------------------------
+# ラウンドに紐づくスコアをすべて削除
+# ---------------------------------
+def delete_scores_by_round(round_id: str) -> bool:
+    """
+    指定されたラウンドに紐づくスコアをすべて削除
+    
+    Args:
+        round_id: ラウンドのpage_id
+        
+    Returns:
+        成功: True, 失敗: False
+    """
+    try:
+        from Services.notion_service import delete_page
+        
+        # ラウンドに紐づくスコアを取得
+        scores_data = fetch_db_properties(NOTION_DB_SCORES_ID, ["round"])
+        round_scores = [s for s in scores_data if round_id in s.get("round", [])]
+        
+        # 各スコアを削除
+        for score in round_scores:
+            delete_page(score["page_id"])
+        
+        print(f"Deleted {len(round_scores)} scores for round {round_id}")
+        return True
+        
+    except Exception as e:
+        print(f"delete_scores_by_round error: {e}")
+        return False

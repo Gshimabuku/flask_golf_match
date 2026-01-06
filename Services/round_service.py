@@ -47,19 +47,32 @@ def get_round_detail(round_id: str):
         if not round_data:
             return None
         
+        # コース名を取得
+        courses = fetch_db_properties(NOTION_DB_COURSES_ID, ["name"])
+        course_ids = round_data.get("course", [])
+        if course_ids:
+            course = next((c for c in courses if c["page_id"] == course_ids[0]), None)
+            round_data["course_name"] = course.get("name", "") if course else ""
+        else:
+            round_data["course_name"] = ""
+        
         # メンバー情報を取得
         users = fetch_db_properties(NOTION_DB_USERS_ID, ["name", "display_name"])
         member_ids = round_data.get("members", [])
         members = []
+        member_names = []
         for user in users:
             if user["page_id"] in member_ids:
+                display_name = user.get("display_name") or user.get("name", "")
                 members.append({
                     "page_id": user["page_id"],
                     "name": user.get("name", ""),
-                    "display_name": user.get("display_name") or user.get("name", "")
+                    "display_name": display_name
                 })
+                member_names.append(display_name)
         
         round_data["member_list"] = members
+        round_data["members"] = member_names  # テンプレート用に表示名リストを設定
         
         return round_data
     except Exception as e:
@@ -129,3 +142,25 @@ def update_round_complete(round_id: str, is_complete: bool):
         
     except Exception as e:
         print(f"update_round_complete error: {e}")
+
+# ---------------------------------
+# ラウンド削除
+# ---------------------------------
+def delete_round(round_id: str) -> bool:
+    """
+    ラウンドを削除（アーカイブ）
+    
+    Args:
+        round_id: 削除するラウンドのpage_id
+        
+    Returns:
+        成功: True, 失敗: False
+    """
+    try:
+        from Services.notion_service import delete_page
+        delete_page(round_id)
+        print(f"Round {round_id} deleted successfully")
+        return True
+    except Exception as e:
+        print(f"delete_round error: {e}")
+        return False

@@ -1,9 +1,9 @@
 from flask import Flask, render_template, jsonify, redirect, url_for, Response, request
 import os
 from Services.course_service import get_courses,get_layouts,add_course,get_course_detail,delete_course,get_pars_by_layouts,get_hole_info
-from Services.round_service import get_rounds,add_round,get_round_detail
-from Services.game_setting_service import add_game_setting, get_game_setting_by_round
-from Services.score_service import get_scores, add_score, get_hole_scores, get_all_scores_for_round_detail
+from Services.round_service import get_rounds,add_round,get_round_detail,delete_round
+from Services.game_setting_service import add_game_setting, get_game_setting_by_round, delete_game_setting_by_round
+from Services.score_service import get_scores, add_score, get_hole_scores, get_all_scores_for_round_detail, delete_scores_by_round
 from Services.user_service import get_users
 from Const import olympic_type
 
@@ -181,6 +181,30 @@ def round_detail(round_id):
                          pars_in=pars_in,
                          par_out_total=par_out_total,
                          par_in_total=par_in_total)
+
+# --------------------------
+# ラウンド削除
+# --------------------------
+@app.route('/round/<round_id>/delete', methods=['POST'])
+def round_delete(round_id):
+    """ラウンドと関連データ（スコア、ゲーム設定）を削除"""
+    try:
+        # 1. スコアを削除
+        delete_scores_by_round(round_id)
+        
+        # 2. ゲーム設定を削除
+        delete_game_setting_by_round(round_id)
+        
+        # 3. ラウンドを削除
+        success = delete_round(round_id)
+        
+        if success:
+            return jsonify({'status': 'success', 'message': 'ラウンドを削除しました'}), 200
+        else:
+            return jsonify({'status': 'error', 'message': 'ラウンドの削除に失敗しました'}), 500
+    except Exception as e:
+        print(f"round_delete error: {e}")
+        return jsonify({'status': 'error', 'message': f'削除中にエラーが発生しました: {str(e)}'}), 500
 
 # --------------------------
 # スコア入力画面

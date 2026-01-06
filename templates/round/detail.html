@@ -200,8 +200,26 @@
     
     // 削除ボタンの処理
     document.getElementById('delete-btn').addEventListener('click', function() {
-        if (confirm('このラウンドを削除しますか？')) {
-            alert('削除機能は未実装です');
+        if (confirm('このラウンドとすべての関連データ（スコア、ゲーム設定）を削除しますか？\nこの操作は取り消せません。')) {
+            // サーバーに削除リクエストを送信
+            fetch('{{ url_for("round_delete", round_id=round.page_id) }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    alert(data.message);
+                    location.href = '{{ url_for("round_list") }}';
+                } else {
+                    alert('エラー: ' + data.message);
+                }
+            })
+            .catch(error => {
+                alert('削除中にエラーが発生しました: ' + error);
+            });
         }
     });
 </script>

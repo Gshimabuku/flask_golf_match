@@ -134,3 +134,34 @@ def add_game_setting(data: dict) -> str:
 
     # 作成された page_id を返す
     return page["id"]
+
+# ---------------------------------
+# ラウンドに紐づくゲーム設定を削除
+# ---------------------------------
+def delete_game_setting_by_round(round_id: str) -> bool:
+    """
+    指定されたラウンドに紐づくゲーム設定を削除
+    
+    Args:
+        round_id: ラウンドのpage_id
+        
+    Returns:
+        成功: True, 失敗: False
+    """
+    try:
+        from Services.notion_service import delete_page
+        
+        # ラウンドに紐づくゲーム設定を取得
+        settings = fetch_db_properties(NOTION_DB_GAME_SETTINGS_ID)
+        round_settings = [s for s in settings if round_id in s.get("round", [])]
+        
+        # 各ゲーム設定を削除
+        for setting in round_settings:
+            delete_page(setting["page_id"])
+        
+        print(f"Deleted {len(round_settings)} game settings for round {round_id}")
+        return True
+        
+    except Exception as e:
+        print(f"delete_game_setting_by_round error: {e}")
+        return False
