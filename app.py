@@ -1,8 +1,8 @@
 from flask import Flask, render_template, jsonify, redirect, url_for, Response, request
 import os
 from Services.course_service import get_courses,get_layouts,add_course,get_course_detail,delete_course,get_pars_by_layouts,get_hole_info
-from Services.round_service import get_rounds,add_round,get_round_detail,delete_round
-from Services.game_setting_service import add_game_setting, get_game_setting_by_round, delete_game_setting_by_round
+from Services.round_service import get_rounds,add_round,get_round_detail,delete_round,update_round
+from Services.game_setting_service import add_game_setting, get_game_setting_by_round, delete_game_setting_by_round, update_game_setting
 from Services.score_service import get_scores, add_score, get_hole_scores, get_all_scores_for_round_detail, delete_scores_by_round
 from Services.user_service import get_users
 from Const import olympic_type
@@ -153,6 +153,100 @@ def round_create():
     return redirect(url_for('round_hole', round_id=round_page_id, hole_number=1))
 
 # --------------------------
+# ラウンド設定編集画面
+# --------------------------
+@app.route('/round/<round_id>/edit')
+def round_edit(round_id):
+    """ラウンド設定編集画面"""
+    # ラウンド情報取得
+    round_data = get_round_detail(round_id)
+    if not round_data:
+        return "Round not found", 404
+    
+    # ゲーム設定取得
+    game_setting = get_game_setting_by_round(round_id)
+    
+    # ユーザー一覧取得
+    users = get_users()
+    
+    # 戻り先のホール番号を取得（デフォルトは1）
+    return_hole = request.args.get('hole', 1, type=int)
+    
+    return render_template('round/edit.html',
+                         round=round_data,
+                         game_setting=game_setting,
+                         users=users,
+                         return_hole=return_hole)
+
+# --------------------------
+# ラウンド設定更新
+# --------------------------
+@app.route('/round/<round_id>/update', methods=['POST'])
+def round_update(round_id):
+    """ラウンド設定更新処理"""
+    try:
+        # ラウンド情報取得
+        round_data = get_round_detail(round_id)
+        if not round_data:
+            return "Round not found", 404
+        
+        # 戻り先のホール番号
+        return_hole = request.form.get('return_hole', 1, type=int)
+        
+        # ラウンド基本情報の更新
+        play_date = request.form.get("play_date")
+        member_count = len(round_data.get('member_list', []))
+        
+        members = []
+        for i in range(1, member_count + 1):
+            member_id = request.form.get(f"member{i}")
+            if member_id:
+                members.append(member_id)
+        
+        round_update_data = {
+            "play_date": play_date,
+            "members": members
+        }
+        
+        update_round(round_id, round_update_data)
+        
+        # ゲーム設定の更新
+        game_setting = get_game_setting_by_round(round_id)
+        if game_setting:
+            olympic_toggle = bool(request.form.get("olympic_toggle"))
+            snake_toggle = bool(request.form.get("snake_toggle"))
+            nearpin_toggle = bool(request.form.get("nearpin_toggle"))
+            
+            game_setting_data = {}
+            
+            if olympic_toggle:
+                game_setting_data["gold"] = request.form.get("gold")
+                game_setting_data["silver"] = request.form.get("silver")
+                game_setting_data["bronze"] = request.form.get("bronze")
+                game_setting_data["iron"] = request.form.get("iron")
+                game_setting_data["diamond"] = request.form.get("diamond")
+                game_setting_data["olympic_member"] = request.form.getlist("olympic_member[]")
+            
+            if snake_toggle:
+                game_setting_data["snake"] = request.form.get("snake")
+                game_setting_data["snake_rate"] = request.form.get("snake_rate")
+                game_setting_data["snake_member"] = request.form.getlist("snake_member[]")
+            
+            if nearpin_toggle:
+                game_setting_data["nearpin"] = True
+                game_setting_data["nearpin_rate"] = request.form.get("nearpin_rate")
+                game_setting_data["nearpin_member"] = request.form.getlist("nearpin_member[]")
+            
+            update_game_setting(game_setting.page_id, game_setting_data)
+        
+        # 更新後、元のホールのスコア入力画面へ戻る
+        return redirect(url_for('round_hole', round_id=round_id, hole_number=return_hole))
+        
+    except Exception as e:
+        print(f"round_update error: {e}")
+        return f"更新中にエラーが発生しました: {str(e)}", 500
+
+# --------------------------
 # ラウンド詳細画面
 # --------------------------
 @app.route('/round/<round_id>/detail')
@@ -258,23 +352,6 @@ def round_hole_save(round_id, hole_number):
     if not round_data:
         return "Round not found", 404
     
-    # hole_idの取得
-    # layout_outまたはlayout_inからホール情報を取得
-    # スコア入力画面: 1-9ホール → layout_out, 10-18ホール → layout_in
-    # holesテーブル: 各レイアウトともhole_number 1-9
-    if hole_number <= 9:
-        layout_ids = round_data.get("layout_out", [])
-        actual_hole_number = hole_number  # 1-9はそのまま
-    else:
-        layout_ids = round_data.get("layout_in", [])
-        actual_hole_number = hole_number - 9  # 10-18 → 1-9に変換
-    
-    hole_info = get_hole_info(layout_ids, actual_hole_number)
-    if not hole_info:
-        return "Hole not found", 404
-    
-    hole_id = hole_info['hole_id']
-    
     # 各メンバーのスコアを保存
     members = request.form.getlist('member_id[]')
     
@@ -313,7 +390,6 @@ def round_hole_save(round_id, hole_number):
                 score_data = {
                     "round_id": round_id,
                     "user_id": member_id,
-                    "hole_id": hole_id,
                     "hole_number": hole_number,
                     "stroke": int(stroke),
                     "putt": int(putt) if putt else 0,

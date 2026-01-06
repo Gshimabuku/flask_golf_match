@@ -165,3 +165,64 @@ def delete_game_setting_by_round(round_id: str) -> bool:
     except Exception as e:
         print(f"delete_game_setting_by_round error: {e}")
         return False
+
+# ---------------------------------
+# ゲーム設定更新
+# ---------------------------------
+def update_game_setting(setting_page_id: str, data: dict) -> bool:
+    """
+    ゲーム設定を更新
+    
+    Args:
+        setting_page_id: 更新するゲーム設定のpage_id
+        data: 更新データ
+        
+    Returns:
+        成功: True, 失敗: False
+    """
+    try:
+        from Services.notion_service import update_page
+        
+        notion_data = {}
+        column_types = {}
+        
+        # オリンピック設定
+        if "gold" in data:
+            notion_data["gold"] = int(data["gold"])
+            notion_data["silver"] = int(data["silver"])
+            notion_data["bronze"] = int(data["bronze"])
+            notion_data["iron"] = int(data["iron"])
+            notion_data["diamond"] = int(data["diamond"])
+            notion_data["olympic_member"] = data["olympic_member"]
+            column_types["gold"] = "number"
+            column_types["silver"] = "number"
+            column_types["bronze"] = "number"
+            column_types["iron"] = "number"
+            column_types["diamond"] = "number"
+            column_types["olympic_member"] = "relation"
+        
+        # ヘビ設定
+        if "snake" in data:
+            notion_data["snake"] = data["snake"]
+            notion_data["snake_rate"] = int(data["snake_rate"])
+            notion_data["snake_member"] = data["snake_member"]
+            column_types["snake"] = "select"
+            column_types["snake_rate"] = "number"
+            column_types["snake_member"] = "relation"
+        
+        # ニアピン設定
+        if "nearpin" in data:
+            notion_data["nearpin"] = bool(data["nearpin"])
+            notion_data["nearpin_rate"] = int(data["nearpin_rate"])
+            notion_data["nearpin_member"] = data["nearpin_member"]
+            column_types["nearpin"] = "checkbox"
+            column_types["nearpin_rate"] = "number"
+            column_types["nearpin_member"] = "relation"
+        
+        update_page(setting_page_id, notion_data, column_types)
+        print(f"Game setting {setting_page_id} updated successfully")
+        return True
+        
+    except Exception as e:
+        print(f"update_game_setting error: {e}")
+        return False

@@ -258,7 +258,7 @@
 
         // ラウンド設定ボタンの処理
         document.getElementById('round-setting-button').addEventListener('click', function() {
-            alert('ラウンド設定画面は未実装です');
+            window.location.href = `/round/${roundId}/edit?hole=${currentHole}`;
         });
 
         // ホール移動ボタンのイベントリスナー設定

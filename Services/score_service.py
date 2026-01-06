@@ -24,9 +24,6 @@ def get_scores(round_id=None, user_id=None):
         users = fetch_db_properties(NOTION_DB_USERS_ID, ["name"])
         user_map = build_id_name_map(users, "name")
         
-        holes = fetch_db_properties(NOTION_DB_HOLES_ID, ["name"])
-        hole_map = build_id_name_map(holes, "name")
-        
         for s in scores:
             score = Score.from_notion(s)
             results.append({
@@ -34,7 +31,6 @@ def get_scores(round_id=None, user_id=None):
                 "name": score.name,
                 "round": resolve_relation(score.round or [], round_map),
                 "user": resolve_relation(score.user or [], user_map),
-                "hole": resolve_relation(score.hole or [], hole_map),
                 "hole_number": score.hole_number,
                 "stroke": score.stroke,
                 "putt": score.putt,
@@ -153,7 +149,7 @@ def get_hole_scores(round_id: str, hole_number: int):
     results = {}
 
     try:
-        scores = fetch_db_properties(NOTION_DB_SCORES_ID, ["name", "round", "user", "hole", "hole_number", "stroke", "putt", "olympic", "snake", "snake_out", "nearpin"])
+        scores = fetch_db_properties(NOTION_DB_SCORES_ID, ["name", "round", "user", "hole_number", "stroke", "putt", "olympic", "snake", "snake_out", "nearpin"])
         
         # フィルタリング
         hole_scores = [s for s in scores if round_id in s.get("round", []) and s.get("hole_number") == hole_number]
@@ -185,7 +181,6 @@ def get_hole_scores(round_id: str, hole_number: int):
 def add_score(data: dict) -> str:
     round_id = data["round_id"]
     user_id = data["user_id"]
-    hole_id = data["hole_id"]
     hole_number = data["hole_number"]
     stroke = data.get("stroke", 0)
     putt = data.get("putt", 0)
@@ -207,7 +202,6 @@ def add_score(data: dict) -> str:
         "name": name,
         "round": [round_id],
         "user": [user_id],
-        "hole": [hole_id],
         "hole_number": hole_number,
         "stroke": stroke,
         "putt": putt,
@@ -226,7 +220,6 @@ def add_score(data: dict) -> str:
         "name": "title",
         "round": "relation",
         "user": "relation",
-        "hole": "relation",
         "hole_number": "number",
         "stroke": "number",
         "putt": "number",

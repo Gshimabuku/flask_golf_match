@@ -164,3 +164,36 @@ def delete_round(round_id: str) -> bool:
     except Exception as e:
         print(f"delete_round error: {e}")
         return False
+
+# ---------------------------------
+# ラウンド更新
+# ---------------------------------
+def update_round(round_id: str, data: dict) -> bool:
+    """
+    ラウンド情報を更新
+    
+    Args:
+        round_id: 更新するラウンドのpage_id
+        data: 更新データ（play_date, members）
+        
+    Returns:
+        成功: True, 失敗: False
+    """
+    try:
+        notion_data = {}
+        column_types = {}
+        
+        if "play_date" in data:
+            notion_data["play_date"] = data["play_date"]
+            column_types["play_date"] = "date"
+        
+        if "members" in data:
+            notion_data["members"] = data["members"]
+            column_types["members"] = "relation"
+        
+        update_page(round_id, notion_data, column_types)
+        print(f"Round {round_id} updated successfully")
+        return True
+    except Exception as e:
+        print(f"update_round error: {e}")
+        return False

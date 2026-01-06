@@ -1,0 +1,321 @@
+{% extends "base.html" %}
+
+{% block title %}ラウンド設定編集{% endblock %}
+
+{% block body_class %}round-edit-page{% endblock %}
+
+{% block header %}
+{% set header_title = "ラウンド設定編集" %}
+{% include '_header.html' %}
+{% endblock %}
+
+{% block content %}
+
+        <form action="{{ url_for('round_update', round_id=round.page_id) }}" method="POST" class="round-form">
+            <input type="hidden" name="return_hole" value="{{ return_hole }}">
+            
+            <!-- ラウンド設定 -->
+            <div class="game-section">
+                <h2 class="mid-title">ラウンド設定</h2>
+
+                <!-- ラウンド日 -->
+                <div class="form-section">
+                    <div class="form-row">
+                        <label for="play_date">ラウンド日:</label>
+                        <input type="date" id="play_date" name="play_date" value="{{ round.play_date }}" required>
+                    </div>
+                </div>
+
+                <!-- コース情報（編集不可） -->
+                <div class="form-section">
+                    <h2 class="section-title">コース情報</h2>
+                    <div class="form-row">
+                        <label>コース:</label>
+                        <span style="padding: 8px;">{{ round.course_name }}</span>
+                    </div>
+                    <div class="form-row">
+                        <span style="color: #666; font-size: 0.9em;">※コース・レイアウト情報は編集できません</span>
+                    </div>
+                </div>
+
+                <!-- メンバー -->
+                <div class="form-section">
+                    <h2 class="section-title">メンバー</h2>
+                    <div class="form-row">
+                        <label>人数:</label>
+                        <span style="padding: 8px;">{{ round.member_list|length }}人</span>
+                    </div>
+
+                    {% for member in round.member_list %}
+                    <div class="form-row">
+                        <label for="member{{ loop.index }}">メンバー{{ loop.index }}:</label>
+                        <select id="member{{ loop.index }}" name="member{{ loop.index }}" required>
+                            {% for user in users %}
+                            <option value="{{ user.page_id }}" {% if user.page_id == member.page_id %}selected{% endif %}>{{ user.display_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- ゲーム -->
+            <div class="game-section">
+                <h2 class="mid-title">ゲーム設定</h2>
+
+                <!-- オリンピック -->
+                <div class="form-section">
+                    <h2 class="section-title">
+                        <label class="title-checkbox-label">
+                            <input type="checkbox" id="olympic_toggle" name="olympic_toggle" value="1" {% if game_setting and game_setting.gold is not none %}checked{% endif %}>
+                            <span>オリンピック</span>
+                        </label>
+                    </h2>
+                    <div id="olympic_content">
+                        <div class="form-row">
+                            <label for="diamond">ダイヤモンド:</label>
+                            <div class="rate-control">
+                                <button type="button" id="diamond_minus">−</button>
+                                <input type="number" id="diamond" name="diamond" value="{{ game_setting.diamond if game_setting else 5 }}" readonly>
+                                <button type="button" id="diamond_plus">＋</button>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <label for="gold">ゴールド:</label>
+                            <div class="rate-control">
+                                <button type="button" id="gold_minus">−</button>
+                                <input type="number" id="gold" name="gold" value="{{ game_setting.gold if game_setting else 4 }}" readonly>
+                                <button type="button" id="gold_plus">＋</button>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <label for="silver">シルバー:</label>
+                            <div class="rate-control">
+                                <button type="button" id="silver_minus">−</button>
+                                <input type="number" id="silver" name="silver" value="{{ game_setting.silver if game_setting else 3 }}" readonly>
+                                <button type="button" id="silver_plus">＋</button>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <label for="bronze">ブロンズ:</label>
+                            <div class="rate-control">
+                                <button type="button" id="bronze_minus">−</button>
+                                <input type="number" id="bronze" name="bronze" value="{{ game_setting.bronze if game_setting else 2 }}" readonly>
+                                <button type="button" id="bronze_plus">＋</button>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <label for="iron">アイアン:</label>
+                            <div class="rate-control">
+                                <button type="button" id="iron_minus">−</button>
+                                <input type="number" id="iron" name="iron" value="{{ game_setting.iron if game_setting else 1 }}" readonly>
+                                <button type="button" id="iron_plus">＋</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ヘビ -->
+                <div class="form-section">
+                    <h2 class="section-title">
+                        <label class="title-checkbox-label">
+                            <input type="checkbox" id="snake_toggle" name="snake_toggle" value="1" {% if game_setting and game_setting.snake %}checked{% endif %}>
+                            <span>ヘビ</span>
+                        </label>
+                    </h2>
+                    <div id="snake_content">
+                        <div class="form-row">
+                            <label class="checkbox-label">
+                                <input type="radio" name="snake" value="All" id="snake_all" {% if game_setting and game_setting.snake == 'All' %}checked{% endif %}>
+                                <span>All</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="radio" name="snake" value="Separate" id="snake_separate" {% if game_setting and game_setting.snake == 'Separate' %}checked{% endif %}>
+                                <span>Separate</span>
+                            </label>
+                        </div>
+                        
+                        <div class="form-row">
+                            <label for="snake_rate">レート:</label>
+                            <div class="rate-control">
+                                <button type="button" id="snake_rate_minus">−</button>
+                                <input type="number" id="snake_rate" name="snake_rate" value="{{ game_setting.snake_rate if game_setting and game_setting.snake_rate else 1 }}" readonly>
+                                <button type="button" id="snake_rate_plus">＋</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ニアピン -->
+                <div class="form-section">
+                    <h2 class="section-title">
+                        <label class="title-checkbox-label">
+                            <input type="checkbox" id="nearpin_toggle" name="nearpin_toggle" value="1" {% if game_setting and game_setting.nearpin %}checked{% endif %}>
+                            <span>ニアピン</span>
+                        </label>
+                    </h2>
+                    <div id="nearpin_content">
+                        <div class="form-row">
+                            <label for="nearpin_rate">レート:</label>
+                            <div class="rate-control">
+                                <button type="button" id="nearpin_rate_minus">−</button>
+                                <input type="number" id="nearpin_rate" name="nearpin_rate" value="{{ game_setting.nearpin_rate if game_setting and game_setting.nearpin_rate else 5 }}" readonly>
+                                <button type="button" id="nearpin_rate_plus">＋</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 参加メンバー -->
+                <div class="form-section">
+                    <h2 class="section-title">参加メンバー</h2>
+                    <div id="game_members_section">
+                        <div class="game-members-container">
+                            <div class="game-member-item" id="olympic_members_row">
+                                <label class="game-label">オリンピック:</label>
+                                <div id="olympic_members" class="members-inline">
+                                    {% if game_setting %}
+                                    {% for member in round.member_list %}
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="olympic_member[]" value="{{ member.page_id }}" {% if member.page_id in (game_setting.olympic_member or []) %}checked{% endif %}>
+                                        <span>{{ member.display_name }}</span>
+                                    </label>
+                                    {% endfor %}
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="game-member-item" id="snake_members_row">
+                                <label class="game-label">ヘビ:</label>
+                                <div id="snake_members" class="members-inline">
+                                    {% if game_setting %}
+                                    {% for member in round.member_list %}
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="snake_member[]" value="{{ member.page_id }}" {% if member.page_id in (game_setting.snake_member or []) %}checked{% endif %}>
+                                        <span>{{ member.display_name }}</span>
+                                    </label>
+                                    {% endfor %}
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="game-member-item" id="nearpin_members_row">
+                                <label class="game-label">ニアピン:</label>
+                                <div id="nearpin_members" class="members-inline">
+                                    {% if game_setting %}
+                                    {% for member in round.member_list %}
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="nearpin_member[]" value="{{ member.page_id }}" {% if member.page_id in (game_setting.nearpin_member or []) %}checked{% endif %}>
+                                        <span>{{ member.display_name }}</span>
+                                    </label>
+                                    {% endfor %}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <button type="submit" class="submit-btn">更新</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // 初期表示状態の設定
+        document.addEventListener('DOMContentLoaded', function() {
+            // Olympic
+            const olympicToggle = document.getElementById("olympic_toggle");
+            const olympicContent = document.getElementById("olympic_content");
+            const olympicRow = document.getElementById("olympic_members_row");
+            olympicContent.style.display = olympicToggle.checked ? "block" : "none";
+            olympicRow.style.display = olympicToggle.checked ? "flex" : "none";
+            
+            // Snake
+            const snakeToggle = document.getElementById("snake_toggle");
+            const snakeContent = document.getElementById("snake_content");
+            const snakeRow = document.getElementById("snake_members_row");
+            snakeContent.style.display = snakeToggle.checked ? "block" : "none";
+            snakeRow.style.display = snakeToggle.checked ? "flex" : "none";
+            
+            // Nearpin
+            const nearpinToggle = document.getElementById("nearpin_toggle");
+            const nearpinContent = document.getElementById("nearpin_content");
+            const nearpinRow = document.getElementById("nearpin_members_row");
+            nearpinContent.style.display = nearpinToggle.checked ? "block" : "none";
+            nearpinRow.style.display = nearpinToggle.checked ? "flex" : "none";
+            
+            // Game members section
+            const gameMembersSection = document.getElementById("game_members_section");
+            const anyGameEnabled = olympicToggle.checked || snakeToggle.checked || nearpinToggle.checked;
+            gameMembersSection.style.display = anyGameEnabled ? "block" : "none";
+        });
+        
+        // ゲームトグルの処理
+        document.getElementById("olympic_toggle").addEventListener("change", function () {
+            const content = document.getElementById("olympic_content");
+            const row = document.getElementById("olympic_members_row");
+            content.style.display = this.checked ? "block" : "none";
+            row.style.display = this.checked ? "flex" : "none";
+            updateGameMembersSection();
+        });
+
+        document.getElementById("snake_toggle").addEventListener("change", function () {
+            const content = document.getElementById("snake_content");
+            const row = document.getElementById("snake_members_row");
+            content.style.display = this.checked ? "block" : "none";
+            row.style.display = this.checked ? "flex" : "none";
+            updateGameMembersSection();
+        });
+
+        document.getElementById("nearpin_toggle").addEventListener("change", function () {
+            const content = document.getElementById("nearpin_content");
+            const row = document.getElementById("nearpin_members_row");
+            content.style.display = this.checked ? "block" : "none";
+            row.style.display = this.checked ? "flex" : "none";
+            updateGameMembersSection();
+        });
+
+        function updateGameMembersSection() {
+            const olympicChecked = document.getElementById("olympic_toggle").checked;
+            const snakeChecked = document.getElementById("snake_toggle").checked;
+            const nearpinChecked = document.getElementById("nearpin_toggle").checked;
+            const anyGameChecked = olympicChecked || snakeChecked || nearpinChecked;
+            document.getElementById("game_members_section").style.display = anyGameChecked ? "block" : "none";
+        }
+
+        // 数値入力の＋／−ボタン制御
+        function setupNumberControl(id) {
+            const input = document.getElementById(id);
+            document.getElementById(id + "_plus").addEventListener("click", () => {
+                input.value = parseInt(input.value) + 1;
+            });
+            document.getElementById(id + "_minus").addEventListener("click", () => {
+                input.value = parseInt(input.value) - 1;
+            });
+        }
+
+        setupNumberControl("gold");
+        setupNumberControl("silver");
+        setupNumberControl("bronze");
+        setupNumberControl("iron");
+        setupNumberControl("diamond");
+        setupNumberControl("snake_rate");
+        setupNumberControl("nearpin_rate");
+    </script>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // 戻るボタンの処理（ホール番号パラメータを使用）
+    document.addEventListener('header-back-clicked', function () {
+        const returnHole = '{{ return_hole }}';
+        location.href = '{{ url_for("round_hole", round_id=round.page_id, hole_number=1) }}'.replace('/hole/1', '/hole/' + returnHole);
+    });
+
+    // フォーム送信時にローディングを表示
+    document.querySelector('.round-form').addEventListener('submit', function() {
+        showLoading('更新中...');
+    });
+</script>
+{% endblock %}

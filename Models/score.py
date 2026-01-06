@@ -7,7 +7,6 @@ class Score:
     name: str
     round: Optional[List[str]] = None  # relation: ラウンドのpage_id
     user: Optional[List[str]] = None  # relation: ユーザーのpage_id
-    hole: Optional[List[str]] = None  # relation: ホールのpage_id
     hole_number: Optional[int] = None
     stroke: Optional[int] = None
     putt: Optional[int] = None
@@ -23,7 +22,6 @@ class Score:
             name=data.get("name", ""),
             round=data.get("round"),
             user=data.get("user"),
-            hole=data.get("hole"),
             hole_number=data.get("hole_number"),
             stroke=data.get("stroke"),
             putt=data.get("putt"),
