@@ -259,8 +259,8 @@ def round_detail(round_id):
     # ゲーム設定取得
     game_setting = get_game_setting_by_round(round_id)
     
-    # 全ホールのスコアを取得
-    all_scores = get_all_scores_for_round_detail(round_id)
+    # 全ホールのスコアを取得（メンバー順序を保持）
+    all_scores = get_all_scores_for_round_detail(round_id, round_data.get('member_list', []))
     
     # Par情報を取得
     layout_out_ids = round_data.get("layout_out", [])

@@ -58,7 +58,7 @@
                                     {% endfor %}
                                     <td class="total-col">{{ par_out_total }}</td>
                                 </tr>
-                                {% for player_name, player_scores in scores.items() %}
+                                {% for player_name, player_scores in scores %}
                                 <!-- スコア行 -->
                                 <tr>
                                     <td class="player-col">{{ player_name }}</td>
@@ -66,10 +66,9 @@
                                     {% for hole in range(1, 10) %}
                                     {% set stroke = player_scores.get(hole, {}).get('stroke', 0) %}
                                     {% set putt = player_scores.get(hole, {}).get('putt', 0) %}
-                                    {% set total = stroke + putt %}
                                     {% set par = pars_out[hole-1] if pars_out and hole-1 < pars_out|length else 3 %}
-                                    {% set out_total.value = out_total.value + total %}
-                                    <td{% if total > 0 and total < par %} class="score-birdie"{% endif %}>{{ stroke if stroke > 0 else '-' }}</td>
+                                    {% set out_total.value = out_total.value + stroke %}
+                                    <td{% if stroke > 0 and stroke < par %} class="score-birdie"{% endif %}>{{ stroke if stroke > 0 else '-' }}</td>
                                     {% endfor %}
                                     <td class="total-col">{{ out_total.value if out_total.value > 0 else '-' }}</td>
                                 </tr>
@@ -112,7 +111,7 @@
                                     {% endfor %}
                                     <td class="total-col">{{ par_in_total }}</td>
                                 </tr>
-                                {% for player_name, player_scores in scores.items() %}
+                                {% for player_name, player_scores in scores %}
                                 <!-- スコア行 -->
                                 <tr>
                                     <td class="player-col">{{ player_name }}</td>
@@ -120,10 +119,9 @@
                                     {% for hole in range(10, 19) %}
                                     {% set stroke = player_scores.get(hole, {}).get('stroke', 0) %}
                                     {% set putt = player_scores.get(hole, {}).get('putt', 0) %}
-                                    {% set total = stroke + putt %}
                                     {% set par = pars_in[hole-10] if pars_in and hole-10 < pars_in|length else 3 %}
-                                    {% set in_total.value = in_total.value + total %}
-                                    <td{% if total > 0 and total < par %} class="score-birdie"{% endif %}>{{ stroke if stroke > 0 else '-' }}</td>
+                                    {% set in_total.value = in_total.value + stroke %}
+                                    <td{% if stroke > 0 and stroke < par %} class="score-birdie"{% endif %}>{{ stroke if stroke > 0 else '-' }}</td>
                                     {% endfor %}
                                     <td class="total-col">{{ in_total.value if in_total.value > 0 else '-' }}</td>
                                 </tr>
@@ -159,17 +157,17 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {% for player_name, player_scores in scores.items() %}
+                            {% for player_name, player_scores in scores %}
                             {% set out_total = namespace(value=0) %}
                             {% set in_total = namespace(value=0) %}
                             {% set out_putt_total = namespace(value=0) %}
                             {% set in_putt_total = namespace(value=0) %}
                             {% for hole in range(1, 10) %}
-                                {% set out_total.value = out_total.value + player_scores.get(hole, {}).get('total', 0) %}
+                                {% set out_total.value = out_total.value + player_scores.get(hole, {}).get('stroke', 0) %}
                                 {% set out_putt_total.value = out_putt_total.value + player_scores.get(hole, {}).get('putt', 0) %}
                             {% endfor %}
                             {% for hole in range(10, 19) %}
-                                {% set in_total.value = in_total.value + player_scores.get(hole, {}).get('total', 0) %}
+                                {% set in_total.value = in_total.value + player_scores.get(hole, {}).get('stroke', 0) %}
                                 {% set in_putt_total.value = in_putt_total.value + player_scores.get(hole, {}).get('putt', 0) %}
                             {% endfor %}
                             {% set total_score = out_total.value + in_total.value %}
