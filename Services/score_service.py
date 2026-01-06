@@ -392,8 +392,7 @@ def get_snake_results(round_id: str, member_list: list, game_setting):
             'three_hole_summary': [{
                 'holes': 'X-X',
                 'total_snakes': int,
-                'out_player': 'name',
-                'winner': 'name'
+                'out_player': 'name'
             }],
             'total_gained': [(player_name, total_count), ...]
         }
@@ -448,20 +447,18 @@ def get_snake_results(round_id: str, member_list: list, game_setting):
             results['hole_snakes'].append((player_name, hole_snakes))
             member_hole_snakes[player_name] = hole_snakes
         
-        # 3ホール清算の集計（Separateモード）
-        if game_setting.snake == 'Separate':
+        # 3ホール清算の集計
+        if game_setting.snake:
             hole_ranges = [(1, 3), (4, 6), (7, 9), (10, 12), (13, 15), (16, 18)]
             total_gained_dict = {name: 0 for name, _ in results['hole_snakes']}
             
             for start, end in hole_ranges:
                 range_total = 0
                 out_player = None
-                player_range_snakes = {}  # {player_name: range内のヘビ合計}
                 
                 # 各プレイヤーのこの範囲の合計ヘビ数を計算
                 for player_name, hole_snakes in results['hole_snakes']:
                     range_snakes = sum(hole_snakes.get(h, 0) for h in range(start, end + 1))
-                    player_range_snakes[player_name] = range_snakes
                     range_total += range_snakes
                 
                 # この範囲のOUTプレイヤーを探す
@@ -470,66 +467,15 @@ def get_snake_results(round_id: str, member_list: list, game_setting):
                         out_player = results['hole_outs'][h]
                         break
                 
-                # 獲得者を決定（最もヘビが少ない人）
-                winner = None
-                if player_range_snakes:
-                    # OUTプレイヤーを除外
-                    eligible_players = {p: s for p, s in player_range_snakes.items() if p != out_player}
-                    if eligible_players:
-                        # 最小ヘビ数のプレイヤーを獲得者とする
-                        winner = min(eligible_players, key=eligible_players.get)
-                        # 獲得者が全員のヘビを獲得
-                        total_gained_dict[winner] += range_total
+                # OUTの人が全員のヘビを獲得
+                if out_player:
+                    # OUTプレイヤーが全員のヘビを獲得
+                    total_gained_dict[out_player] += range_total
                 
                 results['three_hole_summary'].append({
                     'holes': f'{start}-{end}',
                     'total_snakes': range_total,
-                    'out_player': out_player or '-',
-                    'winner': winner or '-'
-                })
-            
-            # 獲得合計をリストに変換
-            for player_name, _ in results['hole_snakes']:
-                results['total_gained'].append((player_name, int(total_gained_dict[player_name])))
-        
-        # 全ホール通しで清算（Allモード） - 現在はSeparateと同じロジック
-        elif game_setting.snake == 'All':
-            hole_ranges = [(1, 3), (4, 6), (7, 9), (10, 12), (13, 15), (16, 18)]
-            total_gained_dict = {name: 0 for name, _ in results['hole_snakes']}
-            
-            for start, end in hole_ranges:
-                range_total = 0
-                out_player = None
-                player_range_snakes = {}  # {player_name: range内のヘビ合計}
-                
-                # 各プレイヤーのこの範囲の合計ヘビ数を計算
-                for player_name, hole_snakes in results['hole_snakes']:
-                    range_snakes = sum(hole_snakes.get(h, 0) for h in range(start, end + 1))
-                    player_range_snakes[player_name] = range_snakes
-                    range_total += range_snakes
-                
-                # この範囲のOUTプレイヤーを探す
-                for h in range(start, end + 1):
-                    if h in results['hole_outs']:
-                        out_player = results['hole_outs'][h]
-                        break
-                
-                # 獲得者を決定（最もヘビが少ない人）
-                winner = None
-                if player_range_snakes:
-                    # OUTプレイヤーを除外
-                    eligible_players = {p: s for p, s in player_range_snakes.items() if p != out_player}
-                    if eligible_players:
-                        # 最小ヘビ数のプレイヤーを獲得者とする
-                        winner = min(eligible_players, key=eligible_players.get)
-                        # 獲得者が全員のヘビを獲得
-                        total_gained_dict[winner] += range_total
-                
-                results['three_hole_summary'].append({
-                    'holes': f'{start}-{end}',
-                    'total_snakes': range_total,
-                    'out_player': out_player or '-',
-                    'winner': winner or '-'
+                    'out_player': out_player or '-'
                 })
             
             # 獲得合計をリストに変換
