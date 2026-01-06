@@ -217,8 +217,8 @@ def get_pars_by_layouts(layout_out_ids: list, layout_in_ids: list):
                     break
             pars_out.append(par)
         
-        # IN (10-18ホール)
-        for hole_num in range(10, 19):
+        # IN (1-9ホール、ただしlayout_inを使用)
+        for hole_num in range(1, 10):
             par = 3  # デフォルト
             for hole_data in holes_data:
                 if (hole_data.get("hole_number") == hole_num and 
