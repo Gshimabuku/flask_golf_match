@@ -115,7 +115,9 @@ def get_all_scores_for_round_detail(round_id: str):
             
             if hole_number:
                 all_scores[player_name][hole_number] = {
-                    'score': stroke + putt
+                    'stroke': stroke,
+                    'putt': putt,
+                    'total': stroke + putt
                 }
     
     except Exception as e:
