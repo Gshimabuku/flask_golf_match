@@ -75,7 +75,7 @@
                                 </tr>
                                 <!-- パット行 -->
                                 <tr class="putt-row">
-                                    <td class="player-col" style="padding-left: 24px; font-size: 0.9em; color: #666;">Putt</td>
+                                    <td class="player-col" style="font-size: 0.9em; color: #666;">Putt</td>
                                     {% set out_putt_total = namespace(value=0) %}
                                     {% for hole in range(1, 10) %}
                                     {% set putt = player_scores.get(hole, {}).get('putt', 0) %}
