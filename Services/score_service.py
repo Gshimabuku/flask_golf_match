@@ -73,6 +73,57 @@ def get_scores_by_round(round_id: str):
     return results
 
 # ---------------------------------
+# ラウンド詳細用のスコア取得
+# ---------------------------------
+def get_all_scores_for_round_detail(round_id: str):
+    """
+    ラウンド詳細画面用に全ホールのスコアを取得
+    
+    Returns:
+        dict: {player_name: {hole_number: {'score': int}}}
+    """
+    all_scores = {}
+    
+    try:
+        # ユーザー情報を取得
+        users_data = fetch_db_properties(NOTION_DB_USERS_ID, ["name", "display_name"])
+        user_map = {u["page_id"]: u.get("display_name") or u.get("name", "") for u in users_data}
+        
+        # 全スコアを取得
+        scores_data = fetch_db_properties(
+            NOTION_DB_SCORES_ID, 
+            ["round", "user", "hole_number", "stroke", "putt"]
+        )
+        
+        # ラウンドIDでフィルタリング
+        round_scores = [s for s in scores_data if round_id in s.get("round", [])]
+        
+        # プレイヤーごと、ホールごとに整理
+        for score_data in round_scores:
+            user_ids = score_data.get("user", [])
+            if not user_ids:
+                continue
+                
+            user_id = user_ids[0]
+            player_name = user_map.get(user_id, "Unknown")
+            hole_number = score_data.get("hole_number")
+            stroke = score_data.get("stroke", 0)
+            putt = score_data.get("putt", 0)
+            
+            if player_name not in all_scores:
+                all_scores[player_name] = {}
+            
+            if hole_number:
+                all_scores[player_name][hole_number] = {
+                    'score': stroke + putt
+                }
+    
+    except Exception as e:
+        print(f"get_all_scores_for_round_detail error: {e}")
+    
+    return all_scores
+
+# ---------------------------------
 # 特定ラウンド・ユーザー・ホールのスコア取得
 # ---------------------------------
 def get_existing_score(round_id: str, user_id: str, hole_number: int):

@@ -3,7 +3,7 @@ import os
 from Services.course_service import get_courses,get_layouts,add_course,get_course_detail,delete_course,get_pars_by_layouts,get_hole_info
 from Services.round_service import get_rounds,add_round,get_round_detail
 from Services.game_setting_service import add_game_setting, get_game_setting_by_round
-from Services.score_service import get_scores, add_score, get_hole_scores
+from Services.score_service import get_scores, add_score, get_hole_scores, get_all_scores_for_round_detail
 from Services.user_service import get_users
 from Const import olympic_type
 
@@ -166,16 +166,7 @@ def round_detail(round_id):
     game_setting = get_game_setting_by_round(round_id)
     
     # 全ホールのスコアを取得
-    all_scores = {}
-    for hole_number in range(1, 19):
-        hole_scores = get_hole_scores(round_id, hole_number)
-        for score_data in hole_scores:
-            player_name = score_data.get('user_name', '')
-            if player_name not in all_scores:
-                all_scores[player_name] = {}
-            all_scores[player_name][hole_number] = {
-                'score': score_data.get('score', 0)
-            }
+    all_scores = get_all_scores_for_round_detail(round_id)
     
     # Par情報を取得
     layout_out_ids = round_data.get("layout_out", [])
