@@ -188,6 +188,87 @@ def get_holes():
     return results
 
 # ---------------------------------
+# レイアウトのPar情報取得
+# ---------------------------------
+def get_pars_by_layouts(layout_out_ids: list, layout_in_ids: list):
+    """
+    レイアウトIDからOUT/INのPar情報を取得
+    
+    Args:
+        layout_out_ids: OUTレイアウトのIDリスト
+        layout_in_ids: INレイアウトのIDリスト
+        
+    Returns:
+        tuple: (pars_out, pars_in, par_out_total, par_in_total)
+    """
+    pars_out = []
+    pars_in = []
+    
+    try:
+        holes_data = fetch_db_properties(NOTION_DB_HOLES_ID)
+        
+        # OUT (1-9ホール)
+        for hole_num in range(1, 10):
+            par = 3  # デフォルト
+            for hole_data in holes_data:
+                if (hole_data.get("hole_number") == hole_num and 
+                    any(layout_id in hole_data.get("layout", []) for layout_id in layout_out_ids)):
+                    par = hole_data.get("par", 3)
+                    break
+            pars_out.append(par)
+        
+        # IN (10-18ホール)
+        for hole_num in range(10, 19):
+            par = 3  # デフォルト
+            for hole_data in holes_data:
+                if (hole_data.get("hole_number") == hole_num and 
+                    any(layout_id in hole_data.get("layout", []) for layout_id in layout_in_ids)):
+                    par = hole_data.get("par", 3)
+                    break
+            pars_in.append(par)
+            
+    except Exception as e:
+        print(f"get_pars_by_layouts error: {e}")
+        pars_out = [3] * 9
+        pars_in = [3] * 9
+    
+    par_out_total = sum(pars_out)
+    par_in_total = sum(pars_in)
+    
+    return pars_out, pars_in, par_out_total, par_in_total
+
+# ---------------------------------
+# ホール情報取得（レイアウトIDとホール番号から）
+# ---------------------------------
+def get_hole_info(layout_ids: list, hole_number: int):
+    """
+    レイアウトIDとホール番号からホール情報を取得
+    
+    Args:
+        layout_ids: レイアウトIDのリスト
+        hole_number: ホール番号（1-9）
+        
+    Returns:
+        dict: {'hole_id': str, 'par': int} or None
+    """
+    try:
+        if not layout_ids:
+            return None
+            
+        holes_data = fetch_db_properties(NOTION_DB_HOLES_ID)
+        for hole_data in holes_data:
+            if (hole_data.get("hole_number") == hole_number and 
+                any(layout_id in hole_data.get("layout", []) for layout_id in layout_ids)):
+                return {
+                    'hole_id': hole_data.get("page_id"),
+                    'par': hole_data.get("par", 4)
+                }
+        return None
+    except Exception as e:
+        print(f"get_hole_info error: {e}")
+        return None
+
+# ---------------------------------
 # コース削除
 # ---------------------------------
 def delete_course(course_id: str) -> bool:

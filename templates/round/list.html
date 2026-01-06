@@ -37,7 +37,7 @@
     document.querySelectorAll('.round-card').forEach(function(card) {
         card.addEventListener('click', function() {
             const roundId = this.getAttribute('data-round-id');
-            location.href = '{{ url_for("round_hole", round_id="ROUND_ID", hole_number=1) }}'.replace('ROUND_ID', roundId);
+            location.href = '{{ url_for("round_detail", round_id="ROUND_ID") }}'.replace('ROUND_ID', roundId);
         });
     });
 </script>

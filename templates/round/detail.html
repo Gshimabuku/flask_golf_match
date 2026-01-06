@@ -1,0 +1,196 @@
+{% extends "base.html" %}
+
+{% block title %}ラウンド詳細{% endblock %}
+
+{% block body_class %}round-detail-page{% endblock %}
+
+{% block header %}
+{% set header_title = "ラウンド詳細" %}
+{% include '_header.html' %}
+{% endblock %}
+
+{% block content %}
+
+        <!-- ページ固有アクション -->
+        <div class="page-actions">
+            <button type="button" class="action-btn" onclick="location.href='{{ url_for(\'round_hole\', round_id=round.page_id, hole_number=1) }}';">編集</button>
+            <button type="button" class="action-btn" onclick="if(confirm('このラウンドを削除しますか？')) { alert('削除機能は未実装です'); }" style="background-color: #f44336;">削除</button>
+        </div>
+
+        <!-- ラウンド基本情報 -->
+        <div class="round-info-card">
+            <div class="round-header">
+                <div class="round-title">{{ round.course_name }}</div>
+                <div class="round-date-display">{{ round.play_date }}</div>
+            </div>
+            <div class="round-members-display">
+                {% for member in round.members %}
+                <span class="member-badge">{{ member }}</span>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- スコア詳細セクション -->
+        <div class="score-section">
+            <h2 class="section-title">スコア詳細</h2>
+            
+            <!-- INとOUTを横並びでスクロール可能に -->
+            <div class="score-tables-wrapper">
+                <!-- OUTのスコア -->
+                <div class="score-table-container">
+                    <div class="score-table-header">OUT</div>
+                    <div class="score-table-scroll">
+                        <table class="score-table">
+                            <thead>
+                                <tr>
+                                    <th class="player-col">Player</th>
+                                    {% for hole in range(1, 10) %}
+                                    <th>{{ hole }}</th>
+                                    {% endfor %}
+                                    <th class="total-col">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="par-row">
+                                    <td class="player-col">Par</td>
+                                    {% for hole in range(1, 10) %}
+                                    <td>{{ pars_out[hole-1] if pars_out and hole-1 < pars_out|length else 3 }}</td>
+                                    {% endfor %}
+                                    <td class="total-col">{{ par_out_total }}</td>
+                                </tr>
+                                {% for player_name, player_scores in scores.items() %}
+                                <tr>
+                                    <td class="player-col">{{ player_name }}</td>
+                                    {% set out_total = namespace(value=0) %}
+                                    {% for hole in range(1, 10) %}
+                                    {% set score = player_scores.get(hole, {}).get('score', 0) %}
+                                    {% set par = pars_out[hole-1] if pars_out and hole-1 < pars_out|length else 3 %}
+                                    {% set _ = out_total.__setattr__('value', out_total.value + score) %}
+                                    <td{% if score > 0 %} class="{% if score < par %}score-birdie{% elif score > par %}score-bogey{% endif %}"{% endif %}>{{ score if score > 0 else '-' }}</td>
+                                    {% endfor %}
+                                    <td class="total-col">{{ out_total.value if out_total.value > 0 else '-' }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- INのスコア -->
+                <div class="score-table-container">
+                    <div class="score-table-header">IN</div>
+                    <div class="score-table-scroll">
+                        <table class="score-table">
+                            <thead>
+                                <tr>
+                                    <th class="player-col">Player</th>
+                                    {% for hole in range(10, 19) %}
+                                    <th>{{ hole }}</th>
+                                    {% endfor %}
+                                    <th class="total-col">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="par-row">
+                                    <td class="player-col">Par</td>
+                                    {% for hole in range(10, 19) %}
+                                    <td>{{ pars_in[hole-10] if pars_in and hole-10 < pars_in|length else 3 }}</td>
+                                    {% endfor %}
+                                    <td class="total-col">{{ par_in_total }}</td>
+                                </tr>
+                                {% for player_name, player_scores in scores.items() %}
+                                <tr>
+                                    <td class="player-col">{{ player_name }}</td>
+                                    {% set in_total = namespace(value=0) %}
+                                    {% for hole in range(10, 19) %}
+                                    {% set score = player_scores.get(hole, {}).get('score', 0) %}
+                                    {% set par = pars_in[hole-10] if pars_in and hole-10 < pars_in|length else 3 %}
+                                    {% set _ = in_total.__setattr__('value', in_total.value + score) %}
+                                    <td{% if score > 0 %} class="{% if score < par %}score-birdie{% elif score > par %}score-bogey{% endif %}"{% endif %}>{{ score if score > 0 else '-' }}</td>
+                                    {% endfor %}
+                                    <td class="total-col">{{ in_total.value if in_total.value > 0 else '-' }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 合計スコアサマリー -->
+            <div class="score-summary">
+                <h3 class="summary-title">合計スコア</h3>
+                <div class="summary-table-wrapper">
+                    <table class="summary-table">
+                        <thead>
+                            <tr>
+                                <th class="player-col">Player</th>
+                                <th>OUT</th>
+                                <th>IN</th>
+                                <th class="total-col">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for player_name, player_scores in scores.items() %}
+                            {% set out_total = namespace(value=0) %}
+                            {% set in_total = namespace(value=0) %}
+                            {% for hole in range(1, 10) %}
+                                {% set _ = out_total.__setattr__('value', out_total.value + player_scores.get(hole, {}).get('score', 0)) %}
+                            {% endfor %}
+                            {% for hole in range(10, 19) %}
+                                {% set _ = in_total.__setattr__('value', in_total.value + player_scores.get(hole, {}).get('score', 0)) %}
+                            {% endfor %}
+                            <tr>
+                                <td class="player-col">{{ player_name }}</td>
+                                <td>{{ out_total.value if out_total.value > 0 else '-' }}</td>
+                                <td>{{ in_total.value if in_total.value > 0 else '-' }}</td>
+                                <td class="total-col">{{ (out_total.value + in_total.value) if (out_total.value + in_total.value) > 0 else '-' }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        {% if game_setting %}
+        <!-- ゲーム結果セクション -->
+        <div class="game-results-section">
+            <h2 class="section-title">ゲーム結果</h2>
+            
+            {% if game_setting.gold %}
+            <!-- オリンピック結果 -->
+            <div class="game-result-card">
+                <h3 class="game-result-title">オリンピック</h3>
+                <p>※オリンピック結果の表示は今後実装予定</p>
+            </div>
+            {% endif %}
+
+            {% if game_setting.snake %}
+            <!-- ヘビ結果 -->
+            <div class="game-result-card">
+                <h3 class="game-result-title">ヘビ（レート: {{ game_setting.snake_rate if game_setting.snake_rate else 100 }}円）</h3>
+                <p>※ヘビ結果の表示は今後実装予定</p>
+            </div>
+            {% endif %}
+
+            {% if game_setting.nearpin %}
+            <!-- ニアピン結果 -->
+            <div class="game-result-card">
+                <h3 class="game-result-title">ニアピン（レート: {{ game_setting.nearpin_rate if game_setting.nearpin_rate else 100 }}円）</h3>
+                <p>※ニアピン結果の表示は今後実装予定</p>
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // 戻るボタンの処理
+    document.addEventListener('header-back-clicked', function () {
+        location.href = '{{ url_for("round_list") }}';
+    });
+</script>
+{% endblock %}

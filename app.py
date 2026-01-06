@@ -1,12 +1,10 @@
 from flask import Flask, render_template, jsonify, redirect, url_for, Response, request
 import os
-from Services.course_service import get_courses,get_layouts,add_course,get_course_detail,delete_course
+from Services.course_service import get_courses,get_layouts,add_course,get_course_detail,delete_course,get_pars_by_layouts,get_hole_info
 from Services.round_service import get_rounds,add_round,get_round_detail
 from Services.game_setting_service import add_game_setting, get_game_setting_by_round
 from Services.score_service import get_scores, add_score, get_hole_scores
 from Services.user_service import get_users
-from Services.notion_service import fetch_db_properties
-from config import NOTION_DB_HOLES_ID
 from Const import olympic_type
 
 app = Flask(__name__)
@@ -155,6 +153,45 @@ def round_create():
     return redirect(url_for('round_hole', round_id=round_page_id, hole_number=1))
 
 # --------------------------
+# ラウンド詳細画面
+# --------------------------
+@app.route('/round/<round_id>/detail')
+def round_detail(round_id):
+    # ラウンド情報取得
+    round_data = get_round_detail(round_id)
+    if not round_data:
+        return "Round not found", 404
+    
+    # ゲーム設定取得
+    game_setting = get_game_setting_by_round(round_id)
+    
+    # 全ホールのスコアを取得
+    all_scores = {}
+    for hole_number in range(1, 19):
+        hole_scores = get_hole_scores(round_id, hole_number)
+        for score_data in hole_scores:
+            player_name = score_data.get('user_name', '')
+            if player_name not in all_scores:
+                all_scores[player_name] = {}
+            all_scores[player_name][hole_number] = {
+                'score': score_data.get('score', 0)
+            }
+    
+    # Par情報を取得
+    layout_out_ids = round_data.get("layout_out", [])
+    layout_in_ids = round_data.get("layout_in", [])
+    pars_out, pars_in, par_out_total, par_in_total = get_pars_by_layouts(layout_out_ids, layout_in_ids)
+    
+    return render_template('round/detail.html',
+                         round=round_data,
+                         game_setting=game_setting,
+                         scores=all_scores,
+                         pars_out=pars_out,
+                         pars_in=pars_in,
+                         par_out_total=par_out_total,
+                         par_in_total=par_in_total)
+
+# --------------------------
 # スコア入力画面
 # --------------------------
 @app.route('/round/<round_id>/hole/<int:hole_number>')
@@ -169,29 +206,20 @@ def round_hole(round_id, hole_number):
     
     # ホール情報取得（PARを取得するため）
     hole_par = 4  # デフォルト値
-    try:
-        # layout_outまたはlayout_inからホール情報を取得
-        # スコア入力画面: 1-9ホール → layout_out, 10-18ホール → layout_in
-        # holesテーブル: 各レイアウトともhole_number 1-9
-        layout_ids = []
-        actual_hole_number = hole_number  # holesテーブルで検索するhole_number
-        
-        if hole_number <= 9:
-            layout_ids = round_data.get("layout_out", [])
-            actual_hole_number = hole_number  # 1-9はそのまま
-        else:
-            layout_ids = round_data.get("layout_in", [])
-            actual_hole_number = hole_number - 9  # 10-18 → 1-9に変換
-        
-        if layout_ids:
-            holes_data = fetch_db_properties(NOTION_DB_HOLES_ID)
-            for hole_data in holes_data:
-                if (hole_data.get("hole_number") == actual_hole_number and 
-                    any(layout_id in hole_data.get("layout", []) for layout_id in layout_ids)):
-                    hole_par = hole_data.get("par", 4)
-                    break
-    except Exception as e:
-        print(f"Error fetching hole info: {e}")
+    
+    # layout_outまたはlayout_inからホール情報を取得
+    # スコア入力画面: 1-9ホール → layout_out, 10-18ホール → layout_in
+    # holesテーブル: 各レイアウトともhole_number 1-9
+    if hole_number <= 9:
+        layout_ids = round_data.get("layout_out", [])
+        actual_hole_number = hole_number  # 1-9はそのまま
+    else:
+        layout_ids = round_data.get("layout_in", [])
+        actual_hole_number = hole_number - 9  # 10-18 → 1-9に変換
+    
+    hole_info = get_hole_info(layout_ids, actual_hole_number)
+    if hole_info:
+        hole_par = hole_info['par']
     
     # 既存スコア取得
     existing_scores = get_hole_scores(round_id, hole_number)
@@ -216,33 +244,21 @@ def round_hole_save(round_id, hole_number):
         return "Round not found", 404
     
     # hole_idの取得
-    hole_id = None
-    try:
-        # layout_outまたはlayout_inからホール情報を取得
-        # スコア入力画面: 1-9ホール → layout_out, 10-18ホール → layout_in
-        # holesテーブル: 各レイアウトともhole_number 1-9
-        layout_ids = []
-        actual_hole_number = hole_number  # holesテーブルで検索するhole_number
-        
-        if hole_number <= 9:
-            layout_ids = round_data.get("layout_out", [])
-            actual_hole_number = hole_number  # 1-9はそのまま
-        else:
-            layout_ids = round_data.get("layout_in", [])
-            actual_hole_number = hole_number - 9  # 10-18 → 1-9に変換
-        
-        if layout_ids:
-            holes_data = fetch_db_properties(NOTION_DB_HOLES_ID)
-            for hole_data in holes_data:
-                if (hole_data.get("hole_number") == actual_hole_number and 
-                    any(layout_id in hole_data.get("layout", []) for layout_id in layout_ids)):
-                    hole_id = hole_data.get("page_id")
-                    break
-    except Exception as e:
-        print(f"Error fetching hole_id: {e}")
+    # layout_outまたはlayout_inからホール情報を取得
+    # スコア入力画面: 1-9ホール → layout_out, 10-18ホール → layout_in
+    # holesテーブル: 各レイアウトともhole_number 1-9
+    if hole_number <= 9:
+        layout_ids = round_data.get("layout_out", [])
+        actual_hole_number = hole_number  # 1-9はそのまま
+    else:
+        layout_ids = round_data.get("layout_in", [])
+        actual_hole_number = hole_number - 9  # 10-18 → 1-9に変換
     
-    if not hole_id:
+    hole_info = get_hole_info(layout_ids, actual_hole_number)
+    if not hole_info:
         return "Hole not found", 404
+    
+    hole_id = hole_info['hole_id']
     
     # 各メンバーのスコアを保存
     members = request.form.getlist('member_id[]')
