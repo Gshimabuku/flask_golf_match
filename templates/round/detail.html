@@ -13,8 +13,8 @@
 
         <!-- ページ固有アクション -->
         <div class="page-actions">
-            <button type="button" class="action-btn" onclick="location.href='{{ url_for(\'round_hole\', round_id=round.page_id, hole_number=1) }}';">編集</button>
-            <button type="button" class="action-btn" onclick="if(confirm('このラウンドを削除しますか？')) { alert('削除機能は未実装です'); }" style="background-color: #f44336;">削除</button>
+            <button type="button" class="action-btn" id="edit-btn">編集</button>
+            <button type="button" class="action-btn" id="delete-btn" style="background-color: #f44336;">削除</button>
         </div>
 
         <!-- ラウンド基本情報 -->
@@ -191,6 +191,18 @@
     // 戻るボタンの処理
     document.addEventListener('header-back-clicked', function () {
         location.href = '{{ url_for("round_list") }}';
+    });
+    
+    // 編集ボタンの処理
+    document.getElementById('edit-btn').addEventListener('click', function() {
+        location.href = '{{ url_for("round_hole", round_id=round.page_id, hole_number=1) }}';
+    });
+    
+    // 削除ボタンの処理
+    document.getElementById('delete-btn').addEventListener('click', function() {
+        if (confirm('このラウンドを削除しますか？')) {
+            alert('削除機能は未実装です');
+        }
     });
 </script>
 {% endblock %}
