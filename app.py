@@ -294,7 +294,7 @@ def round_detail(round_id):
     nearpin_results = None
     if game_setting and game_setting.nearpin:
         from Services.score_service import get_nearpin_results
-        nearpin_results = get_nearpin_results(round_id, round_data.get('member_list', []), game_setting)
+        nearpin_results = get_nearpin_results(round_id, round_data.get('member_list', []), game_setting, pars_out, pars_in)
     
     return render_template('round/detail.html',
                          round=round_data,
