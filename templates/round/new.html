@@ -151,6 +151,15 @@
                                 <span>Separate</span>
                             </label>
                         </div>
+                        
+                        <div class="form-row">
+                            <label for="snake_rate">レート:</label>
+                            <div class="rate-control">
+                                <button type="button" id="snake_rate_minus">−</button>
+                                <input type="number" id="snake_rate" name="snake_rate" value="1" readonly>
+                                <button type="button" id="snake_rate_plus">＋</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -162,6 +171,16 @@
                             <span>ニアピン</span>
                         </label>
                     </h2>
+                    <div id="nearpin_content" style="display: none;">
+                        <div class="form-row">
+                            <label for="nearpin_rate">レート:</label>
+                            <div class="rate-control">
+                                <button type="button" id="nearpin_rate_minus">−</button>
+                                <input type="number" id="nearpin_rate" name="nearpin_rate" value="5" readonly>
+                                <button type="button" id="nearpin_rate_plus">＋</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- 参加メンバー -->
@@ -288,6 +307,8 @@
 
         // ニアピン表示切替
         document.getElementById("nearpin_toggle").addEventListener("change", function () {
+            const content = document.getElementById("nearpin_content");
+            content.style.display = this.checked ? "block" : "none";
             updateGameMembersSection();
         });
 
@@ -389,6 +410,9 @@
         setupNumberControl("silver");
         setupNumberControl("bronze");
         setupNumberControl("iron");
+        setupNumberControl("diamond");
+        setupNumberControl("snake_rate");
+        setupNumberControl("nearpin_rate");
         setupNumberControl("diamond");
     </script>
 {% endblock %}

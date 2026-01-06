@@ -35,7 +35,9 @@ def get_game_settings(round_id=None):
                 "iron": setting.iron,
                 "diamond": setting.diamond,
                 "snake": setting.snake,
+                "snake_rate": setting.snake_rate,
                 "nearpin": setting.nearpin,
+                "nearpin_rate": setting.nearpin_rate,
                 "olympic_member": resolve_relation(setting.olympic_member or [], user_map),
                 "snake_member": resolve_relation(setting.snake_member or [], user_map),
                 "nearpin_member": resolve_relation(setting.nearpin_member or [], user_map)
@@ -96,10 +98,12 @@ def add_game_setting(data: dict) -> str:
     
     if snake_toggle:
         notion_data["snake"] = data["snake"]
+        notion_data["snake_rate"] = int(data.get("snake_rate", 1))  # デフォルト1
         notion_data["snake_member"] = data["snake_member"]
 
     if nearpin_toggle:
         notion_data["nearpin"] = bool(1)
+        notion_data["nearpin_rate"] = int(data.get("nearpin_rate", 5))  # デフォルト5
         notion_data["nearpin_member"] = data["nearpin_member"]
 
     column_types = {
@@ -117,10 +121,12 @@ def add_game_setting(data: dict) -> str:
 
     if snake_toggle:
         column_types["snake"] = "select"
+        column_types["snake_rate"] = "number"
         column_types["snake_member"] = "relation"
 
     if nearpin_toggle:
         column_types["nearpin"] = "checkbox"
+        column_types["nearpin_rate"] = "number"
         column_types["nearpin_member"] = "relation"
 
     # Notion 保存

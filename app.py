@@ -142,9 +142,11 @@ def round_create():
     
     if snake_toggle:
         game_setting_data["snake"] = request.form.get("snake")
+        game_setting_data["snake_rate"] = request.form.get("snake_rate")
         game_setting_data["snake_member"] = request.form.getlist("snake_member[]")
 
     if nearpin_toggle:
+        game_setting_data["nearpin_rate"] = request.form.get("nearpin_rate")
         game_setting_data["nearpin_member"] = request.form.getlist("nearpin_member[]")
 
     game_setting_page_id = add_game_setting(game_setting_data)
